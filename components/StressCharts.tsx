@@ -52,7 +52,7 @@ export default function StressCharts({ charts, positions }: any) {
           <PieChart>
             <Pie data={sectorData} dataKey='value' nameKey='name'
               cx='50%' cy='50%' outerRadius={80}
-              label={({ name, value }) => `${name.split(' ')[0]} ${value}%`}>
+              label={({ name, value }) => `${(name ?? '').split(' ')[0]} ${value}%`}>
               {sectorData.map((_: any, i: number) => (
                 <Cell key={i} fill={SECTOR_COLORS[i % SECTOR_COLORS.length]} />
               ))}
