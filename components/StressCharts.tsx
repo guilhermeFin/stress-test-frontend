@@ -24,6 +24,11 @@ export default function StressCharts({ charts, positions }: any) {
     after: Number(p.stressed_value.toFixed(0)),
   }))
 
+  const renderLabel = ({ name, value }: { name?: string; value?: number }) => {
+    const shortName = (name ?? '').split(' ')[0]
+    return `${shortName} ${value}%`
+  }
+
   return (
     <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
 
@@ -52,7 +57,7 @@ export default function StressCharts({ charts, positions }: any) {
           <PieChart>
             <Pie data={sectorData} dataKey='value' nameKey='name'
               cx='50%' cy='50%' outerRadius={80}
-              label={({ name, value }) => `${(name ?? '').split(' ')[0]} ${value}%`}>
+              label={renderLabel}>
               {sectorData.map((_: any, i: number) => (
                 <Cell key={i} fill={SECTOR_COLORS[i % SECTOR_COLORS.length]} />
               ))}
