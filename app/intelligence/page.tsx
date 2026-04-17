@@ -1,387 +1,397 @@
 'use client'
 
 import { useState } from 'react'
-import { runPipeline, getStressResults, getMemo, PipelineResult, StressResults, MemoResult } from '@/lib/api'
-import { TrendingDown, Zap, FileText, AlertTriangle, CheckCircle, Clock, ArrowLeft, BarChart2 } from 'lucide-react'
+import { runStressTest } from '@/lib/api'
+import {
+  TrendingDown, Zap, ArrowLeft, Plus, X,
+  BarChart2, Brain, AlertCircle
+} from 'lucide-react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
-type Step = 'idle' | 'running_pipeline' | 'running_stress' | 'running_memo' | 'done' | 'error'
-
-const PORTFOLIO = [
-  { ticker: 'AAPL', name: 'Apple Inc.',                        sector: 'Technology',             weight: '10%', value: '$50,000',  beta: 1.28,  risk: 'Medium', type: 'Equity' },
-  { ticker: 'MSFT', name: 'Microsoft Corporation',             sector: 'Technology',             weight: '8%',  value: '$40,000',  beta: 0.93,  risk: 'Low',    type: 'Equity' },
-  { ticker: 'JPM',  name: 'JPMorgan Chase',                    sector: 'Financials',             weight: '8%',  value: '$40,000',  beta: 1.15,  risk: 'Medium', type: 'Equity' },
-  { ticker: 'XOM',  name: 'Exxon Mobil',                       sector: 'Energy',                 weight: '7%',  value: '$35,000',  beta: 0.87,  risk: 'Medium', type: 'Equity' },
-  { ticker: 'JNJ',  name: 'Johnson & Johnson',                  sector: 'Healthcare',             weight: '7%',  value: '$35,000',  beta: 0.54,  risk: 'Low',    type: 'Equity' },
-  { ticker: 'AMZN', name: 'Amazon.com Inc.',                   sector: 'Consumer Discretionary', weight: '8%',  value: '$40,000',  beta: 1.42,  risk: 'High',   type: 'Equity' },
-  { ticker: 'NEE',  name: 'NextEra Energy',                    sector: 'Utilities',              weight: '5%',  value: '$25,000',  beta: 0.41,  risk: 'Medium', type: 'Equity' },
-  { ticker: 'GLD',  name: 'SPDR Gold ETF',                     sector: 'Commodities',            weight: '7%',  value: '$35,000',  beta: 0.12,  risk: 'Low',    type: 'Equity' },
-  { ticker: 'TLT',  name: 'iShares 20Y Treasury ETF',          sector: 'Government Bonds',       weight: '10%', value: '$50,000',  beta: -0.21, risk: 'Medium', type: 'Fixed Income' },
-  { ticker: 'LQD',  name: 'iShares Corp Bond ETF',             sector: 'Corporate Bonds',        weight: '10%', value: '$50,000',  beta: 0.18,  risk: 'Medium', type: 'Fixed Income' },
-  { ticker: 'BTC',  name: 'Bitcoin (spot)',                     sector: 'Crypto',                 weight: '5%',  value: '$25,000',  beta: 1.95,  risk: 'High',   type: 'Alternative' },
-  { ticker: 'VNQ',  name: 'Vanguard Real Estate ETF',          sector: 'REITs',                  weight: '10%', value: '$50,000',  beta: 0.76,  risk: 'Medium', type: 'Real Estate' },
-]
-
-const COST_BASIS: Record<string, number> = {
-  AAPL: 42000, MSFT: 28000, JPM: 35000, XOM: 30000,
-  JNJ: 33000, AMZN: 32000, NEE: 27000, GLD: 30000,
-  TLT: 55000, LQD: 52000, BTC: 15000, VNQ: 48000,
+interface TickerRow {
+  ticker: string
+  weight: string
 }
 
+const PRESETS = [
+  {
+    label: 'Tech Heavy',
+    tickers: [
+      { ticker: 'AAPL', weight: '20' },
+      { ticker: 'MSFT', weight: '20' },
+      { ticker: 'GOOGL', weight: '20' },
+      { ticker: 'NVDA', weight: '20' },
+      { ticker: 'META', weight: '20' },
+    ]
+  },
+  {
+    label: 'Balanced',
+    tickers: [
+      { ticker: 'AAPL', weight: '15' },
+      { ticker: 'JPM', weight: '15' },
+      { ticker: 'JNJ', weight: '15' },
+      { ticker: 'TLT', weight: '20' },
+      { ticker: 'GLD', weight: '15' },
+      { ticker: 'XOM', weight: '20' },
+    ]
+  },
+  {
+    label: 'Conservative',
+    tickers: [
+      { ticker: 'TLT', weight: '30' },
+      { ticker: 'LQD', weight: '25' },
+      { ticker: 'GLD', weight: '20' },
+      { ticker: 'JNJ', weight: '15' },
+      { ticker: 'VNQ', weight: '10' },
+    ]
+  },
+]
+
+const HISTORICAL_SCENARIOS = [
+  { label: '2008 GFC',         text: '2008 Global Financial Crisis: market crashes 57%, credit markets freeze, spreads widen 300bps, financials drop 80%, real estate collapses 65%' },
+  { label: 'COVID Crash',      text: 'COVID-19 crash: market drops 34% in 5 weeks, energy sector collapses 55%, consumer discretionary falls 40%, rates cut to zero, gold surges 15%' },
+  { label: '2022 Rate Shock',  text: '2022 rate shock: Fed raises rates 425bps, bonds crash 15%, tech drops 35%, inflation hits 9%, growth stocks fall 50%' },
+  { label: 'Stagflation',      text: 'Stagflation scenario: inflation surges to 8%, GDP contracts 3%, unemployment rises to 8%, oil prices surge 40%, rates rise 3%' },
+  { label: 'Market crashes 25%', text: 'Market crashes 25%, interest rates rise 2%, tech drops 40%' },
+]
+
 export default function IntelligencePage() {
-  const [step, setStep]         = useState<Step>('idle')
-  const [pipeline, setPipeline] = useState<PipelineResult | null>(null)
-  const [stress, setStress]     = useState<StressResults | null>(null)
-  const [memo, setMemo]         = useState<MemoResult | null>(null)
-  const [error, setError]       = useState('')
+  const router = useRouter()
+  const [tickers, setTickers] = useState<TickerRow[]>([
+    { ticker: '', weight: '' },
+    { ticker: '', weight: '' },
+    { ticker: '', weight: '' },
+  ])
+  const [scenario, setScenario]     = useState('')
+  const [totalAum, setTotalAum]     = useState('500000')
+  const [loading, setLoading]       = useState(false)
+  const [error, setError]           = useState('')
+  const [activeScenario, setActiveScenario] = useState<string | null>(null)
+
+  const addRow = () => setTickers([...tickers, { ticker: '', weight: '' }])
+
+  const removeRow = (i: number) =>
+    setTickers(tickers.filter((_, idx) => idx !== i))
+
+  const updateRow = (i: number, field: 'ticker' | 'weight', value: string) => {
+    const updated = [...tickers]
+    updated[i][field] = field === 'ticker' ? value.toUpperCase() : value
+    setTickers(updated)
+  }
+
+  const totalWeight = tickers.reduce(
+    (sum, r) => sum + (parseFloat(r.weight) || 0), 0)
+
+  const applyPreset = (preset: typeof PRESETS[0]) => {
+    setTickers(preset.tickers)
+  }
+
+  const equalizeWeights = () => {
+    const filled = tickers.filter(r => r.ticker.trim())
+    if (!filled.length) return
+    const w = (100 / filled.length).toFixed(1)
+    setTickers(tickers.map(r =>
+      r.ticker.trim() ? { ...r, weight: w } : r
+    ))
+  }
 
   const handleRun = async () => {
-    setStep('running_pipeline')
+    const valid = tickers.filter(r => r.ticker.trim() && r.weight.trim())
+    if (valid.length < 2) {
+      setError('Please add at least 2 tickers with weights.')
+      return
+    }
+    if (!scenario.trim()) {
+      setError('Please describe a stress scenario.')
+      return
+    }
+    if (Math.abs(totalWeight - 100) > 1) {
+      setError(`Weights must sum to 100%. Currently: ${totalWeight.toFixed(1)}%`)
+      return
+    }
+
+    setLoading(true)
     setError('')
-    setPipeline(null)
-    setStress(null)
-    setMemo(null)
 
     try {
-      const p = await runPipeline()
-      setPipeline(p)
-      setStep('running_stress')
-      const s = await getStressResults()
-      setStress(s)
-      setStep('running_memo')
-      const m = await getMemo()
-      setMemo(m)
-      setStep('done')
+      // Build Excel-like data as a blob
+      const aum = parseFloat(totalAum) || 500000
+      const rows = valid.map(r => ({
+        ticker: r.ticker,
+        weight: parseFloat(r.weight),
+        value: (parseFloat(r.weight) / 100) * aum,
+        cost_basis: (parseFloat(r.weight) / 100) * aum * 0.85,
+        shares: Math.round(((parseFloat(r.weight) / 100) * aum) / 100),
+        account_type: 'Taxable',
+        geography: 'US',
+      }))
+
+      // Create CSV and convert to File
+      const headers = ['ticker', 'weight', 'value', 'cost_basis',
+                       'shares', 'account_type', 'geography']
+      const csv = [
+        headers.join(','),
+        ...rows.map(r => headers.map(h => (r as any)[h]).join(','))
+      ].join('\n')
+
+      const file = new File([csv], 'portfolio.csv', { type: 'text/csv' })
+
+      // Use existing stress test endpoint
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('scenario', scenario)
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/stress-test`,
+        { method: 'POST', body: formData }
+      )
+      const results = await response.json()
+      sessionStorage.setItem('stressResults', JSON.stringify(results))
+      router.push('/results')
     } catch (err) {
-      setError('Pipeline failed. Is the backend running on port 8000?')
-      setStep('error')
+      setError('Something went wrong. Is the backend running?')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const sentimentColor = (s: string) => {
-    if (s === 'bullish') return 'text-green-400'
-    if (s === 'bearish') return 'text-red-400'
-    if (s === 'mixed')   return 'text-yellow-400'
-    return 'text-gray-400'
-  }
-
-  const urgencyBadge = (u: string) => {
-    if (u === 'immediate') return 'bg-red-900/50 text-red-300 border border-red-700'
-    if (u === 'this_week') return 'bg-yellow-900/50 text-yellow-300 border border-yellow-700'
-    return 'bg-gray-800 text-gray-400 border border-gray-700'
-  }
-
-  const riskColor = (r: string) => {
-    if (r === 'High')   return 'text-red-400'
-    if (r === 'Medium') return 'text-yellow-400'
-    return 'text-green-400'
-  }
-
-  const typeColor = (t: string) => {
-    if (t === 'Equity')       return 'bg-blue-900/50 text-blue-300'
-    if (t === 'Fixed Income') return 'bg-green-900/50 text-green-300'
-    if (t === 'Alternative')  return 'bg-purple-900/50 text-purple-300'
-    if (t === 'Real Estate')  return 'bg-orange-900/50 text-orange-300'
-    return 'bg-gray-800 text-gray-300'
-  }
-
-  const meta = stress?.results?.meta
-
   return (
-    <main className='min-h-screen bg-gray-950 text-white p-6'>
-      <div className='max-w-6xl mx-auto space-y-8'>
+    <main className='min-h-screen bg-[#0A0F1E] text-white'>
+      <div className='fixed inset-0 overflow-hidden pointer-events-none'>
+        <div className='absolute -top-40 -right-40 w-96 h-96 bg-blue-600/10
+          rounded-full blur-3xl' />
+        <div className='absolute top-1/2 -left-40 w-80 h-80 bg-purple-600/10
+          rounded-full blur-3xl' />
+      </div>
+
+      <div className='relative max-w-4xl mx-auto px-6 py-10'>
 
         {/* Header */}
-        <div className='flex items-center justify-between'>
+        <div className='flex items-center justify-between mb-10'>
           <div className='flex items-center gap-3'>
-            <TrendingDown className='text-blue-400' size={28} />
-            <div>
-              <h1 className='text-2xl font-bold'>Live Market Intelligence</h1>
-              <p className='text-gray-400 text-sm mt-0.5'>
-                Portfolio Alpha-1 · $500,000 AUM · 12 positions
-              </p>
+            <div className='w-9 h-9 bg-blue-600 rounded-xl flex items-center
+              justify-center'>
+              <TrendingDown size={18} className='text-white' />
             </div>
+            <span className='font-bold text-lg tracking-tight'>PortfolioStress</span>
           </div>
-          <a href='/' className='flex items-center gap-1 text-sm text-blue-400 hover:underline'>
-            <ArrowLeft size={14} /> Back
-          </a>
+          <Link href='/' className='flex items-center gap-2 text-sm
+            text-gray-400 hover:text-white transition-colors'>
+            <ArrowLeft size={14} />
+            Back to home
+          </Link>
         </div>
 
-        {/* Portfolio table — always visible */}
-        <div className='bg-gray-900 border border-gray-800 rounded-2xl p-6'>
-          <h2 className='text-lg font-semibold mb-4 flex items-center gap-2'>
-            <BarChart2 size={18} className='text-blue-400' />
-            Portfolio Alpha-1 — Positions Being Stress Tested
-          </h2>
-          <div className='overflow-x-auto'>
-            <table className='w-full text-sm'>
-              <thead>
-                <tr className='text-gray-400 text-xs border-b border-gray-800'>
-                  <th className='text-left py-2 pr-4'>Ticker</th>
-                  <th className='text-left py-2 pr-4'>Name</th>
-                  <th className='text-left py-2 pr-4'>Type</th>
-                  <th className='text-left py-2 pr-4'>Sector</th>
-                  <th className='text-right py-2 pr-4'>Weight</th>
-                  <th className='text-right py-2 pr-4'>Value</th>
-                  <th className='text-right py-2 pr-4'>Cost Basis</th>
-                  <th className='text-right py-2 pr-4'>Beta</th>
-                  <th className='text-right py-2'>Risk</th>
-                </tr>
-              </thead>
-              <tbody>
-                {PORTFOLIO.map((pos) => {
-                  const ugl = parseInt(pos.value.replace(/[$,]/g, '')) - COST_BASIS[pos.ticker]
-                  return (
-                    <tr key={pos.ticker}
-                      className='border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors'>
-                      <td className='py-2.5 pr-4'>
-                        <span className='font-bold text-white'>{pos.ticker}</span>
-                      </td>
-                      <td className='py-2.5 pr-4 text-gray-300'>{pos.name}</td>
-                      <td className='py-2.5 pr-4'>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${typeColor(pos.type)}`}>
-                          {pos.type}
-                        </span>
-                      </td>
-                      <td className='py-2.5 pr-4 text-gray-400'>{pos.sector}</td>
-                      <td className='py-2.5 pr-4 text-right text-gray-300'>{pos.weight}</td>
-                      <td className='py-2.5 pr-4 text-right text-white font-medium'>{pos.value}</td>
-                      <td className='py-2.5 pr-4 text-right text-gray-400'>
-                        ${COST_BASIS[pos.ticker].toLocaleString()}
-                      </td>
-                      <td className='py-2.5 pr-4 text-right text-gray-300'>{pos.beta}</td>
-                      <td className={`py-2.5 text-right font-medium ${riskColor(pos.risk)}`}>
-                        {pos.risk}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-              <tfoot>
-                <tr className='border-t border-gray-700'>
-                  <td colSpan={4} className='py-2.5 text-gray-400 text-xs'>
-                    12 positions · Weighted beta ~0.82
-                  </td>
-                  <td className='py-2.5 text-right font-bold text-white'>100%</td>
-                  <td className='py-2.5 text-right font-bold text-white'>$500,000</td>
-                  <td className='py-2.5 text-right font-bold text-gray-400'>$427,000</td>
-                  <td colSpan={2}></td>
-                </tr>
-              </tfoot>
-            </table>
+        {/* Title */}
+        <div className='mb-8'>
+          <div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full
+            bg-blue-500/10 border border-blue-500/20 text-blue-400
+            text-xs font-medium mb-4'>
+            <Brain size={12} />
+            Live Portfolio Analysis
           </div>
+          <h1 className='text-4xl font-bold tracking-tight mb-3
+            bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent'>
+            Build your portfolio,<br />stress test it live
+          </h1>
+          <p className='text-gray-400 text-base max-w-lg'>
+            Enter your stocks and weights, pick a scenario, and get the same
+            institutional analysis — factor risk, correlation breakdown,
+            liquidity, Monte Carlo, and AI memo.
+          </p>
         </div>
 
-        {/* Run button */}
-        {step === 'idle' && (
-          <div className='bg-gray-900 border border-gray-800 rounded-2xl p-10 text-center'>
-            <Zap className='mx-auto mb-4 text-blue-400' size={48} />
-            <h2 className='text-xl font-semibold mb-2'>Run Full Intelligence Pipeline</h2>
-            <p className='text-gray-400 mb-6 max-w-md mx-auto'>
-              Pulls live macro data, SEC filings, and news — then stress tests
-              the portfolio above and generates an analyst memo automatically.
+        {/* Main card */}
+        <div className='bg-white/3 border border-white/8 rounded-3xl p-8
+          backdrop-blur-sm space-y-6'>
+
+          {/* Presets */}
+          <div>
+            <p className='text-xs text-gray-400 font-medium mb-3'>
+              Quick presets
             </p>
-            <button
-              onClick={handleRun}
-              className='bg-blue-600 hover:bg-blue-500 text-white font-semibold
-                px-8 py-3 rounded-xl transition-colors text-lg'>
-              Run Pipeline
-            </button>
-          </div>
-        )}
-
-        {/* Progress */}
-        {['running_pipeline', 'running_stress', 'running_memo'].includes(step) && (
-          <div className='bg-gray-900 border border-gray-800 rounded-2xl p-10 text-center'>
-            <div className='flex justify-center mb-6'>
-              <div className='w-12 h-12 border-4 border-blue-500 border-t-transparent
-                rounded-full animate-spin' />
+            <div className='flex gap-2 flex-wrap'>
+              {PRESETS.map(p => (
+                <button key={p.label} onClick={() => applyPreset(p)}
+                  className='px-3 py-1.5 rounded-lg text-xs border
+                    border-white/10 bg-white/3 hover:bg-white/8
+                    text-gray-300 transition-all'>
+                  {p.label}
+                </button>
+              ))}
             </div>
-            <h2 className='text-xl font-semibold mb-4'>Running Pipeline...</h2>
-            <div className='flex justify-center gap-8 text-sm'>
-              {[
-                { key: 'running_pipeline', label: 'Phase 1: Data + Signals' },
-                { key: 'running_stress',   label: 'Phase 2: Stress Test' },
-                { key: 'running_memo',     label: 'Phase 3: Analyst Memo' },
-              ].map(({ key, label }) => {
-                const steps   = ['running_pipeline', 'running_stress', 'running_memo', 'done']
-                const current = steps.indexOf(step)
-                const mine    = steps.indexOf(key)
-                const done    = current > mine
-                const active  = current === mine
-                return (
-                  <div key={key} className={`flex items-center gap-2
-                    ${active ? 'text-blue-400' : done ? 'text-green-400' : 'text-gray-600'}`}>
-                    {done
-                      ? <CheckCircle size={16} />
-                      : active
-                      ? <Clock size={16} className='animate-pulse' />
-                      : <div className='w-4 h-4 rounded-full border border-gray-600' />
-                    }
-                    {label}
+          </div>
+
+          {/* AUM */}
+          <div>
+            <label className='text-xs text-gray-400 font-medium mb-2 block'>
+              Total Portfolio Value (AUM)
+            </label>
+            <div className='relative w-48'>
+              <span className='absolute left-3 top-1/2 -translate-y-1/2
+                text-gray-500 text-sm'>$</span>
+              <input
+                type='number'
+                value={totalAum}
+                onChange={e => setTotalAum(e.target.value)}
+                className='w-full bg-white/3 border border-white/10 rounded-xl
+                  pl-7 pr-4 py-2.5 text-white text-sm focus:outline-none
+                  focus:border-blue-500/50 transition-all'
+              />
+            </div>
+          </div>
+
+          {/* Ticker table */}
+          <div>
+            <div className='flex items-center justify-between mb-3'>
+              <label className='text-xs text-gray-400 font-medium'>
+                Portfolio positions
+              </label>
+              <div className='flex items-center gap-2'>
+                <span className={`text-xs font-medium ${
+                  Math.abs(totalWeight - 100) < 1 ? 'text-green-400'
+                  : totalWeight > 100 ? 'text-red-400' : 'text-orange-400'
+                }`}>
+                  {totalWeight.toFixed(1)}% / 100%
+                </span>
+                <button onClick={equalizeWeights}
+                  className='text-xs text-blue-400 hover:text-blue-300
+                    border border-blue-500/30 px-2 py-1 rounded-lg
+                    transition-colors'>
+                  Equal weights
+                </button>
+              </div>
+            </div>
+
+            <div className='space-y-2'>
+              {/* Header */}
+              <div className='grid grid-cols-12 gap-2 px-2'>
+                <div className='col-span-5 text-xs text-gray-500'>Ticker</div>
+                <div className='col-span-5 text-xs text-gray-500'>Weight %</div>
+                <div className='col-span-2' />
+              </div>
+
+              {tickers.map((row, i) => (
+                <div key={i} className='grid grid-cols-12 gap-2 items-center'>
+                  <input
+                    value={row.ticker}
+                    onChange={e => updateRow(i, 'ticker', e.target.value)}
+                    placeholder='AAPL'
+                    className='col-span-5 bg-white/3 border border-white/10
+                      rounded-xl px-3 py-2.5 text-white text-sm
+                      placeholder-gray-600 focus:outline-none
+                      focus:border-blue-500/50 transition-all uppercase'
+                  />
+                  <div className='col-span-5 relative'>
+                    <input
+                      type='number'
+                      value={row.weight}
+                      onChange={e => updateRow(i, 'weight', e.target.value)}
+                      placeholder='10'
+                      className='w-full bg-white/3 border border-white/10
+                        rounded-xl px-3 py-2.5 text-white text-sm
+                        placeholder-gray-600 focus:outline-none
+                        focus:border-blue-500/50 transition-all pr-7'
+                    />
+                    <span className='absolute right-3 top-1/2 -translate-y-1/2
+                      text-gray-500 text-sm'>%</span>
                   </div>
-                )
-              })}
-            </div>
-            <p className='text-gray-500 text-sm mt-6'>This takes 4-5 minutes...</p>
-          </div>
-        )}
-
-        {/* Error */}
-        {step === 'error' && (
-          <div className='bg-red-950 border border-red-800 rounded-2xl p-6 flex items-center gap-3'>
-            <AlertTriangle className='text-red-400 shrink-0' size={24} />
-            <div>
-              <p className='text-red-300 font-medium'>{error}</p>
-              <button onClick={() => setStep('idle')}
-                className='text-sm text-red-400 hover:underline mt-1'>
-                Try again
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Results */}
-        {step === 'done' && pipeline && stress && memo && (
-          <div className='space-y-8'>
-
-            {/* Run summary */}
-            <div className='grid grid-cols-4 gap-4'>
-              {[
-                { label: 'Macro Series',  value: pipeline.summary.macro_series_pulled },
-                { label: 'SEC Filings',   value: pipeline.summary.filings_found },
-                { label: 'News Stories',  value: pipeline.summary.news_stories },
-                { label: 'AI Signals',    value: pipeline.summary.signals_generated },
-              ].map(({ label, value }) => (
-                <div key={label} className='bg-gray-900 border border-gray-800
-                  rounded-xl p-4 text-center'>
-                  <div className='text-2xl font-bold text-blue-400'>{value}</div>
-                  <div className='text-gray-400 text-sm mt-1'>{label}</div>
+                  <button onClick={() => removeRow(i)}
+                    className='col-span-2 flex items-center justify-center
+                      text-gray-600 hover:text-red-400 transition-colors'>
+                    <X size={14} />
+                  </button>
                 </div>
               ))}
             </div>
 
-            {/* Stress test summary */}
-            {meta && (
-              <div className='bg-gray-900 border border-gray-800 rounded-2xl p-6'>
-                <h2 className='text-lg font-semibold mb-4 flex items-center gap-2'>
-                  <TrendingDown size={18} className='text-red-400' />
-                  Stress Test Results
-                </h2>
-                <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mb-6'>
-                  {[
-                    { label: 'Cost Basis',     value: `$${meta.total_cost_basis.toLocaleString()}` },
-                    { label: 'Unrealized G/L', value: `$${meta.total_unrealized_gl.toLocaleString()}`,
-                      color: meta.total_unrealized_gl >= 0 ? 'text-green-400' : 'text-red-400' },
-                    { label: 'Expected Loss',  value: `$${meta.expected_weighted_loss.toLocaleString()}`,
-                      color: 'text-red-400' },
-                    { label: 'Worst Case',     value: `${meta.worst_case_pct}%`,
-                      color: 'text-red-400' },
-                  ].map(({ label, value, color }) => (
-                    <div key={label} className='bg-gray-800 rounded-xl p-4'>
-                      <div className='text-gray-400 text-xs mb-1'>{label}</div>
-                      <div className={`text-xl font-bold ${color || 'text-white'}`}>{value}</div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className='grid grid-cols-2 gap-4'>
-                  {Object.values(stress.results.scenarios).map((scenario) => (
-                    <div key={scenario.scenario_key}
-                      className='bg-gray-800 rounded-xl p-4 border border-gray-700'>
-                      <div className='flex justify-between items-start mb-2'>
-                        <span className='font-medium'>{scenario.scenario_name}</span>
-                        <span className='text-xs text-gray-400'>
-                          {scenario.probability * 100}% prob.
-                        </span>
-                      </div>
-                      <div className='text-red-400 text-2xl font-bold'>
-                        {scenario.summary.pct_impact}%
-                      </div>
-                      <div className='text-gray-400 text-sm'>
-                        ${scenario.summary.total_pnl.toLocaleString()}
-                      </div>
-                      <div className='text-gray-500 text-xs mt-2'>
-                        Worst: {scenario.summary.biggest_loss.ticker} (
-                        {scenario.summary.biggest_loss.shock_pct}%)
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Top signals */}
-            <div className='bg-gray-900 border border-gray-800 rounded-2xl p-6'>
-              <h2 className='text-lg font-semibold mb-4'>Top Signals</h2>
-              <div className='space-y-3'>
-                {pipeline.signals.slice(0, 8).map((signal, i) => (
-                  <div key={i}
-                    className='bg-gray-800 rounded-xl p-4 flex items-start gap-4'>
-                    <span className={`text-sm font-bold uppercase shrink-0
-                      ${sentimentColor(signal.market_sentiment)}`}>
-                      {signal.market_sentiment}
-                    </span>
-                    <div className='flex-1 min-w-0'>
-                      <p className='text-sm text-gray-200 leading-snug'>{signal.summary}</p>
-                      {signal.action_flags.length > 0 && (
-                        <div className='flex flex-wrap gap-1 mt-2'>
-                          {signal.action_flags.map((flag, j) => (
-                            <span key={j}
-                              className='text-xs bg-gray-700 text-gray-300
-                                px-2 py-0.5 rounded-full'>
-                              {flag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <span className={`text-xs px-2 py-1 rounded-full shrink-0
-                      ${urgencyBadge(signal.urgency)}`}>
-                      {signal.urgency.replace('_', ' ')}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Analyst memo */}
-            <div className='bg-gray-900 border border-gray-800 rounded-2xl p-6'>
-              <h2 className='text-lg font-semibold mb-4 flex items-center gap-2'>
-                <FileText size={18} className='text-blue-400' />
-                Analyst Memo
-              </h2>
-              <div className='bg-gray-950 rounded-xl p-6 border border-gray-700
-                max-h-[600px] overflow-y-auto'>
-                {(memo.memo|| '').split('\n').map((line, i) => {
-                  const isHeader = line.trim().length > 0 &&
-                    line === line.toUpperCase() &&
-                    !line.startsWith('-') &&
-                    !line.startsWith('•')
-                  return (
-                    <p key={i} className={`
-                      ${isHeader
-                        ? 'text-blue-400 font-semibold mt-4 mb-1 text-sm tracking-wide'
-                        : 'text-gray-200 text-sm leading-relaxed'}
-                      ${line.trim() === '' ? 'h-2' : ''}
-                    `}>
-                      {line}
-                    </p>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Run again */}
-            <div className='text-center'>
-              <button onClick={() => setStep('idle')}
-                className='bg-gray-800 hover:bg-gray-700 text-white
-                  px-6 py-2 rounded-xl transition-colors text-sm'>
-                Run Again
-              </button>
-            </div>
-
+            <button onClick={addRow}
+              className='mt-3 flex items-center gap-1.5 text-xs text-gray-400
+                hover:text-gray-200 transition-colors'>
+              <Plus size={13} />
+              Add position
+            </button>
           </div>
-        )}
+
+          {/* Scenario */}
+          <div>
+            <div className='flex items-center justify-between mb-2'>
+              <label className='text-xs text-gray-400 font-medium'>
+                Stress scenario
+              </label>
+              {activeScenario && (
+                <span className='text-xs text-blue-400'>{activeScenario} loaded</span>
+              )}
+            </div>
+            <textarea
+              value={scenario}
+              onChange={e => {
+                setScenario(e.target.value)
+                setActiveScenario(null)
+              }}
+              rows={2}
+              placeholder='e.g. Market crashes 30%, rates rise 2%, tech drops 50%'
+              className='w-full bg-white/3 border border-white/10 rounded-xl
+                p-4 text-white placeholder-gray-600 resize-none
+                focus:outline-none focus:border-blue-500/50 text-sm
+                transition-all mb-3'
+            />
+            <div className='flex flex-wrap gap-2'>
+              {HISTORICAL_SCENARIOS.map(s => (
+                <button key={s.label}
+                  onClick={() => {
+                    setScenario(s.text)
+                    setActiveScenario(s.label)
+                  }}
+                  className={`text-xs px-3 py-1.5 rounded-lg border
+                    transition-all
+                    ${activeScenario === s.label
+                      ? 'border-blue-500/50 bg-blue-500/10 text-blue-300'
+                      : 'border-white/8 bg-white/3 text-gray-400 hover:text-gray-200 hover:border-white/15'
+                    }`}>
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {error && (
+            <div className='flex items-center gap-2 text-red-400 text-sm
+              bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3'>
+              <AlertCircle size={14} />
+              {error}
+            </div>
+          )}
+
+          {/* Submit */}
+          <button
+            onClick={handleRun}
+            disabled={loading}
+            className='w-full py-4 rounded-2xl font-semibold text-sm
+              transition-all disabled:opacity-50 disabled:cursor-not-allowed
+              bg-gradient-to-r from-blue-600 to-indigo-600
+              hover:from-blue-500 hover:to-indigo-500
+              shadow-lg shadow-blue-600/20'>
+            {loading ? (
+              <span className='flex items-center justify-center gap-2'>
+                <span className='w-4 h-4 border-2 border-white/30
+                  border-t-white rounded-full animate-spin' />
+                Running analysis...
+              </span>
+            ) : (
+              <span className='flex items-center justify-center gap-2'>
+                <Zap size={16} />
+                Run Live Stress Test
+              </span>
+            )}
+          </button>
+
+          <p className='text-center text-xs text-gray-600'>
+            Results include factor model, correlation breakdown, liquidity
+            analysis, Monte Carlo simulation, and AI analyst memo
+          </p>
+        </div>
       </div>
     </main>
   )
