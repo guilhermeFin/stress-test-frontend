@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useDropzone } from 'react-dropzone'
 import { runStressTest } from '@/lib/api'
 import {
-  Upload, AlertCircle, TrendingDown, Zap, Download,
+  Upload, AlertCircle, TrendingDown, Download,
   Shield, BarChart3, Brain, Activity, ChevronRight, Clock
 } from 'lucide-react'
 import ShockBuilder from '@/components/ShockBuilder'
@@ -108,9 +108,11 @@ export default function HomePage() {
     }
   }
 
-  const handleIntelligence     = () => router.push('/intelligence')
   const handleDownloadTemplate = () =>
-    window.open('http://localhost:8000/api/download-template', '_blank')
+    window.open(
+      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/download-template`,
+      '_blank'
+    )
 
   const handleHistorical = (s: typeof HISTORICAL_SCENARIOS[0]) => {
     setScenario(s.text)
@@ -146,23 +148,15 @@ export default function HomePage() {
                 bg-white/5 hover:bg-white/10 border border-white/10
                 text-sm text-gray-300 transition-all'>
               <Shield size={14} className='text-purple-400' />
-              Compare
+              Compare Portfolios
             </Link>
-            <div
-              onClick={handleIntelligence}
+            <Link href='/intelligence'
               className='flex items-center gap-2 px-4 py-2 rounded-xl
-                cursor-pointer
-                bg-gradient-to-r from-blue-600/20 to-indigo-600/20
-                border border-blue-500/20 hover:border-blue-500/40
-                text-sm transition-all group'>
-              <Zap size={14} className='text-blue-400' />
-              <span className='text-blue-300 font-medium'>
-                Run Live Market Intelligence
-              </span>
-              <ChevronRight size={14}
-                className='text-gray-500 group-hover:text-blue-400
-                  group-hover:translate-x-0.5 transition-all' />
-            </div>
+                bg-white/5 hover:bg-white/10 border border-white/10
+                text-sm text-gray-300 transition-all'>
+              <Brain size={14} className='text-blue-400' />
+              Custom Portfolio
+            </Link>
           </div>
         </div>
 
