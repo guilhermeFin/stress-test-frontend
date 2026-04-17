@@ -18,6 +18,9 @@ export interface Position {
 
 export interface Summary {
   total_value: number
+  total_cost_basis: number
+  total_unrealized_gl: number
+  total_tax_impact: number
   stressed_value: number
   total_loss: number
   total_loss_pct: number
@@ -34,6 +37,88 @@ export interface StressTestResult {
   explanation: any
 }
 
+export interface Signal {
+  event_type: string
+  summary: string
+  market_sentiment: 'bullish' | 'bearish' | 'neutral' | 'mixed'
+  confidence: string
+  affected_positions: {
+    ticker: string
+    direction: string
+    magnitude: string
+    rationale: string
+  }[]
+  macro_themes: string[]
+  action_flags: string[]
+  urgency: 'immediate' | 'this_week' | 'watch'
+  source_event: {
+    source: string
+    ticker: string
+    title: string
+    date: string
+    url: string
+  }
+}
+
+export interface PipelineResult {
+  status: string
+  run_id: string
+  summary: {
+    macro_series_pulled: number
+    filings_found: number
+    news_stories: number
+    signals_generated: number
+  }
+  signals: Signal[]
+}
+
+export interface ScenarioSummary {
+  portfolio_value: number
+  total_cost_basis: number
+  total_unrealized_gl: number
+  total_pnl: number
+  pct_impact: number
+  new_portfolio_value: number
+  total_tax_impact: number
+  biggest_loss: any
+  biggest_gain: any
+}
+
+export interface StressScenario {
+  scenario_key: string
+  scenario_name: string
+  description: string
+  probability: number
+  positions: any[]
+  summary: ScenarioSummary
+}
+
+export interface StressResults {
+  status: string
+  results: {
+    run_at: string
+    scenarios: {
+      rate_shock: StressScenario
+      recession: StressScenario
+      credit_crisis: StressScenario
+      inflation_spike: StressScenario
+    }
+    meta: {
+      expected_weighted_loss: number
+      worst_case_scenario: string
+      worst_case_pnl: number
+      worst_case_pct: number
+      total_cost_basis: number
+      total_unrealized_gl: number
+    }
+  }
+}
+
+export interface MemoResult {
+  status: string
+  memo: string
+}
+
 export async function runStressTest(
   file: File,
   scenario: string
@@ -41,13 +126,11 @@ export async function runStressTest(
   const formData = new FormData()
   formData.append('file', file)
   formData.append('scenario', scenario)
-
   const response = await axios.post(
     `${API_BASE}/api/stress-test`,
     formData,
     { headers: { 'Content-Type': 'multipart/form-data' } }
   )
-
   return response.data
 }
 
@@ -57,7 +140,6 @@ export async function exportPdf(data: StressTestResult): Promise<void> {
     data,
     { responseType: 'blob' }
   )
-
   const url = window.URL.createObjectURL(new Blob([response.data]))
   const link = document.createElement('a')
   link.href = url
@@ -65,4 +147,31 @@ export async function exportPdf(data: StressTestResult): Promise<void> {
   document.body.appendChild(link)
   link.click()
   link.remove()
+}
+
+export async function runPipeline(): Promise<PipelineResult> {
+  const response = await axios.post(`${API_BASE}/api/run-pipeline`)
+  return response.data
+}
+
+export async function getStressResults(): Promise<StressResults> {
+  const response = await axios.get(`${API_BASE}/api/stress-results`)
+  return response.data
+}
+
+export async function getMemo(): Promise<MemoResult> {
+  const response = await axios.get(`${API_BASE}/api/memo`)
+  return response.data
+}
+
+export async function comparePortfolios(
+  file1: File,
+  file2: File,
+  scenario: string
+): Promise<{ a: StressTestResult; b: StressTestResult }> {
+  const [a, b] = await Promise.all([
+    runStressTest(file1, scenario),
+    runStressTest(file2, scenario),
+  ])
+  return { a, b }
 }
