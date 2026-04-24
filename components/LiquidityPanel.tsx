@@ -114,7 +114,7 @@ export default function LiquidityPanel({ positions }: { positions: any[] }) {
             color: avgStressDays > 3 ? 'text-red-400' : 'text-green-400',
           },
         ].map(({ label, value, sub, color }) => (
-          <div key={label} className='bg-gray-900 rounded-2xl p-5 border border-gray-800'>
+          <div key={label} className='bg-white/3 rounded-2xl p-5 border border-white/8'>
             <div className='text-xs text-gray-400 mb-2'>{label}</div>
             <div className={`text-2xl font-bold ${color}`}>{value}</div>
             <div className='text-xs text-gray-500 mt-1'>{sub}</div>
@@ -123,12 +123,12 @@ export default function LiquidityPanel({ positions }: { positions: any[] }) {
       </div>
 
       {/* Liquidity bar */}
-      <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800'>
+      <div className='bg-white/3 rounded-2xl p-5 border border-white/8'>
         <div className='flex justify-between text-xs text-gray-400 mb-2'>
           <span>Portfolio liquidity spectrum</span>
           <span>Weighted score: <strong className={portfolioColor}>{weightedScore.toFixed(1)}</strong></span>
         </div>
-        <div className='w-full h-4 bg-gray-700 rounded-full overflow-hidden'>
+        <div className='w-full h-4 bg-white/10 rounded-full overflow-hidden'>
           <div
             className='h-full rounded-full transition-all'
             style={{
@@ -147,7 +147,7 @@ export default function LiquidityPanel({ positions }: { positions: any[] }) {
       </div>
 
       {/* Position table */}
-      <div className='bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden'>
+      <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
         <div className='p-5 pb-3'>
           <h3 className='font-semibold text-gray-200'>Position Liquidity Detail</h3>
           <p className='text-xs text-gray-500 mt-1'>
@@ -156,7 +156,7 @@ export default function LiquidityPanel({ positions }: { positions: any[] }) {
         </div>
         <div className='overflow-x-auto'>
           <table className='w-full text-sm'>
-            <thead className='bg-gray-800 text-gray-400 text-xs'>
+            <thead className='bg-white/5 text-gray-400 text-xs'>
               <tr>
                 <th className='px-4 py-3 text-left'>Position</th>
                 <th className='px-4 py-3 text-left'>Type</th>
@@ -172,8 +172,8 @@ export default function LiquidityPanel({ positions }: { positions: any[] }) {
                 const badge = scoreBadge(p.score)
                 return (
                   <tr key={p.ticker}
-                    className={`border-t border-gray-800 hover:bg-gray-800/50
-                      ${i % 2 === 0 ? '' : 'bg-gray-900/50'}`}>
+                    className={`border-t border-white/6 hover:bg-white/4
+                      ${i % 2 === 0 ? '' : 'bg-white/2'}`}>
                     <td className='px-4 py-3'>
                       <div className='font-medium text-white'>{p.ticker}</div>
                       <div className='text-xs text-gray-500'>{p.name?.substring(0, 22)}</div>
@@ -184,7 +184,7 @@ export default function LiquidityPanel({ positions }: { positions: any[] }) {
                     </td>
                     <td className='px-4 py-3'>
                       <div className='flex items-center gap-2'>
-                        <div className='flex-1 h-2 bg-gray-700 rounded-full overflow-hidden'>
+                        <div className='flex-1 h-2 bg-white/10 rounded-full overflow-hidden'>
                           <div
                             className={`h-full rounded-full ${scoreBarColor(p.score)}`}
                             style={{ width: `${p.score * 10}%` }}

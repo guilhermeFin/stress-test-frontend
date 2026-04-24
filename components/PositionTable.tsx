@@ -33,14 +33,14 @@ export default function PositionTable({ positions }: { positions: Position[] }) 
     : null
 
   return (
-    <div className='bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden'>
+    <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
       <div className='p-6 pb-3'>
         <h3 className='font-semibold text-gray-200'>Position Detail</h3>
         <p className='text-xs text-gray-500 mt-1'>Click column headers to sort</p>
       </div>
       <div className='overflow-x-auto'>
         <table className='w-full text-sm'>
-          <thead className='bg-gray-800 text-gray-400'>
+          <thead className='bg-white/5 text-gray-400'>
             <tr>
               <th className='px-4 py-3 text-left'>Ticker</th>
               <th className='px-4 py-3 text-left'>Sector</th>
@@ -63,8 +63,8 @@ export default function PositionTable({ positions }: { positions: Position[] }) 
           <tbody>
             {sorted.map((p, i) => (
               <tr key={p.ticker}
-                className={`border-t border-gray-800 hover:bg-gray-800/50 transition-colors
-                ${i % 2 === 0 ? '' : 'bg-gray-900/50'}`}>
+                className={`border-t border-white/6 hover:bg-white/4 transition-colors
+                ${i % 2 === 0 ? '' : 'bg-white/2'}`}>
                 <td className='px-4 py-3'>
                   <div className='font-medium text-white'>{p.ticker}</div>
                   <div className='text-xs text-gray-500'>{p.name.substring(0, 20)}</div>

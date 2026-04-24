@@ -92,7 +92,7 @@ function Gauge({ value, max = 100, color }: { value: number; max?: number; color
     <div className='relative w-24 h-24 mx-auto'>
       <svg viewBox='0 0 36 36' className='w-full h-full -rotate-90'>
         <circle cx='18' cy='18' r='15.9' fill='none'
-          stroke='#374151' strokeWidth='3' />
+          stroke='rgba(255,255,255,0.1)' strokeWidth='3' />
         <circle cx='18' cy='18' r='15.9' fill='none'
           stroke={color} strokeWidth='3'
           strokeDasharray={`${pct} 100`}
@@ -109,10 +109,10 @@ function InputField({ label, value, onChange, min, max, step = 1, prefix, suffix
   return (
     <div>
       <label className='block text-xs text-gray-400 mb-1'>{label}</label>
-      <div className='flex items-center bg-gray-800 border border-gray-700
+      <div className='flex items-center bg-white/5 border border-white/10
         rounded-lg overflow-hidden'>
         {prefix && (
-          <span className='px-3 py-2 text-gray-400 text-sm border-r border-gray-700'>
+          <span className='px-3 py-2 text-gray-400 text-sm border-r border-white/10'>
             {prefix}
           </span>
         )}
@@ -127,7 +127,7 @@ function InputField({ label, value, onChange, min, max, step = 1, prefix, suffix
             focus:outline-none w-full'
         />
         {suffix && (
-          <span className='px-3 py-2 text-gray-400 text-sm border-l border-gray-700'>
+          <span className='px-3 py-2 text-gray-400 text-sm border-l border-white/10'>
             {suffix}
           </span>
         )}
@@ -164,11 +164,11 @@ export default function ClientImpact({
   return (
     <div className='space-y-4'>
 
-      <div className='bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden'>
+      <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
         <button
           onClick={() => setExpanded(e => !e)}
           className='w-full flex items-center justify-between p-5
-            hover:bg-gray-800/50 transition-colors'>
+            hover:bg-white/5 transition-colors'>
           <div className='flex items-center gap-2'>
             <User size={16} className='text-blue-400' />
             <span className='font-semibold text-gray-200'>Client Profile</span>
@@ -178,7 +178,7 @@ export default function ClientImpact({
         </button>
 
         {expanded && (
-          <div className='px-5 pb-5 border-t border-gray-800'>
+          <div className='px-5 pb-5 border-t border-white/8'>
             <div className='grid grid-cols-2 md:grid-cols-3 gap-4 mt-4'>
               <InputField label='Current Age' value={profile.age}
                 onChange={set('age')} min={20} max={80} suffix='yrs' />
@@ -195,7 +195,7 @@ export default function ClientImpact({
                 <select
                   value={profile.riskTolerance}
                   onChange={e => set('riskTolerance')(e.target.value)}
-                  className='w-full bg-gray-800 border border-gray-700 rounded-lg
+                  className='w-full bg-white/5 border border-white/10 rounded-lg
                     px-3 py-2 text-white text-sm focus:outline-none'>
                   <option value='conservative'>Conservative (5% return)</option>
                   <option value='moderate'>Moderate (7% return)</option>
@@ -209,7 +209,7 @@ export default function ClientImpact({
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 
-        <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800'>
+        <div className='bg-white/3 rounded-2xl p-5 border border-white/8'>
           <div className='flex items-center gap-2 mb-4'>
             <Target size={16} className='text-blue-400' />
             <h3 className='font-semibold text-gray-200'>Goal Achievement Probability</h3>
@@ -234,7 +234,7 @@ export default function ClientImpact({
               </p>
             </div>
           </div>
-          <div className='mt-4 bg-gray-800 rounded-xl p-3 text-center'>
+          <div className='mt-4 bg-white/5 rounded-xl p-3 text-center'>
             <p className='text-xs text-gray-400'>Probability drop</p>
             <p className='text-xl font-bold text-red-400 mt-1'>
               -{impact.probNormal - impact.probStressed}%
@@ -242,7 +242,7 @@ export default function ClientImpact({
           </div>
         </div>
 
-        <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800'>
+        <div className='bg-white/3 rounded-2xl p-5 border border-white/8'>
           <div className='flex items-center gap-2 mb-4'>
             <Calendar size={16} className='text-blue-400' />
             <h3 className='font-semibold text-gray-200'>Retirement Projection</h3>
@@ -271,7 +271,7 @@ export default function ClientImpact({
               },
             ].map(({ label, value, color }) => (
               <div key={label} className='flex justify-between items-center
-                bg-gray-800 rounded-lg px-3 py-2'>
+                bg-white/5 rounded-lg px-3 py-2'>
                 <span className='text-xs text-gray-400'>{label}</span>
                 <span className={`text-sm font-bold ${color}`}>{value}</span>
               </div>
@@ -281,7 +281,7 @@ export default function ClientImpact({
       </div>
 
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-        <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800 text-center'>
+        <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
           <TrendingDown size={20} className='text-red-400 mx-auto mb-2' />
           <p className='text-xs text-gray-400 mb-1'>Withdrawal years lost</p>
           <p className='text-3xl font-bold text-red-400'>
@@ -292,7 +292,7 @@ export default function ClientImpact({
           </p>
         </div>
 
-        <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800 text-center'>
+        <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
           <Calendar size={20} className='text-orange-400 mx-auto mb-2' />
           <p className='text-xs text-gray-400 mb-1'>Estimated recovery time</p>
           <p className='text-3xl font-bold text-orange-400'>
@@ -303,7 +303,7 @@ export default function ClientImpact({
           </p>
         </div>
 
-        <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800 text-center'>
+        <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
           <Target size={20} className='text-yellow-400 mx-auto mb-2' />
           <p className='text-xs text-gray-400 mb-1'>Income shortfall (stressed)</p>
           <p className='text-3xl font-bold text-yellow-400'>
@@ -314,7 +314,7 @@ export default function ClientImpact({
       </div>
 
       <div className='bg-blue-950/40 border border-blue-800 rounded-xl p-4'>
-        <p className='text-blue-300 font-medium text-sm mb-2'>📋 Client Impact Summary</p>
+        <p className='text-blue-300 font-medium text-sm mb-2'>Client impact summary</p>
         <p className='text-blue-200/80 text-sm leading-relaxed'>
           Based on your profile (age {profile.age}, retiring at {profile.retirementAge},
           targeting {fmt(profile.annualWithdrawal)}/year), this stress scenario reduces

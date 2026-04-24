@@ -17,7 +17,7 @@ const TOOLTIP_STYLE = {
 
 function StatBox({ label, value, sub, color = 'text-white' }: any) {
   return (
-    <div className='bg-gray-800 rounded-xl p-4'>
+    <div className='bg-white/5 rounded-xl p-4'>
       <div className='text-xs text-gray-400 mb-1'>{label}</div>
       <div className={`text-xl font-bold ${color}`}>{value}</div>
       {sub && <div className='text-xs text-gray-500 mt-0.5'>{sub}</div>}
@@ -95,7 +95,7 @@ export default function StressCharts({ charts, positions }: any) {
       {/* Row 1: Tail Risk + Drawdown */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
 
-        <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+        <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
           <h3 className='font-semibold mb-1 text-gray-200'>Tail Risk Metrics</h3>
           <p className='text-xs text-gray-500 mb-4'>Estimated under this stress scenario</p>
           <div className='grid grid-cols-2 gap-3 mb-4'>
@@ -115,7 +115,7 @@ export default function StressCharts({ charts, positions }: any) {
             <div className='flex justify-between text-xs text-gray-500 mb-1'>
               <span>Low risk</span><span>High risk</span>
             </div>
-            <div className='w-full h-3 bg-gray-700 rounded-full overflow-hidden'>
+            <div className='w-full h-3 bg-white/10 rounded-full overflow-hidden'>
               <div className='h-full rounded-full transition-all'
                 style={{
                   width: `${Math.min(100, Math.abs(totalLossPct) * 3)}%`,
@@ -126,7 +126,7 @@ export default function StressCharts({ charts, positions }: any) {
           </div>
         </div>
 
-        <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+        <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
           <h3 className='font-semibold mb-1 text-gray-200'>Drawdown Timeline</h3>
           <p className='text-xs text-gray-500 mb-4'>Simulated peak → trough → recovery path</p>
           <ResponsiveContainer width='100%' height={220}>
@@ -156,7 +156,7 @@ export default function StressCharts({ charts, positions }: any) {
       {/* Row 2: Sector contribution + Loss by position */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
 
-        <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+        <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
           <h3 className='font-semibold mb-1 text-gray-200'>Loss Contribution by Sector</h3>
           <p className='text-xs text-gray-500 mb-4'>What is driving your losses?</p>
           <ResponsiveContainer width='100%' height={240}>
@@ -187,7 +187,7 @@ export default function StressCharts({ charts, positions }: any) {
           </ResponsiveContainer>
         </div>
 
-        <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+        <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
           <h3 className='font-semibold mb-1 text-gray-200'>Loss by Position</h3>
           <p className='text-xs text-gray-500 mb-4'>Individual position shock (%)</p>
           <ResponsiveContainer width='100%' height={240}>
@@ -213,7 +213,7 @@ export default function StressCharts({ charts, positions }: any) {
       {/* Row 3: Before vs After + Sector Pie */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
 
-        <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+        <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
           <h3 className='font-semibold mb-1 text-gray-200'>Before vs After Stress</h3>
           <p className='text-xs text-gray-500 mb-4'>Position value comparison</p>
           <ResponsiveContainer width='100%' height={220}>
@@ -232,7 +232,7 @@ export default function StressCharts({ charts, positions }: any) {
           </ResponsiveContainer>
         </div>
 
-        <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+        <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
           <h3 className='font-semibold mb-1 text-gray-200'>Sector Allocation</h3>
           <p className='text-xs text-gray-500 mb-4'>Current portfolio weight by sector</p>
           <ResponsiveContainer width='100%' height={220}>

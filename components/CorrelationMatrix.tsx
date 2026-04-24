@@ -53,7 +53,7 @@ function Matrix({ data, tickers, title, subtitle }: {
   subtitle: string
 }) {
   return (
-    <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+    <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
       <h3 className='font-semibold text-gray-200 mb-1'>{title}</h3>
       <p className='text-xs text-gray-500 mb-4'>{subtitle}</p>
       <div className='overflow-x-auto'>

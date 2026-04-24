@@ -3,7 +3,7 @@ import { TrendingDown, AlertTriangle, BarChart2, DollarSign, PiggyBank, Receipt 
 
 function Card({ label, value, sub, color, icon: Icon }: any) {
   return (
-    <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+    <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
       <div className='flex justify-between items-start'>
         <span className='text-sm text-gray-400'>{label}</span>
         <Icon size={18} className={color} />

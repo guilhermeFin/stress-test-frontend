@@ -102,7 +102,7 @@ export default function HomePage() {
       sessionStorage.setItem('stressResults', JSON.stringify(results))
       router.push('/results')
     } catch (err) {
-      setError('Something went wrong. Is the backend running?')
+      setError('Analysis failed. Please check your file format and try again.')
     } finally {
       setLoading(false)
     }
@@ -123,12 +123,8 @@ export default function HomePage() {
     <main className='min-h-screen bg-[#0A0F1E] text-white'>
 
       <div className='fixed inset-0 overflow-hidden pointer-events-none'>
-        <div className='absolute -top-40 -right-40 w-96 h-96 bg-blue-600/10
-          rounded-full blur-3xl' />
-        <div className='absolute top-1/2 -left-40 w-80 h-80 bg-indigo-600/10
-          rounded-full blur-3xl' />
-        <div className='absolute -bottom-40 right-1/3 w-96 h-96 bg-purple-600/8
-          rounded-full blur-3xl' />
+        <div className='absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px]
+          bg-blue-950/25 rounded-full blur-3xl' />
       </div>
 
       <div className='relative max-w-6xl mx-auto px-6 py-12'>
@@ -333,10 +329,10 @@ export default function HomePage() {
             onClick={handleSubmit}
             disabled={loading}
             className='w-full py-4 rounded-2xl font-semibold text-sm
-              transition-all disabled:opacity-50 disabled:cursor-not-allowed
-              bg-gradient-to-r from-blue-600 to-indigo-600
-              hover:from-blue-500 hover:to-indigo-500
-              shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30'>
+              transition-all duration-150 active:scale-[0.98]
+              disabled:opacity-50 disabled:cursor-not-allowed
+              bg-blue-600 hover:bg-blue-500 active:bg-blue-700
+              shadow-lg shadow-blue-900/40'>
             {loading ? (
               <span className='flex items-center justify-center gap-2'>
                 <span className='w-4 h-4 border-2 border-white/30 border-t-white

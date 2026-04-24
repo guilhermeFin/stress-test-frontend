@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { StressTestResult, exportPdf } from '@/lib/api'
 import SummaryCards from '@/components/SummaryCards'
 import StressCharts from '@/components/StressCharts'
@@ -12,6 +13,7 @@ import ClientImpact from '@/components/ClientImpact'
 import MonteCarlo from '@/components/MonteCarlo'
 import FactorModel from '@/components/FactorModel'
 import ResultsNav from '@/components/ResultsNav'
+import { TrendingDown, Landmark, BarChart3, Lightbulb, Brain } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Cell, ReferenceLine
@@ -108,21 +110,21 @@ function BenchmarkComparison({ summary }: { summary: any }) {
     <div className='space-y-4'>
 
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-        <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800 text-center'>
+        <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
           <p className='text-xs text-gray-500 mb-1'>Benchmark Rank</p>
           <p className='text-3xl font-bold text-white'>
             #{portfolioRank}<span className='text-gray-500 text-lg'>/{totalItems}</span>
           </p>
           <p className={`text-sm font-medium mt-1 ${rankColor}`}>{rankLabel}</p>
         </div>
-        <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800 text-center'>
+        <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
           <p className='text-xs text-gray-500 mb-1'>Better Than</p>
           <p className='text-3xl font-bold text-green-400'>{betterThan}</p>
           <p className='text-sm text-gray-500 mt-1'>
             benchmark{betterThan !== 1 ? 's' : ''}
           </p>
         </div>
-        <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800 text-center'>
+        <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
           <p className='text-xs text-gray-500 mb-1'>Worse Than</p>
           <p className='text-3xl font-bold text-red-400'>{worseThan}</p>
           <p className='text-sm text-gray-500 mt-1'>
@@ -131,7 +133,7 @@ function BenchmarkComparison({ summary }: { summary: any }) {
         </div>
       </div>
 
-      <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+      <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
         <h3 className='font-semibold text-gray-200 mb-1'>
           Portfolio vs Benchmarks
         </h3>
@@ -165,8 +167,8 @@ function BenchmarkComparison({ summary }: { summary: any }) {
           const diff            = portfolioLoss - loss
           const portfolioBetter = portfolioLoss > loss
           return (
-            <div key={name} className='bg-gray-900 rounded-xl p-4
-              border border-gray-800'>
+            <div key={name} className='bg-white/3 rounded-xl p-4
+              border border-white/8'>
               <p className='text-xs text-gray-500 mb-2'>{name}</p>
               <p className='text-xl font-bold' style={{ color }}>
                 {loss.toFixed(1)}%
@@ -184,7 +186,7 @@ function BenchmarkComparison({ summary }: { summary: any }) {
         })}
       </div>
 
-      <div className='bg-gray-800/50 rounded-xl p-4 border border-gray-700'>
+      <div className='bg-white/2 rounded-xl p-4 border border-white/6'>
         <p className='text-xs text-gray-400 leading-relaxed'>
           <span className='text-gray-300 font-medium'>Note: </span>
           Benchmark losses are based on historical data for comparable stress
@@ -236,19 +238,22 @@ function SmartSummary({ results }: { results: StressTestResult }) {
 
   const risks = [
     {
-      icon: '📉',
+      Icon: TrendingDown,
+      iconColor: 'text-red-400',
       title: `${worstPosition?.ticker} is your biggest drag`,
       detail: `${worstPosition?.ticker} loses ${worstPosition?.loss_pct.toFixed(1)}% under this scenario, contributing the most to portfolio drawdown.`,
       color: 'border-red-800 bg-red-950/30',
     },
     {
-      icon: '🏦',
+      Icon: Landmark,
+      iconColor: 'text-orange-400',
       title: `${worstSector?.[0]} sector concentration`,
       detail: `${worstSector?.[0]} is your largest loss driver by sector. Consider reducing concentration or adding a hedge.`,
       color: 'border-orange-800 bg-orange-950/30',
     },
     {
-      icon: '📊',
+      Icon: BarChart3,
+      iconColor: 'text-yellow-400',
       title: rateSensitivePct > 25
         ? `${rateSensitivePct.toFixed(0)}% in rate-sensitive assets`
         : highBetaPositions.length > 3
@@ -278,14 +283,16 @@ function SmartSummary({ results }: { results: StressTestResult }) {
     : `${bestPosition?.loss_pct.toFixed(1)}% in scenario`
 
   return (
-    <div className='bg-gray-900 rounded-2xl border border-gray-700 overflow-hidden'>
-      <div className='bg-gradient-to-r from-gray-800 to-gray-900 px-6 py-4
-        border-b border-gray-700 flex items-center justify-between'>
+    <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
+      <div className='bg-[#0f1628] px-6 py-4
+        border-b border-white/8 flex items-center justify-between'>
         <div className='flex items-center gap-3'>
-          <div className='text-2xl'>🧠</div>
+          <div className='w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center'>
+            <Brain size={16} className='text-blue-400' />
+          </div>
           <div>
-            <h2 className='font-bold text-white'>Smart Risk Summary</h2>
-            <p className='text-xs text-gray-400'>
+            <h2 className='font-semibold text-white tracking-tight'>Smart Risk Summary</h2>
+            <p className='text-xs text-gray-500'>
               AI-generated analysis of your stress test results
             </p>
           </div>
@@ -301,7 +308,7 @@ function SmartSummary({ results }: { results: StressTestResult }) {
       </div>
 
       <div className='p-6 space-y-5'>
-        <div className='flex items-center gap-4 bg-gray-800 rounded-xl p-4'>
+        <div className='flex items-center gap-4 bg-white/5 rounded-xl p-4'>
           <div className={`text-4xl font-black ${
             severity === 'Extreme' ? 'text-red-500'
             : severity === 'Severe' ? 'text-orange-400'
@@ -322,15 +329,15 @@ function SmartSummary({ results }: { results: StressTestResult }) {
         </div>
 
         <div>
-          <p className='text-xs text-gray-500 uppercase tracking-wide mb-3'>
-            3 Key Risks Identified
+          <p className='text-xs text-gray-500 uppercase tracking-wider mb-3'>
+            3 key risks identified
           </p>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-3'>
-            {risks.map(({ icon, title, detail, color }, i) => (
+            {risks.map(({ Icon, iconColor, title, detail, color }, i) => (
               <div key={i} className={`rounded-xl p-4 border ${color}`}>
                 <div className='flex items-start gap-2 mb-2'>
-                  <span className='text-lg'>{icon}</span>
-                  <span className='text-sm font-medium text-gray-200'>{title}</span>
+                  <Icon size={15} className={`${iconColor} shrink-0 mt-0.5`} />
+                  <span className='text-sm font-medium text-gray-200 leading-snug'>{title}</span>
                 </div>
                 <p className='text-xs text-gray-400 leading-relaxed'>{detail}</p>
               </div>
@@ -338,12 +345,12 @@ function SmartSummary({ results }: { results: StressTestResult }) {
           </div>
         </div>
 
-        <div className='bg-blue-950/50 border border-blue-700 rounded-xl p-4
+        <div className='bg-blue-950/40 border border-blue-800/60 rounded-xl p-4
           flex items-start gap-3'>
-          <span className='text-xl mt-0.5'>💡</span>
+          <Lightbulb size={15} className='text-blue-400 shrink-0 mt-0.5' />
           <div>
             <p className='text-blue-300 font-medium text-sm mb-1'>
-              Top Recommendation
+              Top recommendation
             </p>
             <p className='text-blue-200/80 text-sm leading-relaxed'>
               {recommendation}
@@ -379,7 +386,7 @@ function SmartSummary({ results }: { results: StressTestResult }) {
                 : severity === 'Severe' ? 'text-orange-400' : 'text-yellow-400',
             },
           ].map(({ label, value, sub, color }) => (
-            <div key={label} className='bg-gray-800 rounded-xl p-3'>
+            <div key={label} className='bg-white/5 rounded-xl p-3'>
               <div className='text-xs text-gray-500 mb-1'>{label}</div>
               <div className={`text-lg font-bold ${color}`}>{value}</div>
               <div className='text-xs text-gray-500'>{sub}</div>
@@ -411,10 +418,10 @@ export default function ResultsPage() {
   }
 
   if (!results) return (
-    <main className='min-h-screen bg-gray-950 text-white flex items-center
+    <main className='min-h-screen bg-[#0A0F1E] text-white flex items-center
       justify-center'>
-      <p>No results found.{' '}
-        <a href='/' className='text-blue-400'>Run a stress test</a>
+      <p className='text-gray-400 text-sm'>No results found.{' '}
+        <Link href='/' className='text-blue-400 hover:underline'>Run a stress test</Link>
       </p>
     </main>
   )
@@ -426,16 +433,18 @@ export default function ResultsPage() {
 
         <div className='flex justify-between items-start'>
           <div>
-            <h1 className='text-2xl font-bold'>Stress Test Results</h1>
-            <p className='text-gray-400 mt-1'>{results.summary.scenario_text}</p>
+            <h1 className='text-2xl font-semibold tracking-tight'>Stress test results</h1>
+            <p className='text-gray-500 mt-1 text-sm max-w-2xl leading-relaxed'>
+              {results.summary.scenario_text}
+            </p>
           </div>
           <div className='flex items-center gap-3'>
             <button
               onClick={handleExportPdf}
               disabled={exporting}
               className='flex items-center gap-2 px-4 py-2 rounded-xl
-                bg-white/5 hover:bg-white/10 border border-white/10
-                text-sm text-gray-300 transition-all disabled:opacity-50'>
+                bg-white/5 hover:bg-white/8 active:scale-[0.98] border border-white/10
+                text-sm text-gray-300 transition-all duration-150 disabled:opacity-50'>
               {exporting ? (
                 <span className='w-3 h-3 border border-white/30 border-t-white
                   rounded-full animate-spin' />
@@ -449,9 +458,9 @@ export default function ResultsPage() {
               )}
               {exporting ? 'Generating...' : 'Export PDF'}
             </button>
-            <a href='/' className='text-sm text-blue-400 hover:underline'>
+            <Link href='/' className='text-sm text-blue-400 hover:text-blue-300 transition-colors'>
               Run new test
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -467,7 +476,7 @@ export default function ResultsPage() {
         </div>
 
         <div id='factors'>
-          <h2 className='text-lg font-semibold mb-4'>Factor Risk Model</h2>
+          <h2 className='section-header'>Factor risk model</h2>
           <FactorModel
             positions={results.positions}
             scenarioText={results.summary.scenario_text}
@@ -475,22 +484,22 @@ export default function ResultsPage() {
         </div>
 
         <div id='correlation'>
-          <h2 className='text-lg font-semibold mb-4'>Correlation Breakdown</h2>
+          <h2 className='section-header'>Correlation breakdown</h2>
           <CorrelationMatrix positions={results.positions} />
         </div>
 
         <div id='benchmark'>
-          <h2 className='text-lg font-semibold mb-4'>Benchmark Comparison</h2>
+          <h2 className='section-header'>Benchmark comparison</h2>
           <BenchmarkComparison summary={results.summary} />
         </div>
 
         <div id='liquidity'>
-          <h2 className='text-lg font-semibold mb-4'>Liquidity Stress Analysis</h2>
+          <h2 className='section-header'>Liquidity stress analysis</h2>
           <LiquidityPanel positions={results.positions} />
         </div>
 
         <div id='client'>
-          <h2 className='text-lg font-semibold mb-4'>Client Impact Analysis</h2>
+          <h2 className='section-header'>Client impact analysis</h2>
           <ClientImpact
             portfolioValue={results.summary.total_value}
             stressedValue={results.summary.stressed_value}
@@ -498,7 +507,7 @@ export default function ResultsPage() {
         </div>
 
         <div id='monte-carlo'>
-          <h2 className='text-lg font-semibold mb-4'>Monte Carlo Simulation</h2>
+          <h2 className='section-header'>Monte Carlo simulation</h2>
           <MonteCarlo
             portfolioValue={results.summary.total_value}
             stressedValue={results.summary.stressed_value}

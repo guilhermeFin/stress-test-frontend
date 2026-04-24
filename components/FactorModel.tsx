@@ -190,7 +190,7 @@ export default function FactorModel({
 
       {/* Scenario shocks detected */}
       {scenarioText && (
-        <div className='bg-gray-800 rounded-xl px-4 py-3 flex flex-wrap gap-4'>
+        <div className='bg-white/5 rounded-xl px-4 py-3 flex flex-wrap gap-4'>
           <span className='text-xs text-gray-400 self-center'>Detected shocks:</span>
           {Object.entries(shocks).map(([factor, shock]) => (
             <div key={factor} className='flex items-center gap-1.5'>
@@ -210,7 +210,7 @@ export default function FactorModel({
 
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
 
-        <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+        <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
           <h3 className='font-semibold text-gray-200 mb-1'>Factor Loss Attribution</h3>
           <p className='text-xs text-gray-500 mb-4'>
             How much each risk factor contributes to portfolio loss
@@ -238,7 +238,7 @@ export default function FactorModel({
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-          <div className='mt-3 bg-gray-800 rounded-xl p-3 flex justify-between'>
+          <div className='mt-3 bg-white/5 rounded-xl p-3 flex justify-between'>
             <span className='text-xs text-gray-400'>Total factor-explained loss</span>
             <span className='text-sm font-bold text-red-400'>
               {totalFactorLoss.toFixed(2)}%
@@ -246,7 +246,7 @@ export default function FactorModel({
           </div>
         </div>
 
-        <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+        <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
           <h3 className='font-semibold text-gray-200 mb-1'>Factor Exposure Radar</h3>
           <p className='text-xs text-gray-500 mb-4'>
             Portfolio factor intensity vs diversified benchmark
@@ -279,7 +279,7 @@ export default function FactorModel({
       {/* Factor detail cards */}
       <div className='grid grid-cols-1 md:grid-cols-5 gap-3'>
         {factorContributions.map(({ factor, label, exposure, shock, contribution, description, color }) => (
-          <div key={factor} className='bg-gray-900 rounded-xl p-4 border border-gray-800'>
+          <div key={factor} className='bg-white/3 rounded-xl p-4 border border-white/8'>
             <div className='flex items-center gap-2 mb-2'>
               <div className='w-2 h-2 rounded-full' style={{ background: color }} />
               <span className='text-xs font-medium text-gray-300'>{label}</span>
@@ -305,7 +305,7 @@ export default function FactorModel({
       </div>
 
       {/* Position factor table */}
-      <div className='bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden'>
+      <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
         <div className='p-5 pb-3'>
           <h3 className='font-semibold text-gray-200'>Position Factor Exposures</h3>
           <p className='text-xs text-gray-500 mt-1'>
@@ -314,7 +314,7 @@ export default function FactorModel({
         </div>
         <div className='overflow-x-auto'>
           <table className='w-full text-sm'>
-            <thead className='bg-gray-800 text-gray-400 text-xs'>
+            <thead className='bg-white/5 text-gray-400 text-xs'>
               <tr>
                 <th className='px-4 py-3 text-left'>Ticker</th>
                 <th className='px-4 py-3 text-right'>Weight</th>
@@ -329,8 +329,8 @@ export default function FactorModel({
             <tbody>
               {positionFactors.map((p: any, i: number) => (
                 <tr key={p.ticker}
-                  className={`border-t border-gray-800 hover:bg-gray-800/50
-                    ${i % 2 === 0 ? '' : 'bg-gray-900/50'}`}>
+                  className={`border-t border-white/6 hover:bg-white/4
+                    ${i % 2 === 0 ? '' : 'bg-white/2'}`}>
                   <td className='px-4 py-3 font-medium text-white'>{p.ticker}</td>
                   <td className='px-4 py-3 text-right text-gray-300'>{p.weight}%</td>
                   <td className='px-4 py-3 text-right text-blue-400'>
@@ -351,7 +351,7 @@ export default function FactorModel({
                 </tr>
               ))}
             </tbody>
-            <tfoot className='bg-gray-800 border-t border-gray-700'>
+            <tfoot className='bg-white/5 border-t border-white/8'>
               <tr>
                 <td colSpan={7} className='px-4 py-3 text-xs text-gray-400 font-medium'>
                   Total factor-explained loss

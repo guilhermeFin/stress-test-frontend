@@ -95,7 +95,7 @@ function buildChartData(
 
 function StatCard({ label, value, sub, color }: any) {
   return (
-    <div className='bg-gray-800 rounded-xl p-4'>
+    <div className='bg-white/5 rounded-xl p-4'>
       <div className='text-xs text-gray-400 mb-1'>{label}</div>
       <div className={`text-xl font-bold ${color}`}>{value}</div>
       {sub && <div className='text-xs text-gray-500 mt-0.5'>{sub}</div>}
@@ -159,7 +159,7 @@ export default function MonteCarlo({
     <div className='space-y-4'>
 
       {/* Config panel */}
-      <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800'>
+      <div className='bg-white/3 rounded-2xl p-5 border border-white/8'>
         <h3 className='font-semibold text-gray-200 mb-4'>Simulation Parameters</h3>
         <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mb-4'>
           {[
@@ -170,10 +170,10 @@ export default function MonteCarlo({
           ].map(({ label, key, min, max, step, suffix, prefix, scale }) => (
             <div key={key}>
               <label className='block text-xs text-gray-400 mb-1'>{label}</label>
-              <div className='flex items-center bg-gray-800 border border-gray-700
+              <div className='flex items-center bg-white/5 border border-white/10
                 rounded-lg overflow-hidden'>
                 {prefix && (
-                  <span className='px-2 py-2 text-gray-400 text-sm border-r border-gray-700'>
+                  <span className='px-2 py-2 text-gray-400 text-sm border-r border-white/10'>
                     {prefix}
                   </span>
                 )}
@@ -190,7 +190,7 @@ export default function MonteCarlo({
                     focus:outline-none w-full'
                 />
                 {suffix && (
-                  <span className='px-2 py-2 text-gray-400 text-sm border-l border-gray-700'>
+                  <span className='px-2 py-2 text-gray-400 text-sm border-l border-white/10'>
                     {suffix}
                   </span>
                 )}
@@ -203,8 +203,9 @@ export default function MonteCarlo({
           <button
             onClick={handleRun}
             disabled={running}
-            className='bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700
-              text-white font-medium px-6 py-2.5 rounded-xl transition-colors text-sm'>
+            className='bg-blue-600 hover:bg-blue-500 active:bg-blue-700 active:scale-[0.98]
+              disabled:opacity-50 text-white font-medium px-6 py-2.5 rounded-xl
+              transition-all duration-150 text-sm'>
             {running ? 'Running 1,000 simulations...' : ran ? 'Re-run Simulation' : 'Run Monte Carlo (1,000 paths)'}
           </button>
           {ran && (
@@ -253,19 +254,19 @@ export default function MonteCarlo({
 
           {/* Probability of loss */}
           <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-            <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800 text-center'>
+            <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
               <p className='text-xs text-gray-400 mb-1'>Prob. below starting value (stressed)</p>
               <p className='text-3xl font-bold text-red-400'>{probBelowGoal}%</p>
               <p className='text-xs text-gray-500 mt-1'>of paths end below {fmtFull(portfolioValue)}</p>
             </div>
-            <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800 text-center'>
+            <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
               <p className='text-xs text-gray-400 mb-1'>Median gap (normal vs stressed)</p>
               <p className='text-3xl font-bold text-orange-400'>
                 {fmt(normalFinal.p50 - stressFinal.p50)}
               </p>
               <p className='text-xs text-gray-500 mt-1'>lost at median over {config.years} years</p>
             </div>
-            <div className='bg-gray-900 rounded-2xl p-5 border border-gray-800 text-center'>
+            <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
               <p className='text-xs text-gray-400 mb-1'>Upside preserved (stressed p75)</p>
               <p className='text-3xl font-bold text-green-400'>
                 {Math.round(stressFinal.p75 / normalFinal.p75 * 100)}%
@@ -275,7 +276,7 @@ export default function MonteCarlo({
           </div>
 
           {/* Fan chart */}
-          <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+          <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
             <h3 className='font-semibold text-gray-200 mb-1'>
               Monte Carlo Fan Chart — {config.simulations.toLocaleString()} Simulations
             </h3>
@@ -342,7 +343,7 @@ export default function MonteCarlo({
       )}
 
       {!ran && (
-        <div className='bg-gray-900 rounded-2xl p-10 border border-gray-800
+        <div className='bg-white/3 rounded-2xl p-10 border border-white/8
           text-center text-gray-500'>
           <p className='text-lg mb-2'>🎲 Monte Carlo Simulation</p>
           <p className='text-sm'>

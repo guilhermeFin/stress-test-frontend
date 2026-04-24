@@ -58,17 +58,17 @@ function MetricCompare({ label, a, b, format = (v: number) => v.toFixed(1) + '%'
   const diff  = Math.abs(a - b)
 
   return (
-    <div className='bg-gray-900 rounded-xl p-4 border border-gray-800'>
+    <div className='bg-white/3 rounded-xl p-4 border border-white/8'>
       <p className='text-xs text-gray-500 mb-3'>{label}</p>
       <div className='grid grid-cols-2 gap-3'>
-        <div className={`rounded-lg p-3 text-center ${!aWins ? 'bg-green-950/50 border border-green-800' : 'bg-gray-800'}`}>
+        <div className={`rounded-lg p-3 text-center ${!aWins ? 'bg-green-950/50 border border-green-800' : 'bg-white/5'}`}>
           <div className={`text-xl font-bold ${!aWins ? 'text-green-400' : 'text-red-400'}`}>
             {format(a)}
           </div>
           <div className='text-xs text-gray-500 mt-1'>Portfolio A</div>
           {!aWins && <div className='text-xs text-green-400 mt-1'>✓ Better</div>}
         </div>
-        <div className={`rounded-lg p-3 text-center ${aWins ? 'bg-green-950/50 border border-green-800' : 'bg-gray-800'}`}>
+        <div className={`rounded-lg p-3 text-center ${aWins ? 'bg-green-950/50 border border-green-800' : 'bg-white/5'}`}>
           <div className={`text-xl font-bold ${aWins ? 'text-green-400' : 'text-red-400'}`}>
             {format(b)}
           </div>
@@ -93,8 +93,7 @@ function WinnerBadge({ results }: { results: { a: StressTestResult; b: StressTes
   }).format(n)
 
   return (
-    <div className='bg-gradient-to-r from-green-950/50 to-blue-950/50
-      border border-green-800/50 rounded-2xl p-6 text-center'>
+    <div className='bg-green-950/30 border border-green-800/40 rounded-2xl p-6 text-center'>
       <Trophy size={32} className='text-yellow-400 mx-auto mb-3' />
       <p className='text-sm text-gray-400 mb-1'>More Resilient Portfolio</p>
       <p className='text-3xl font-bold text-white mb-2'>
@@ -137,7 +136,7 @@ export default function ComparePage() {
       const res = await comparePortfolios(fileA, fileB, scenario)
       setResults(res)
     } catch {
-      setError('Something went wrong. Is the backend running?')
+      setError('Comparison failed. Please check both files and try again.')
     } finally {
       setLoading(false)
     }
@@ -210,10 +209,8 @@ export default function ComparePage() {
   return (
     <main className='min-h-screen bg-[#0A0F1E] text-white'>
       <div className='fixed inset-0 overflow-hidden pointer-events-none'>
-        <div className='absolute -top-40 -right-40 w-96 h-96 bg-blue-600/10
-          rounded-full blur-3xl' />
-        <div className='absolute top-1/2 -left-40 w-80 h-80 bg-indigo-600/10
-          rounded-full blur-3xl' />
+        <div className='absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px]
+          bg-blue-950/25 rounded-full blur-3xl' />
       </div>
 
       <div className='relative max-w-6xl mx-auto px-6 py-10'>
@@ -299,10 +296,9 @@ export default function ComparePage() {
             onClick={handleCompare}
             disabled={loading}
             className='w-full py-3.5 rounded-2xl font-semibold text-sm
-              transition-all disabled:opacity-50
-              bg-gradient-to-r from-purple-600 to-blue-600
-              hover:from-purple-500 hover:to-blue-500
-              shadow-lg shadow-purple-600/20'>
+              transition-all duration-150 active:scale-[0.98] disabled:opacity-50
+              bg-blue-600 hover:bg-blue-500 active:bg-blue-700
+              shadow-lg shadow-blue-900/40'>
             {loading ? (
               <span className='flex items-center justify-center gap-2'>
                 <span className='w-4 h-4 border-2 border-white/30 border-t-white
@@ -327,7 +323,7 @@ export default function ComparePage() {
 
             {/* Key metrics comparison */}
             <div>
-              <h2 className='text-lg font-semibold mb-4'>Key Metrics</h2>
+              <h2 className='section-header'>Key metrics</h2>
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                 <MetricCompare
                   label='Total Loss %'
@@ -370,7 +366,7 @@ export default function ComparePage() {
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
 
               {/* Value comparison */}
-              <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+              <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
                 <h3 className='font-semibold text-gray-200 mb-1'>
                   Portfolio Value Comparison
                 </h3>
@@ -396,7 +392,7 @@ export default function ComparePage() {
               </div>
 
               {/* Loss by position */}
-              <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+              <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
                 <h3 className='font-semibold text-gray-200 mb-1'>
                   Loss by Position (%)
                 </h3>
@@ -423,7 +419,7 @@ export default function ComparePage() {
             </div>
 
             {/* Radar comparison */}
-            <div className='bg-gray-900 rounded-2xl p-6 border border-gray-800'>
+            <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
               <h3 className='font-semibold text-gray-200 mb-1'>
                 Risk Profile Radar
               </h3>
@@ -454,7 +450,7 @@ export default function ComparePage() {
             </div>
 
             {/* Position comparison table */}
-            <div className='bg-gray-900 rounded-2xl border border-gray-800
+            <div className='bg-white/3 rounded-2xl border border-white/8
               overflow-hidden'>
               <div className='p-5 pb-3'>
                 <h3 className='font-semibold text-gray-200'>
@@ -466,7 +462,7 @@ export default function ComparePage() {
               </div>
               <div className='overflow-x-auto'>
                 <table className='w-full text-sm'>
-                  <thead className='bg-gray-800 text-gray-400 text-xs'>
+                  <thead className='bg-white/5 text-gray-400 text-xs'>
                     <tr>
                       <th className='px-4 py-3 text-left'>Ticker</th>
                       <th className='px-4 py-3 text-right text-blue-400'>
@@ -491,9 +487,9 @@ export default function ComparePage() {
                         const aWins = posA.loss_pct > posB.loss_pct
                         return (
                           <tr key={posA.ticker}
-                            className={`border-t border-gray-800
-                              hover:bg-gray-800/50
-                              ${i % 2 === 0 ? '' : 'bg-gray-900/50'}`}>
+                            className={`border-t border-white/6
+                              hover:bg-white/4
+                              ${i % 2 === 0 ? '' : 'bg-white/2'}`}>
                             <td className='px-4 py-3 font-medium text-white'>
                               {posA.ticker}
                             </td>

@@ -34,15 +34,15 @@ export default function ExplanationPanel({ explanation }: { explanation: any }) 
   }
 
   return (
-    <div className='bg-gray-900 rounded-2xl border border-gray-800'>
+    <div className='bg-white/3 rounded-2xl border border-white/8'>
       <div className='flex items-center justify-between p-6 pb-0'>
         <div className='flex gap-1'>
           {tabs.map(({ key, label, icon: Icon }) => (
             <button key={key} onClick={() => setActive(key)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm
-                transition-colors ${active === key
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400 hover:bg-gray-800'}`}>
+                transition-all duration-150 ${active === key
+                  ? 'bg-white/10 text-white'
+                  : 'text-gray-500 hover:text-gray-200 hover:bg-white/5'}`}>
               <Icon size={14} />
               {label}
             </button>
@@ -57,7 +57,7 @@ export default function ExplanationPanel({ explanation }: { explanation: any }) 
       </div>
       <div className='p-6'>
         <div
-          className='bg-gray-950 rounded-xl p-5 text-gray-300 text-sm leading-relaxed min-h-[120px]'
+          className='bg-black/20 rounded-xl p-5 text-gray-300 text-sm leading-relaxed min-h-[120px]'
           dangerouslySetInnerHTML={{ __html: renderMarkdown(explanation[active]) }}
         />
         {active === 'client_explanation' && (

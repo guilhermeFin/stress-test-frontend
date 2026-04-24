@@ -117,13 +117,13 @@ export default function ShockBuilder({ onApply }: Props) {
   const hasShocks = Object.values(shocks).some(v => v !== 0)
 
   return (
-    <div className='border border-gray-700 rounded-xl overflow-hidden mb-4'>
+    <div className='border border-white/10 rounded-xl overflow-hidden mb-4'>
 
       {/* Header toggle */}
       <button
         onClick={() => setOpen(o => !o)}
         className='w-full flex items-center justify-between px-4 py-3
-          bg-gray-900 hover:bg-gray-800 transition-colors text-sm'>
+          bg-[#0A0F1E] hover:bg-white/5 transition-colors text-sm'>
         <div className='flex items-center gap-2 text-gray-300'>
           <SlidersHorizontal size={16} className='text-blue-400' />
           <span className='font-medium'>Custom Shock Builder</span>
@@ -137,7 +137,7 @@ export default function ShockBuilder({ onApply }: Props) {
       </button>
 
       {open && (
-        <div className='bg-gray-900 border-t border-gray-800 p-4 space-y-4'>
+        <div className='bg-[#0A0F1E] border-t border-white/8 p-4 space-y-4'>
 
           {/* Presets */}
           <div>
@@ -146,7 +146,7 @@ export default function ShockBuilder({ onApply }: Props) {
               {PRESETS.map((p) => (
                 <button key={p.label}
                   onClick={() => setShocks(p.values as ShockValues)}
-                  className='text-xs bg-gray-800 hover:bg-gray-700 border border-gray-700
+                  className='text-xs bg-white/5 hover:bg-white/10 border border-white/10
                     text-gray-300 px-3 py-1.5 rounded-lg transition-colors'>
                   {p.label}
                 </button>
@@ -176,7 +176,7 @@ export default function ShockBuilder({ onApply }: Props) {
           </div>
 
           {/* Preview */}
-          <div className='bg-gray-800 rounded-xl p-3 border border-gray-700'>
+          <div className='bg-white/5 rounded-xl p-3 border border-white/10'>
             <p className='text-xs text-gray-500 mb-1'>Scenario preview</p>
             <p className='text-sm text-gray-200 leading-relaxed'>{buildScenario()}</p>
           </div>
@@ -185,9 +185,9 @@ export default function ShockBuilder({ onApply }: Props) {
           <button
             onClick={() => onApply(buildScenario())}
             disabled={!hasShocks}
-            className='w-full bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700
-              disabled:text-gray-500 text-white font-medium py-2.5 rounded-xl
-              transition-colors text-sm'>
+            className='w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700
+              active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed
+              text-white font-medium py-2.5 rounded-xl transition-all duration-150 text-sm'>
             Apply to Stress Test
           </button>
         </div>
