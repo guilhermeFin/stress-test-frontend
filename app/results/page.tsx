@@ -15,7 +15,7 @@ import TaxImpact from '@/components/TaxImpact'
 import MonteCarlo from '@/components/MonteCarlo'
 import FactorModel from '@/components/FactorModel'
 import ResultsNav from '@/components/ResultsNav'
-import { TrendingDown, Landmark, BarChart3, Lightbulb, Brain } from 'lucide-react'
+import { TrendingDown, Landmark, BarChart3, Lightbulb, Brain, Users, Briefcase, CheckCircle, AlertTriangle, XCircle, ArrowRight } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Cell, ReferenceLine
@@ -400,9 +400,154 @@ function SmartSummary({ results }: { results: StressTestResult }) {
   )
 }
 
+function ClientView({ results }: { results: StressTestResult }) {
+  const { summary, positions, explanation } = results
+
+  const fmt = (n: number) => new Intl.NumberFormat('en-US', {
+    style: 'currency', currency: 'USD', maximumFractionDigits: 0,
+  }).format(n)
+
+  // Health score (same formula as SmartSummary)
+  const healthScore = Math.max(1, Math.min(10, 10 + summary.total_loss_pct / 5))
+  const healthColor = healthScore >= 7 ? '#10B981' : healthScore >= 5 ? '#F59E0B' : healthScore >= 3 ? '#F97316' : '#EF4444'
+  const healthLabel = healthScore >= 7 ? 'Healthy' : healthScore >= 5 ? 'At Risk' : healthScore >= 3 ? 'Vulnerable' : 'Critical'
+  const healthSentence = healthScore >= 7
+    ? 'Your portfolio is holding up well under this scenario.'
+    : healthScore >= 5
+    ? 'Your portfolio faces some pressure — manageable with adjustments.'
+    : healthScore >= 3
+    ? 'This scenario puts meaningful strain on your portfolio.'
+    : 'This scenario has a significant impact on your portfolio.'
+
+  // Goal impact (simple heuristic using loss pct)
+  const onTrack = summary.total_loss_pct > -15
+  const atRisk  = summary.total_loss_pct <= -15 && summary.total_loss_pct > -30
+  const GoalIcon   = onTrack ? CheckCircle : atRisk ? AlertTriangle : XCircle
+  const goalColor  = onTrack ? 'text-green-400' : atRisk ? 'text-yellow-400' : 'text-red-400'
+  const goalBg     = onTrack ? 'bg-green-950/40 border-green-800' : atRisk ? 'bg-yellow-950/40 border-yellow-800' : 'bg-red-950/40 border-red-800'
+  const goalText   = onTrack
+    ? 'Based on this scenario, your retirement timeline remains on track.'
+    : atRisk
+    ? 'This scenario may push your retirement timeline back by 1–2 years.'
+    : 'This scenario could significantly delay your retirement goals.'
+
+  // Worst case loss in plain English
+  const lossAmount = Math.abs(summary.total_loss)
+  const lossPct    = Math.abs(summary.total_loss_pct)
+
+  // Recovery timeline — years to recover from stressed value to normal, assuming 7% return + $2k/mo contributions
+  const annualReturn    = 0.07
+  const monthlyContrib  = 2000
+  const annualContrib   = monthlyContrib * 12
+  let recoveryYears     = 0
+  let val               = summary.stressed_value
+  while (val < summary.total_value && recoveryYears < 30) {
+    val = val * (1 + annualReturn) + annualContrib
+    recoveryYears++
+  }
+  const recoveryYear    = new Date().getFullYear() + recoveryYears
+  const noRecovery      = recoveryYears >= 30
+
+  return (
+    <div className='max-w-3xl mx-auto px-6 py-10 space-y-6'>
+
+      {/* 1 — Health score */}
+      <div className='bg-white/3 rounded-3xl border border-white/8 p-8 flex items-center gap-8'>
+        <div className='shrink-0 w-28 h-28 rounded-full flex items-center justify-center'
+          style={{ background: `conic-gradient(${healthColor} ${healthScore * 10}%, rgba(255,255,255,0.06) 0)` }}>
+          <div className='w-20 h-20 rounded-full bg-[#0A0F1E] flex flex-col items-center justify-center'>
+            <span className='text-2xl font-black text-white'>{healthScore.toFixed(1)}</span>
+            <span className='text-xs text-gray-400'>/10</span>
+          </div>
+        </div>
+        <div>
+          <p className='text-xs text-gray-500 uppercase tracking-widest mb-1'>Portfolio health</p>
+          <p className='text-3xl font-bold mb-2' style={{ color: healthColor }}>{healthLabel}</p>
+          <p className='text-gray-300 text-lg leading-relaxed'>{healthSentence}</p>
+        </div>
+      </div>
+
+      {/* 2 — Goal impact */}
+      <div className={`rounded-3xl border p-8 flex items-start gap-5 ${goalBg}`}>
+        <GoalIcon size={32} className={`${goalColor} shrink-0 mt-1`} />
+        <div>
+          <p className='text-xs text-gray-500 uppercase tracking-widest mb-1'>Retirement goal</p>
+          <p className={`text-2xl font-bold mb-2 ${goalColor}`}>
+            {onTrack ? 'On track' : atRisk ? 'At risk' : 'Off track'}
+          </p>
+          <p className='text-gray-200 text-lg leading-relaxed'>{goalText}</p>
+        </div>
+      </div>
+
+      {/* 3 — Worst case loss */}
+      <div className='bg-white/3 rounded-3xl border border-white/8 p-8'>
+        <p className='text-xs text-gray-500 uppercase tracking-widest mb-3'>Worst case loss</p>
+        <p className='text-5xl font-black text-red-400 mb-3'>{fmt(lossAmount)}</p>
+        <p className='text-gray-300 text-lg leading-relaxed'>
+          Under this scenario, your portfolio would drop from{' '}
+          <span className='text-white font-semibold'>{fmt(summary.total_value)}</span> to{' '}
+          <span className='text-red-300 font-semibold'>{fmt(summary.stressed_value)}</span> — a{' '}
+          {lossPct.toFixed(0)}% decline based on the {summary.severity_label.toLowerCase()} stress applied.
+        </p>
+      </div>
+
+      {/* 4 — Recovery timeline */}
+      <div className='bg-white/3 rounded-3xl border border-white/8 p-8'>
+        <p className='text-xs text-gray-500 uppercase tracking-widest mb-3'>Recovery timeline</p>
+        {noRecovery ? (
+          <>
+            <p className='text-4xl font-black text-orange-400 mb-3'>Over 30 years</p>
+            <p className='text-gray-300 text-lg leading-relaxed'>
+              At current contribution rates and historical average returns, full recovery to pre-stress levels
+              would take more than 30 years. A contribution increase or rebalancing may be needed.
+            </p>
+          </>
+        ) : (
+          <>
+            <div className='flex items-baseline gap-3 mb-3'>
+              <p className='text-5xl font-black text-blue-400'>{recoveryYears}</p>
+              <p className='text-2xl text-gray-400 font-semibold'>
+                {recoveryYears === 1 ? 'year' : 'years'}
+              </p>
+            </div>
+            <p className='text-gray-300 text-lg leading-relaxed'>
+              Continuing current contributions at historical average returns, your portfolio is estimated
+              to recover by <span className='text-white font-semibold'>{recoveryYear}</span>.
+            </p>
+          </>
+        )}
+      </div>
+
+      {/* 5 — AI analyst memo */}
+      {explanation?.client_explanation && (
+        <div className='bg-blue-950/40 border border-blue-800 rounded-3xl p-8'>
+          <div className='flex items-center gap-3 mb-4'>
+            <div className='w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center'>
+              <Brain size={16} className='text-blue-400' />
+            </div>
+            <p className='text-blue-300 font-semibold text-lg'>What this means for you</p>
+          </div>
+          <p className='text-blue-100/90 text-lg leading-relaxed whitespace-pre-line'>
+            {explanation.client_explanation}
+          </p>
+          {explanation.suggestions && (
+            <div className='mt-6 pt-6 border-t border-blue-800/50'>
+              <p className='text-blue-300 font-semibold mb-3'>Suggested next steps</p>
+              <p className='text-blue-100/80 text-base leading-relaxed whitespace-pre-line'>
+                {explanation.suggestions}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function ResultsPage() {
   const [results, setResults]     = useState<StressTestResult | null>(null)
   const [exporting, setExporting] = useState(false)
+  const [view, setView]           = useState<'advisor' | 'client'>('advisor')
 
   useEffect(() => {
     const raw = sessionStorage.getItem('stressResults')
@@ -430,15 +575,33 @@ export default function ResultsPage() {
 
   return (
     <main className='min-h-screen bg-[#0A0F1E] text-white'>
-      <ResultsNav />
-      <div className='max-w-7xl mx-auto p-6 space-y-8'>
+      {view === 'advisor' && <ResultsNav />}
 
-        <div className='flex justify-between items-start'>
-          <div>
-            <h1 className='text-2xl font-semibold tracking-tight'>Stress test results</h1>
-            <p className='text-gray-500 mt-1 text-sm max-w-2xl leading-relaxed'>
-              {results.summary.scenario_text}
-            </p>
+      {/* ── View toggle bar ── */}
+      <div className={`sticky top-0 z-40 bg-[#0A0F1E]/95 backdrop-blur border-b border-white/6
+        ${view === 'advisor' ? '' : 'shadow-lg shadow-black/40'}`}>
+        <div className='max-w-7xl mx-auto px-6 py-3 flex items-center justify-between'>
+          <div className='flex items-center gap-1 bg-white/5 rounded-xl p-1 border border-white/8'>
+            <button
+              onClick={() => setView('advisor')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                transition-all duration-200
+                ${view === 'advisor'
+                  ? 'bg-white/10 text-white shadow-sm'
+                  : 'text-gray-500 hover:text-gray-300'}`}>
+              <Briefcase size={14} />
+              Advisor view
+            </button>
+            <button
+              onClick={() => setView('client')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                transition-all duration-200
+                ${view === 'client'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-gray-500 hover:text-gray-300'}`}>
+              <Users size={14} />
+              Client view
+            </button>
           </div>
           <div className='flex items-center gap-3'>
             <button
@@ -448,11 +611,9 @@ export default function ResultsPage() {
                 bg-white/5 hover:bg-white/8 active:scale-[0.98] border border-white/10
                 text-sm text-gray-300 transition-all duration-150 disabled:opacity-50'>
               {exporting ? (
-                <span className='w-3 h-3 border border-white/30 border-t-white
-                  rounded-full animate-spin' />
+                <span className='w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin' />
               ) : (
-                <svg width='14' height='14' viewBox='0 0 24 24' fill='none'
-                  stroke='currentColor' strokeWidth='2'>
+                <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2'>
                   <path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/>
                   <polyline points='7 10 12 15 17 10'/>
                   <line x1='12' y1='15' x2='12' y2='3'/>
@@ -463,6 +624,23 @@ export default function ResultsPage() {
             <Link href='/' className='text-sm text-blue-400 hover:text-blue-300 transition-colors'>
               Run new test
             </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Client view ── */}
+      {view === 'client' && <ClientView results={results} />}
+
+      {/* ── Advisor view ── */}
+      {view === 'advisor' && (
+      <div className='max-w-7xl mx-auto p-6 space-y-8'>
+
+        <div className='flex justify-between items-start'>
+          <div>
+            <h1 className='text-2xl font-semibold tracking-tight'>Stress test results</h1>
+            <p className='text-gray-500 mt-1 text-sm max-w-2xl leading-relaxed'>
+              {results.summary.scenario_text}
+            </p>
           </div>
         </div>
 
@@ -535,6 +713,7 @@ export default function ResultsPage() {
         </div>
 
       </div>
+      )}
     </main>
   )
 }
