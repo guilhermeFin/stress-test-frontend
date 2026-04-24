@@ -1,7 +1,13 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { User, Target, TrendingDown, Calendar } from 'lucide-react'
+import {
+  User, Target, TrendingDown, Calendar, Clock, ArrowRight,
+} from 'lucide-react'
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, ReferenceLine, Legend,
+} from 'recharts'
 
 interface ClientProfile {
   age: number
@@ -9,6 +15,7 @@ interface ClientProfile {
   annualWithdrawal: number
   monthlyContribution: number
   riskTolerance: 'conservative' | 'moderate' | 'aggressive'
+  inflationRate: number
 }
 
 const DEFAULT_PROFILE: ClientProfile = {
@@ -17,12 +24,27 @@ const DEFAULT_PROFILE: ClientProfile = {
   annualWithdrawal: 60000,
   monthlyContribution: 2000,
   riskTolerance: 'moderate',
+  inflationRate: 0.03,
+}
+
+function gaussianRandom(mean: number, std: number): number {
+  const u1 = Math.random()
+  const u2 = Math.random()
+  const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
+  return mean + std * z0
+}
+
+function fmtShort(n: number): string {
+  const abs = Math.abs(n)
+  if (abs >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `$${(n / 1_000).toFixed(0)}k`
+  return `$${n}`
 }
 
 function computeImpact(
   portfolioValue: number,
   stressedValue: number,
-  profile: ClientProfile
+  profile: ClientProfile,
 ) {
   const lossAmount    = portfolioValue - stressedValue
   const lossPct       = lossAmount / portfolioValue
@@ -49,16 +71,34 @@ function computeImpact(
   const yearsNormal   = projectedNormal   / profile.annualWithdrawal
   const yearsStressed = projectedStressed / profile.annualWithdrawal
 
-  const goalMet       = profile.annualWithdrawal <= sustainableNormal
-  const goalMetStress = profile.annualWithdrawal <= sustainableStressed
+  // Monte Carlo ruin probability — 500 paths × 40-year retirement
+  const PATHS = 500
+  let normalSurvived = 0
+  let stressedSurvived = 0
+  for (let p = 0; p < PATHS; p++) {
+    let nPort = projectedNormal
+    let sPort = projectedStressed
+    let nRuined = false
+    let sRuined = false
+    for (let yr = 0; yr < 40; yr++) {
+      const shock      = gaussianRandom(0, 0.12)
+      const withdrawal = profile.annualWithdrawal * Math.pow(1 + profile.inflationRate, yr)
+      if (!nRuined) {
+        nPort = nPort * (1 + annualReturn + shock) - withdrawal
+        if (nPort <= 0) nRuined = true
+      }
+      if (!sRuined) {
+        sPort = sPort * (1 + annualReturn + shock) - withdrawal
+        if (sPort <= 0) sRuined = true
+      }
+    }
+    if (!nRuined) normalSurvived++
+    if (!sRuined) stressedSurvived++
+  }
+  const probNormal   = Math.round((normalSurvived / PATHS) * 100)
+  const probStressed = Math.round((stressedSurvived / PATHS) * 100)
 
-  const probNormal = goalMet
-    ? Math.min(92, 60 + (sustainableNormal / profile.annualWithdrawal - 1) * 40)
-    : Math.max(20, 45 - (1 - sustainableNormal / profile.annualWithdrawal) * 30)
-
-  const stressPenalty = lossPct * 80
-  const probStressed  = Math.max(15, probNormal - stressPenalty)
-
+  // Recovery time: stressed portfolio back to original portfolioValue
   let retirementDelay = 0
   if (stressedValue < portfolioValue) {
     let val = stressedValue
@@ -70,19 +110,36 @@ function computeImpact(
     retirementDelay = years
   }
 
+  // Realistic retirement age under stress
+  let realisticRetirementAge = 80
+  for (let candidateAge = profile.retirementAge; candidateAge <= 80; candidateAge++) {
+    const yrs = Math.max(0, candidateAge - profile.age)
+    let val = stressedValue
+    for (let i = 0; i < yrs; i++) {
+      val = val * (1 + annualReturn) + annualContrib
+    }
+    if (val * safeWithdrawalRate >= profile.annualWithdrawal) {
+      realisticRetirementAge = candidateAge
+      break
+    }
+  }
+
   return {
-    projectedNormal:     Math.round(projectedNormal),
-    projectedStressed:   Math.round(projectedStressed),
-    sustainableNormal:   Math.round(sustainableNormal),
-    sustainableStressed: Math.round(sustainableStressed),
-    yearsNormal:         Math.round(yearsNormal),
-    yearsStressed:       Math.round(yearsStressed),
-    probNormal:          Math.round(probNormal),
-    probStressed:        Math.round(probStressed),
+    projectedNormal:       Math.round(projectedNormal),
+    projectedStressed:     Math.round(projectedStressed),
+    sustainableNormal:     Math.round(sustainableNormal),
+    sustainableStressed:   Math.round(sustainableStressed),
+    yearsNormal:           Math.round(yearsNormal),
+    yearsStressed:         Math.round(yearsStressed),
+    probNormal,
+    probStressed,
     retirementDelay,
-    lossAmount:          Math.round(lossAmount),
-    lossPct:             Math.round(lossPct * 100),
+    lossAmount:            Math.round(lossAmount),
+    lossPct:               Math.round(lossPct * 100),
     yearsToRetire,
+    realisticRetirementAge,
+    annualReturn,
+    annualContrib,
   }
 }
 
@@ -105,7 +162,10 @@ function Gauge({ value, max = 100, color }: { value: number; max?: number; color
   )
 }
 
-function InputField({ label, value, onChange, min, max, step = 1, prefix, suffix }: any) {
+function InputField({ label, value, onChange, min, max, step = 1, prefix, suffix }: {
+  label: string; value: number; onChange: (v: number) => void;
+  min?: number; max?: number; step?: number; prefix?: string; suffix?: string;
+}) {
   return (
     <div>
       <label className='block text-xs text-gray-400 mb-1'>{label}</label>
@@ -146,24 +206,97 @@ export default function ClientImpact({
   const [profile, setProfile] = useState<ClientProfile>(DEFAULT_PROFILE)
   const [expanded, setExpanded] = useState(true)
 
-  const set = (key: keyof ClientProfile) => (val: any) =>
+  const set = (key: keyof ClientProfile) => (val: number | string) =>
     setProfile(prev => ({ ...prev, [key]: val }))
 
   const impact = useMemo(
     () => computeImpact(portfolioValue, stressedValue, profile),
-    [portfolioValue, stressedValue, profile]
+    [portfolioValue, stressedValue, profile],
   )
 
+  const currentYear = useMemo(() => new Date().getFullYear(), [])
+
+  // 20-year recovery path from current stressed value
+  const recoveryPathData = useMemo(() => {
+    const data: { yr: number; calYear: number; withContrib: number; noContrib: number }[] = []
+    let withC = stressedValue
+    let noC   = stressedValue
+    for (let yr = 0; yr <= 20; yr++) {
+      data.push({
+        yr,
+        calYear: currentYear + yr,
+        withContrib: Math.round(withC),
+        noContrib:   Math.round(noC),
+      })
+      withC = withC * (1 + impact.annualReturn) + impact.annualContrib
+      noC   = noC   * (1 + impact.annualReturn)
+    }
+    return data
+  }, [stressedValue, currentYear, impact.annualReturn, impact.annualContrib])
+
+  const breakEvenYr      = recoveryPathData.find(d => d.withContrib >= portfolioValue)?.yr ?? null
+  const noContribRecovers = recoveryPathData.some(d => d.noContrib >= portfolioValue)
+
+  // 40-year retirement depletion simulation
+  const depletionResult = useMemo(() => {
+    const retirementCalYear = currentYear + impact.yearsToRetire
+    const data: { yr: number; calYear: number; normal: number | null; stressed: number | null }[] = []
+    let nPort   = impact.projectedNormal
+    let sPort   = impact.projectedStressed
+    let nRuined = false
+    let sRuined = false
+    let nRuinYr: number | null = null
+    let sRuinYr: number | null = null
+
+    for (let yr = 0; yr <= 40; yr++) {
+      data.push({
+        yr,
+        calYear:  retirementCalYear + yr,
+        normal:   nRuined ? null : Math.max(0, Math.round(nPort)),
+        stressed: sRuined ? null : Math.max(0, Math.round(sPort)),
+      })
+      const withdrawal = profile.annualWithdrawal * Math.pow(1 + profile.inflationRate, yr)
+      if (!nRuined) {
+        nPort = nPort * (1 + impact.annualReturn) - withdrawal
+        if (nPort <= 0) { nRuinYr = yr + 1; nRuined = true }
+      }
+      if (!sRuined) {
+        sPort = sPort * (1 + impact.annualReturn) - withdrawal
+        if (sPort <= 0) { sRuinYr = yr + 1; sRuined = true }
+      }
+    }
+    return { data, nRuinYr, sRuinYr, retirementCalYear }
+  }, [
+    impact.projectedNormal, impact.projectedStressed, impact.annualReturn,
+    impact.yearsToRetire, profile.annualWithdrawal, profile.inflationRate, currentYear,
+  ])
+
   const fmt = (n: number) => new Intl.NumberFormat('en-US', {
-    style: 'currency', currency: 'USD', maximumFractionDigits: 0
+    style: 'currency', currency: 'USD', maximumFractionDigits: 0,
   }).format(n)
 
   const probColor = (p: number) =>
     p >= 75 ? '#10B981' : p >= 55 ? '#F59E0B' : '#EF4444'
 
+  const inflationAdjustedWithdrawal = Math.round(
+    profile.annualWithdrawal * Math.pow(1 + profile.inflationRate, impact.yearsToRetire),
+  )
+
+  const chartTooltipStyle = {
+    contentStyle: {
+      background: '#0f172a',
+      border: '1px solid rgba(255,255,255,0.12)',
+      borderRadius: '8px',
+      padding: '8px 12px',
+    },
+    labelStyle: { color: '#9CA3AF', fontSize: 11 },
+    itemStyle:  { fontSize: 12 },
+  }
+
   return (
     <div className='space-y-4'>
 
+      {/* Client Profile */}
       <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
         <button
           onClick={() => setExpanded(e => !e)}
@@ -190,6 +323,12 @@ export default function ClientImpact({
               <InputField label='Monthly Contribution' value={profile.monthlyContribution}
                 onChange={set('monthlyContribution')} min={0} max={50000}
                 step={500} prefix='$' />
+              <InputField
+                label='Inflation Assumption'
+                value={+(profile.inflationRate * 100).toFixed(1)}
+                onChange={(v: number) => set('inflationRate')(v / 100)}
+                min={0} max={10} step={0.5} suffix='%'
+              />
               <div>
                 <label className='block text-xs text-gray-400 mb-1'>Risk Tolerance</label>
                 <select
@@ -207,6 +346,7 @@ export default function ClientImpact({
         )}
       </div>
 
+      {/* 2-column: gauges + projection table */}
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 
         <div className='bg-white/3 rounded-2xl p-5 border border-white/8'>
@@ -216,8 +356,7 @@ export default function ClientImpact({
           </div>
           <div className='grid grid-cols-2 gap-6'>
             <div className='text-center'>
-              <Gauge value={impact.probNormal}
-                color={probColor(impact.probNormal)} />
+              <Gauge value={impact.probNormal} color={probColor(impact.probNormal)} />
               <p className='text-xs text-gray-400 mt-2'>Before stress</p>
               <p className='text-sm font-medium text-gray-200 mt-1'>
                 {impact.probNormal >= 75 ? 'On track'
@@ -225,8 +364,7 @@ export default function ClientImpact({
               </p>
             </div>
             <div className='text-center'>
-              <Gauge value={impact.probStressed}
-                color={probColor(impact.probStressed)} />
+              <Gauge value={impact.probStressed} color={probColor(impact.probStressed)} />
               <p className='text-xs text-gray-400 mt-2'>After stress</p>
               <p className='text-sm font-medium text-gray-200 mt-1'>
                 {impact.probStressed >= 75 ? 'On track'
@@ -249,26 +387,10 @@ export default function ClientImpact({
           </div>
           <div className='space-y-3'>
             {[
-              {
-                label: 'Portfolio at retirement (normal)',
-                value: fmt(impact.projectedNormal),
-                color: 'text-green-400',
-              },
-              {
-                label: 'Portfolio at retirement (stressed)',
-                value: fmt(impact.projectedStressed),
-                color: 'text-red-400',
-              },
-              {
-                label: 'Sustainable annual income (normal)',
-                value: fmt(impact.sustainableNormal),
-                color: 'text-green-400',
-              },
-              {
-                label: 'Sustainable annual income (stressed)',
-                value: fmt(impact.sustainableStressed),
-                color: 'text-red-400',
-              },
+              { label: 'Portfolio at retirement (normal)',   value: fmt(impact.projectedNormal),   color: 'text-green-400' },
+              { label: 'Portfolio at retirement (stressed)', value: fmt(impact.projectedStressed), color: 'text-red-400'   },
+              { label: 'Sustainable annual income (normal)',   value: fmt(impact.sustainableNormal),   color: 'text-green-400' },
+              { label: 'Sustainable annual income (stressed)', value: fmt(impact.sustainableStressed), color: 'text-red-400'   },
             ].map(({ label, value, color }) => (
               <div key={label} className='flex justify-between items-center
                 bg-white/5 rounded-lg px-3 py-2'>
@@ -280,7 +402,8 @@ export default function ClientImpact({
         </div>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+      {/* 4-column stat grid (was 3) */}
+      <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
         <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
           <TrendingDown size={20} className='text-red-400 mx-auto mb-2' />
           <p className='text-xs text-gray-400 mb-1'>Withdrawal years lost</p>
@@ -311,8 +434,160 @@ export default function ClientImpact({
           </p>
           <p className='text-xs text-gray-500 mt-1'>annual gap vs withdrawal goal</p>
         </div>
+
+        {/* 4th card: realistic retirement age */}
+        <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
+          <Calendar size={20} className='text-blue-400 mx-auto mb-2' />
+          <p className='text-xs text-gray-400 mb-2'>Realistic retirement age</p>
+          {impact.realisticRetirementAge === profile.retirementAge ? (
+            <>
+              <p className='text-3xl font-bold text-green-400'>
+                {impact.realisticRetirementAge}
+              </p>
+              <p className='text-xs text-green-400 mt-1'>On track</p>
+            </>
+          ) : (
+            <>
+              <div className='flex items-center justify-center gap-1 mt-1'>
+                <span className='text-lg font-bold text-gray-500 line-through'>
+                  {profile.retirementAge}
+                </span>
+                <ArrowRight size={14} className='text-red-400' />
+                <span className='text-2xl font-bold text-red-400'>
+                  {impact.realisticRetirementAge}
+                </span>
+              </div>
+              <p className='text-xs text-red-400 mt-1'>
+                +{impact.realisticRetirementAge - profile.retirementAge} year
+                {impact.realisticRetirementAge - profile.retirementAge !== 1 ? 's' : ''} delayed
+              </p>
+            </>
+          )}
+        </div>
       </div>
 
+      {/* Recovery Path Chart */}
+      <div className='bg-white/3 rounded-2xl p-5 border border-white/8'>
+        <div className='flex items-center gap-2 mb-4'>
+          <Clock size={16} className='text-blue-400' />
+          <h3 className='font-semibold text-gray-200'>Recovery Path</h3>
+        </div>
+        <ResponsiveContainer width='100%' height={220}>
+          <LineChart data={recoveryPathData} margin={{ top: 8, right: 20, left: 8, bottom: 0 }}>
+            <CartesianGrid strokeDasharray='3 3' stroke='rgba(255,255,255,0.06)' />
+            <XAxis
+              dataKey='calYear'
+              ticks={recoveryPathData.filter(d => d.yr % 5 === 0).map(d => d.calYear)}
+              tick={{ fill: '#6B7280', fontSize: 11 }}
+              tickLine={false}
+              axisLine={false}
+            />
+            <YAxis
+              tickFormatter={fmtShort}
+              tick={{ fill: '#6B7280', fontSize: 11 }}
+              tickLine={false}
+              axisLine={false}
+              width={58}
+            />
+            <Tooltip
+              {...chartTooltipStyle}
+              formatter={(v: any) => [fmtShort(Number(v ?? 0))]}
+            />
+            <ReferenceLine
+              y={portfolioValue}
+              stroke='rgba(255,255,255,0.25)'
+              strokeDasharray='6 3'
+              label={{ value: 'Pre-stress', fill: 'rgba(255,255,255,0.45)', fontSize: 10, position: 'insideTopRight' }}
+            />
+            {breakEvenYr !== null && (
+              <ReferenceLine
+                x={currentYear + breakEvenYr}
+                stroke='#60A5FA'
+                strokeDasharray='4 2'
+                label={{
+                  value: `Recovery: ${currentYear + breakEvenYr}`,
+                  fill: '#60A5FA', fontSize: 10, position: 'insideTopLeft',
+                }}
+              />
+            )}
+            <Line dataKey='withContrib' name='With contributions'
+              stroke='#3B82F6' strokeWidth={2} dot={false}
+              activeDot={{ r: 4, strokeWidth: 0 }} />
+            <Line dataKey='noContrib' name='No contributions'
+              stroke='#F97316' strokeWidth={2} strokeDasharray='6 3' dot={false}
+              activeDot={{ r: 4, strokeWidth: 0 }} />
+            <Legend wrapperStyle={{ fontSize: 11, color: '#9CA3AF', paddingTop: 8 }} />
+          </LineChart>
+        </ResponsiveContainer>
+        {!noContribRecovers && (
+          <p className='text-xs text-orange-400/80 mt-2 text-right'>
+            No recovery without contributions within 20 years
+          </p>
+        )}
+      </div>
+
+      {/* Retirement Depletion Chart */}
+      <div className='bg-white/3 rounded-2xl p-5 border border-white/8'>
+        <div className='flex items-center gap-2 mb-4'>
+          <TrendingDown size={16} className='text-red-400' />
+          <h3 className='font-semibold text-gray-200'>Retirement Depletion</h3>
+        </div>
+        <ResponsiveContainer width='100%' height={220}>
+          <LineChart data={depletionResult.data} margin={{ top: 8, right: 20, left: 8, bottom: 0 }}>
+            <CartesianGrid strokeDasharray='3 3' stroke='rgba(255,255,255,0.06)' />
+            <XAxis
+              dataKey='calYear'
+              ticks={depletionResult.data.filter(d => d.yr % 10 === 0).map(d => d.calYear)}
+              tick={{ fill: '#6B7280', fontSize: 11 }}
+              tickLine={false}
+              axisLine={false}
+            />
+            <YAxis
+              tickFormatter={fmtShort}
+              tick={{ fill: '#6B7280', fontSize: 11 }}
+              tickLine={false}
+              axisLine={false}
+              width={58}
+            />
+            <Tooltip
+              {...chartTooltipStyle}
+              formatter={(v: any) => [v != null ? fmtShort(Number(v)) : '—']}
+            />
+            <ReferenceLine y={0} stroke='rgba(255,255,255,0.2)' />
+            {depletionResult.nRuinYr !== null && (
+              <ReferenceLine
+                x={depletionResult.retirementCalYear + depletionResult.nRuinYr}
+                stroke='#10B981'
+                strokeDasharray='4 2'
+                label={{
+                  value: `Ruin: ${depletionResult.retirementCalYear + depletionResult.nRuinYr}`,
+                  fill: '#10B981', fontSize: 10, position: 'insideTopLeft',
+                }}
+              />
+            )}
+            {depletionResult.sRuinYr !== null && (
+              <ReferenceLine
+                x={depletionResult.retirementCalYear + depletionResult.sRuinYr}
+                stroke='#EF4444'
+                strokeDasharray='4 2'
+                label={{
+                  value: `Ruin: ${depletionResult.retirementCalYear + depletionResult.sRuinYr}`,
+                  fill: '#EF4444', fontSize: 10, position: 'insideTopRight',
+                }}
+              />
+            )}
+            <Line dataKey='normal' name='Normal'
+              stroke='#10B981' strokeWidth={2} dot={false} connectNulls={false}
+              activeDot={{ r: 4, strokeWidth: 0 }} />
+            <Line dataKey='stressed' name='Stressed'
+              stroke='#EF4444' strokeWidth={2} dot={false} connectNulls={false}
+              activeDot={{ r: 4, strokeWidth: 0 }} />
+            <Legend wrapperStyle={{ fontSize: 11, color: '#9CA3AF', paddingTop: 8 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Plain-English Summary (updated) */}
       <div className='bg-blue-950/40 border border-blue-800 rounded-xl p-4'>
         <p className='text-blue-300 font-medium text-sm mb-2'>Client impact summary</p>
         <p className='text-blue-200/80 text-sm leading-relaxed'>
@@ -333,6 +608,16 @@ export default function ClientImpact({
             ? ` creating a ${fmt(profile.annualWithdrawal - impact.sustainableStressed)} annual shortfall against your withdrawal goal.`
             : ' which still covers your withdrawal goal.'
           }
+          {' '}At {(profile.inflationRate * 100).toFixed(1)}% annual inflation, your{' '}
+          {fmt(profile.annualWithdrawal)} withdrawal goal will require approximately{' '}
+          <strong>{fmt(inflationAdjustedWithdrawal)}/year</strong> in nominal terms by retirement.
+          {impact.realisticRetirementAge !== profile.retirementAge && (
+            <> Under this stress scenario, the earliest realistic retirement age rises
+            from {profile.retirementAge} to{' '}
+            <strong>{impact.realisticRetirementAge}</strong>{' '}
+            ({impact.realisticRetirementAge - profile.retirementAge} year
+            {impact.realisticRetirementAge - profile.retirementAge !== 1 ? 's' : ''} later).</>
+          )}
         </p>
       </div>
 

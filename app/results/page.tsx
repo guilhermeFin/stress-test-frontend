@@ -10,6 +10,7 @@ import ExplanationPanel from '@/components/ExplanationPanel'
 import CorrelationMatrix from '@/components/CorrelationMatrix'
 import LiquidityPanel from '@/components/LiquidityPanel'
 import ClientImpact from '@/components/ClientImpact'
+import RebalancingPanel from '@/components/RebalancingPanel'
 import MonteCarlo from '@/components/MonteCarlo'
 import FactorModel from '@/components/FactorModel'
 import ResultsNav from '@/components/ResultsNav'
@@ -504,6 +505,11 @@ export default function ResultsPage() {
             portfolioValue={results.summary.total_value}
             stressedValue={results.summary.stressed_value}
           />
+        </div>
+
+        <div id='rebalancing'>
+          <h2 className='section-header'>Rebalancing recommendations</h2>
+          <RebalancingPanel results={results} />
         </div>
 
         <div id='monte-carlo'>
