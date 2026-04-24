@@ -13,6 +13,7 @@ const SECTIONS = [
   { id: 'liquidity',   label: 'Liquidity' },
   { id: 'client',       label: 'Client Impact' },
   { id: 'rebalancing', label: 'Rebalancing' },
+  { id: 'tax',         label: 'Tax impact' },
   { id: 'monte-carlo', label: 'Monte Carlo' },
   { id: 'positions',   label: 'Positions' },
   { id: 'explanation', label: 'AI Analysis' },

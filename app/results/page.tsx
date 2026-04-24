@@ -11,6 +11,7 @@ import CorrelationMatrix from '@/components/CorrelationMatrix'
 import LiquidityPanel from '@/components/LiquidityPanel'
 import ClientImpact from '@/components/ClientImpact'
 import RebalancingPanel from '@/components/RebalancingPanel'
+import TaxImpact from '@/components/TaxImpact'
 import MonteCarlo from '@/components/MonteCarlo'
 import FactorModel from '@/components/FactorModel'
 import ResultsNav from '@/components/ResultsNav'
@@ -85,7 +86,7 @@ function BenchmarkComparison({ summary }: { summary: any }) {
   // Sort descending — less negative = better = ranked higher
   const allData = [
     { name: 'Your Portfolio', loss: portfolioLoss, color: '#6366F1', isPortfolio: true },
-    ...benchmarks,
+    ...benchmarks.map(b => ({ ...b, isPortfolio: false })),
   ].sort((a, b) => b.loss - a.loss)
 
   const portfolioRank = allData.findIndex(d => d.isPortfolio) + 1
@@ -510,6 +511,11 @@ export default function ResultsPage() {
         <div id='rebalancing'>
           <h2 className='section-header'>Rebalancing recommendations</h2>
           <RebalancingPanel results={results} />
+        </div>
+
+        <div id='tax'>
+          <h2 className='section-header'>Tax impact</h2>
+          <TaxImpact results={results} />
         </div>
 
         <div id='monte-carlo'>
