@@ -293,7 +293,7 @@ export default function MonteCarlo({
                   contentStyle={TOOLTIP_STYLE}
                   labelStyle={{ color: '#F9FAFB' }}
                   itemStyle={{ color: '#F9FAFB' }}
-                  formatter={(v: any, name: string) => [fmtFull(v), name]}
+                  formatter={(v: any, name: string | number | undefined) => [fmtFull(v), String(name ?? '')]}
                 />
                 <ReferenceLine y={portfolioValue} stroke='#374151'
                   strokeDasharray='4 4' label={{ value: 'Start', fill: '#6B7280', fontSize: 10 }} />

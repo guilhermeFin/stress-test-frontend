@@ -166,7 +166,7 @@ export default function StressCharts({ charts, positions }: any) {
               <YAxis dataKey='name' type='category'
                 tick={{ fill: '#9CA3AF', fontSize: 11 }} width={110} />
               <Tooltip
-                formatter={(v: any, name: string) => [
+                formatter={(v: any, name: string | number | undefined) => [
                   `${Number(v).toFixed(2)}%`,
                   name === 'contribution' ? 'Loss contribution' : 'Portfolio weight'
                 ]}
