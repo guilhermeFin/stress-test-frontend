@@ -260,32 +260,58 @@ export default function DemoPage() {
         {/* What you'll see */}
         <div className='mt-8 bg-white/2 border border-white/6 rounded-2xl p-5'>
           <p className='text-xs text-gray-500 font-medium mb-3'>
-            You'll see a preview of the full 12-section analysis:
+            Full analysis includes 12 sections — unlock by plan:
           </p>
-          <div className='grid grid-cols-2 gap-x-6 gap-y-1.5'>
-            {[
-              { label: 'Smart Risk Summary', locked: false },
-              { label: 'Factor Risk Model', locked: true },
-              { label: 'Monte Carlo Simulation', locked: true },
-              { label: 'Tax Impact Analysis', locked: true },
-              { label: 'Liquidity Stress', locked: true },
-              { label: 'Rebalancing Guide', locked: true },
-              { label: 'Benchmark Comparison', locked: true },
-              { label: 'AI Analyst Memo', locked: true },
-            ].map(({ label, locked }) => (
-              <div key={label} className='flex items-center gap-2'>
-                <div className={`w-1.5 h-1.5 rounded-full shrink-0
-                  ${locked ? 'bg-white/20' : 'bg-green-400'}`} />
-                <span className={`text-xs ${locked ? 'text-gray-600' : 'text-gray-300'}`}>
-                  {label} {locked && '· locked'}
-                </span>
+          <div className='space-y-3'>
+            {/* Starter unlocks */}
+            <div>
+              <p className='text-[11px] font-semibold text-gray-600 uppercase tracking-wider mb-1.5'>
+                Starter — $99/mo
+              </p>
+              <div className='grid grid-cols-2 gap-x-6 gap-y-1.5'>
+                {[
+                  'Smart Risk Summary',
+                  'Charts & breakdown',
+                  'Factor risk model',
+                  'Correlation analysis',
+                  'Liquidity stress',
+                  'Monte Carlo simulation',
+                  'Benchmark comparison',
+                  'PDF export',
+                ].map(label => (
+                  <div key={label} className='flex items-center gap-2'>
+                    <div className='w-1.5 h-1.5 rounded-full shrink-0 bg-blue-400/60' />
+                    <span className='text-xs text-gray-500'>{label}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            {/* Professional unlocks */}
+            <div className='pt-3 border-t border-white/6'>
+              <p className='text-[11px] font-semibold text-gray-600 uppercase tracking-wider mb-1.5'>
+                Professional — $299/mo
+              </p>
+              <div className='grid grid-cols-2 gap-x-6 gap-y-1.5'>
+                {[
+                  'Tax impact analysis',
+                  'Rebalancing guide',
+                  'AI analyst memo',
+                  'Client Presentation Mode',
+                  'Household view',
+                  'Annual review tracking',
+                ].map(label => (
+                  <div key={label} className='flex items-center gap-2'>
+                    <div className='w-1.5 h-1.5 rounded-full shrink-0 bg-purple-400/60' />
+                    <span className='text-xs text-gray-600'>{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
           <div className='mt-4 pt-4 border-t border-white/6 flex items-center
             justify-between gap-4'>
             <p className='text-xs text-gray-500'>
-              Unlock everything with a Starter plan from $99/mo
+              Start with Starter from $99/mo
             </p>
             <Link href='/#pricing'
               className='flex items-center gap-1.5 text-xs text-blue-400
