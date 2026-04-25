@@ -173,14 +173,6 @@ export default function HomePage() {
                 {label}
               </a>
             ))}
-            <Link href='/household'
-              className='text-sm text-gray-400 hover:text-white transition-colors'>
-              Household
-            </Link>
-            <Link href='/clients'
-              className='text-sm text-gray-400 hover:text-white transition-colors'>
-              Annual Review
-            </Link>
           </div>
 
           <Link href='/demo'

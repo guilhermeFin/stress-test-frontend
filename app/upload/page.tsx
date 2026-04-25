@@ -6,7 +6,7 @@ import { useDropzone } from 'react-dropzone'
 import { runStressTest } from '@/lib/api'
 import {
   Upload, AlertCircle, TrendingDown, Download,
-  Shield, BarChart3, Brain, Activity, ChevronRight, Clock, ArrowLeft
+  Shield, BarChart3, Brain, Activity, ChevronRight, Clock, ArrowLeft, Calendar
 } from 'lucide-react'
 import ShockBuilder from '@/components/ShockBuilder'
 import Link from 'next/link'
@@ -142,12 +142,12 @@ export default function UploadPage() {
             <span className='font-bold text-lg tracking-tight'>PortfolioStress</span>
           </div>
           <div className='flex items-center gap-2'>
-            <Link href='/household'
+            <Link href='/clients'
               className='flex items-center gap-2 px-4 py-2 rounded-xl
                 bg-white/5 hover:bg-white/10 border border-white/10
                 text-sm text-gray-300 transition-all'>
-              <Brain size={14} className='text-blue-400' />
-              Household View
+              <Calendar size={14} className='text-green-400' />
+              Annual Review
             </Link>
             <Link href='/compare'
               className='flex items-center gap-2 px-4 py-2 rounded-xl
