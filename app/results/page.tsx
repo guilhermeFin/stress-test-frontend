@@ -15,7 +15,7 @@ import TaxImpact from '@/components/TaxImpact'
 import MonteCarlo from '@/components/MonteCarlo'
 import FactorModel from '@/components/FactorModel'
 import ResultsNav from '@/components/ResultsNav'
-import { TrendingDown, Landmark, BarChart3, Lightbulb, Brain, Users, Briefcase, CheckCircle, AlertTriangle, XCircle, ArrowRight, ChevronDown } from 'lucide-react'
+import { TrendingDown, Landmark, BarChart3, Lightbulb, Brain, Users, Briefcase, CheckCircle, AlertTriangle, XCircle, ArrowRight, ChevronDown, Lock } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Cell, ReferenceLine
@@ -26,6 +26,93 @@ const TOOLTIP_STYLE = {
   border: '1px solid #374151',
   borderRadius: 8,
   color: '#F9FAFB'
+}
+
+// ── Demo mode: blurred section previews + upgrade CTA ──────────────────────
+function DemoUpgradeBanner({ results }: { results: StressTestResult }) {
+  const lossPct      = results.summary.total_loss_pct
+  const avgBeta      = results.positions.length
+    ? results.positions.reduce((s, p) => s + (p.beta || 1), 0) / results.positions.length : 1
+  const flaggedCount = results.positions.filter(
+    p => p.loss_pct < -15 || (p.beta > 1.4 && p.loss_pct < -10)
+  ).length
+  const highBeta     = results.positions.filter(p => p.beta > 1.3).length
+
+  const dot = (status: string) => ({
+    green:  'bg-green-400',
+    yellow: 'bg-yellow-400',
+    red:    'bg-red-400',
+    blue:   'bg-blue-400',
+    gray:   'bg-gray-500',
+  }[status] ?? 'bg-gray-500')
+
+  const LOCKED = [
+    { title: 'Charts',                     metric: `${lossPct.toFixed(1)}% stress loss`,                   status: lossPct > -10 ? 'green' : lossPct > -25 ? 'yellow' : 'red' },
+    { title: 'Factor risk model',           metric: `avg β ${avgBeta.toFixed(2)}`,                          status: avgBeta < 1.0 ? 'green' : avgBeta < 1.3 ? 'yellow' : 'red' },
+    { title: 'Correlation breakdown',       metric: `${highBeta} high-beta position${highBeta !== 1 ? 's' : ''}`, status: highBeta === 0 ? 'green' : 'yellow' },
+    { title: 'Liquidity stress analysis',   metric: 'Concentration risk',                                  status: 'yellow' },
+    { title: 'Monte Carlo simulation',      metric: '1,000 simulation paths',                              status: 'gray'   },
+    { title: 'Client impact & retirement',  metric: lossPct > -15 ? 'Goals on track' : 'Goals at risk',   status: lossPct > -15 ? 'green' : 'yellow' },
+    { title: 'Tax impact',                  metric: 'Opportunities available',                             status: 'blue'   },
+    { title: 'Rebalancing recommendations', metric: `${flaggedCount} position${flaggedCount !== 1 ? 's' : ''} flagged`, status: flaggedCount === 0 ? 'green' : flaggedCount <= 2 ? 'yellow' : 'red' },
+    { title: 'Benchmark comparison',        metric: 'vs S&P 500, 60/40, All-Weather',                      status: 'gray'   },
+    { title: 'AI analysis',                 metric: results.summary.severity_label + ' scenario',          status: results.summary.severity_label === 'Mild' ? 'green' : 'yellow' },
+    { title: 'Position detail',             metric: `${results.positions.length} positions`,               status: 'green'  },
+  ]
+
+  return (
+    <div className='space-y-3'>
+      {/* Blurred section previews */}
+      <div className='relative overflow-hidden rounded-2xl' style={{ maxHeight: 340 }}>
+        <div className='blur-sm pointer-events-none select-none opacity-50 space-y-2'>
+          {LOCKED.map(s => (
+            <div key={s.title} className='rounded-2xl border border-white/8 bg-white/3'>
+              <div className='flex items-center gap-3 px-5 py-4'>
+                <div className={`w-2 h-2 rounded-full shrink-0 ${dot(s.status)}`} />
+                <span className='font-semibold text-sm text-white'>{s.title}</span>
+                <span className='text-xs text-gray-500 ml-auto mr-3'>{s.metric}</span>
+                <Lock size={13} className='text-gray-600 shrink-0' />
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* Gradient fade */}
+        <div className='absolute bottom-0 left-0 right-0 h-32
+          bg-gradient-to-t from-[#0A0F1E] to-transparent pointer-events-none' />
+      </div>
+
+      {/* Upgrade card */}
+      <div className='bg-gradient-to-br from-[#0D1530] to-[#0A0F1E]
+        border border-blue-500/20 rounded-2xl p-8 text-center'>
+        <div className='w-12 h-12 bg-blue-600/20 rounded-2xl flex items-center
+          justify-center mx-auto mb-4'>
+          <Lock size={20} className='text-blue-400' />
+        </div>
+        <h3 className='text-xl font-bold text-white mb-2'>Unlock the full analysis</h3>
+        <p className='text-sm text-gray-400 leading-relaxed max-w-sm mx-auto mb-1'>
+          {LOCKED.length} more sections: Factor Risk, Monte Carlo, Tax Impact,
+          Rebalancing guide, and an AI Analyst Memo — ready for your client meeting.
+        </p>
+        <p className='text-xs text-gray-600 mb-7'>Starter plan · $99/mo · cancel anytime</p>
+        <div className='flex flex-col sm:flex-row items-center justify-center gap-3'>
+          <Link href='/#pricing'
+            className='flex items-center justify-center gap-2 px-6 py-3 rounded-xl
+              bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold
+              transition-all shadow-lg shadow-blue-900/40 w-full sm:w-auto
+              active:scale-[0.98]'>
+            Try Starter Now
+            <ArrowRight size={14} />
+          </Link>
+          <Link href='/upload'
+            className='flex items-center justify-center gap-2 px-6 py-3 rounded-xl
+              bg-white/5 hover:bg-white/10 border border-white/10
+              text-sm text-gray-300 transition-all w-full sm:w-auto'>
+            Upload Your Portfolio
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function getBenchmarkLosses(scenarioText: string) {
@@ -649,10 +736,12 @@ export default function ResultsPage() {
   const [exporting, setExporting] = useState(false)
   const [view, setView]           = useState<'advisor' | 'client'>('advisor')
   const [profile, setProfile]     = useState<ClientProfile>(DEFAULT_PROFILE)
+  const [isDemo, setIsDemo]       = useState(false)
 
   useEffect(() => {
     const raw = sessionStorage.getItem('stressResults')
     if (raw) setResults(JSON.parse(raw))
+    setIsDemo(sessionStorage.getItem('isDemoMode') === 'true')
   }, [])
 
   const handleExportPdf = async () => {
@@ -851,78 +940,84 @@ export default function ResultsPage() {
               <SmartSummary results={results} />
             </CollapsibleSection>
 
-            <CollapsibleSection id='charts' title='Charts' metric={chartsMetric}
-              status={chartsStatus} defaultExpanded={chartsStatus !== 'green'}>
-              <ChartsTabs results={results} />
-            </CollapsibleSection>
+            {isDemo ? (
+              <DemoUpgradeBanner results={results} />
+            ) : (
+              <>
+                <CollapsibleSection id='charts' title='Charts' metric={chartsMetric}
+                  status={chartsStatus} defaultExpanded={chartsStatus !== 'green'}>
+                  <ChartsTabs results={results} />
+                </CollapsibleSection>
 
-            {/* ── Risk group ── */}
-            <SectionGroup label='Risk'>
-              <CollapsibleSection id='factors' title='Factor risk model' metric={factorMetric}
-                status={factorStatus} defaultExpanded={factorStatus !== 'green'}>
-                <FactorModel positions={results.positions} scenarioText={results.summary.scenario_text} />
-              </CollapsibleSection>
+                {/* ── Risk group ── */}
+                <SectionGroup label='Risk'>
+                  <CollapsibleSection id='factors' title='Factor risk model' metric={factorMetric}
+                    status={factorStatus} defaultExpanded={factorStatus !== 'green'}>
+                    <FactorModel positions={results.positions} scenarioText={results.summary.scenario_text} />
+                  </CollapsibleSection>
 
-              <CollapsibleSection id='correlation' title='Correlation breakdown' metric={corrMetric}
-                status={corrStatus} defaultExpanded={corrStatus !== 'green'}>
-                <CorrelationMatrix positions={results.positions} />
-              </CollapsibleSection>
+                  <CollapsibleSection id='correlation' title='Correlation breakdown' metric={corrMetric}
+                    status={corrStatus} defaultExpanded={corrStatus !== 'green'}>
+                    <CorrelationMatrix positions={results.positions} />
+                  </CollapsibleSection>
 
-              <CollapsibleSection id='liquidity' title='Liquidity stress analysis' metric={liquidityMetric}
-                status={liquidityStatus} defaultExpanded={liquidityStatus !== 'green'}>
-                <LiquidityPanel positions={results.positions} />
-              </CollapsibleSection>
+                  <CollapsibleSection id='liquidity' title='Liquidity stress analysis' metric={liquidityMetric}
+                    status={liquidityStatus} defaultExpanded={liquidityStatus !== 'green'}>
+                    <LiquidityPanel positions={results.positions} />
+                  </CollapsibleSection>
 
-              <CollapsibleSection id='monte-carlo' title='Monte Carlo simulation' metric='1,000 simulation paths'
-                status='gray' defaultExpanded={false}>
-                <MonteCarlo
-                  portfolioValue={results.summary.total_value}
-                  stressedValue={results.summary.stressed_value}
-                />
-              </CollapsibleSection>
-            </SectionGroup>
+                  <CollapsibleSection id='monte-carlo' title='Monte Carlo simulation' metric='1,000 simulation paths'
+                    status='gray' defaultExpanded={false}>
+                    <MonteCarlo
+                      portfolioValue={results.summary.total_value}
+                      stressedValue={results.summary.stressed_value}
+                    />
+                  </CollapsibleSection>
+                </SectionGroup>
 
-            {/* ── Goals group ── */}
-            <SectionGroup label='Goals'>
-              <CollapsibleSection id='client' title='Client impact & retirement' metric={clientMetric}
-                status={clientStatus} defaultExpanded={clientStatus !== 'green'}>
-                <ClientImpact
-                  portfolioValue={results.summary.total_value}
-                  stressedValue={results.summary.stressed_value}
-                  profile={profile}
-                  setProfile={setProfile}
-                />
-              </CollapsibleSection>
+                {/* ── Goals group ── */}
+                <SectionGroup label='Goals'>
+                  <CollapsibleSection id='client' title='Client impact & retirement' metric={clientMetric}
+                    status={clientStatus} defaultExpanded={clientStatus !== 'green'}>
+                    <ClientImpact
+                      portfolioValue={results.summary.total_value}
+                      stressedValue={results.summary.stressed_value}
+                      profile={profile}
+                      setProfile={setProfile}
+                    />
+                  </CollapsibleSection>
 
-              <CollapsibleSection id='tax' title='Tax impact' metric='Opportunities available'
-                status='blue' defaultExpanded={false}>
-                <TaxImpact results={results} profile={profile} />
-              </CollapsibleSection>
-            </SectionGroup>
+                  <CollapsibleSection id='tax' title='Tax impact' metric='Opportunities available'
+                    status='blue' defaultExpanded={false}>
+                    <TaxImpact results={results} profile={profile} />
+                  </CollapsibleSection>
+                </SectionGroup>
 
-            {/* ── Action group ── */}
-            <SectionGroup label='Action'>
-              <CollapsibleSection id='rebalancing' title='Rebalancing recommendations' metric={rebalMetric}
-                status={rebalStatus} defaultExpanded={rebalStatus !== 'green'}>
-                <RebalancingPanel results={results} />
-              </CollapsibleSection>
+                {/* ── Action group ── */}
+                <SectionGroup label='Action'>
+                  <CollapsibleSection id='rebalancing' title='Rebalancing recommendations' metric={rebalMetric}
+                    status={rebalStatus} defaultExpanded={rebalStatus !== 'green'}>
+                    <RebalancingPanel results={results} />
+                  </CollapsibleSection>
 
-              <CollapsibleSection id='benchmark' title='Benchmark comparison' metric={benchMetric}
-                status={benchStatus} defaultExpanded={benchStatus !== 'green'}>
-                <BenchmarkComparison summary={results.summary} />
-              </CollapsibleSection>
+                  <CollapsibleSection id='benchmark' title='Benchmark comparison' metric={benchMetric}
+                    status={benchStatus} defaultExpanded={benchStatus !== 'green'}>
+                    <BenchmarkComparison summary={results.summary} />
+                  </CollapsibleSection>
 
-              <CollapsibleSection id='explanation' title='AI analysis' metric={`${sevLabel} scenario`}
-                status={aiStatus} defaultExpanded={aiStatus !== 'green'}>
-                <ExplanationPanel explanation={results.explanation} />
-              </CollapsibleSection>
-            </SectionGroup>
+                  <CollapsibleSection id='explanation' title='AI analysis' metric={`${sevLabel} scenario`}
+                    status={aiStatus} defaultExpanded={aiStatus !== 'green'}>
+                    <ExplanationPanel explanation={results.explanation} />
+                  </CollapsibleSection>
+                </SectionGroup>
 
-            {/* ── Positions standalone ── */}
-            <CollapsibleSection id='positions' title='Position detail' metric={positionMetric}
-              status={positionStatus} defaultExpanded={positionStatus !== 'green'}>
-              <PositionTable positions={results.positions} />
-            </CollapsibleSection>
+                {/* ── Positions standalone ── */}
+                <CollapsibleSection id='positions' title='Position detail' metric={positionMetric}
+                  status={positionStatus} defaultExpanded={positionStatus !== 'green'}>
+                  <PositionTable positions={results.positions} />
+                </CollapsibleSection>
+              </>
+            )}
 
           </div>
         )

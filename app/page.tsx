@@ -166,7 +166,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <Link href='/upload'
+          <Link href='/demo'
             className='flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600
               hover:bg-blue-500 text-sm font-semibold text-white transition-all
               shadow-lg shadow-blue-900/30 active:scale-[0.98]'>
@@ -487,11 +487,11 @@ export default function HomePage() {
             Upload a portfolio and see your risk in 60 seconds.
             No setup required. No contract.
           </p>
-          <Link href='/upload'
+          <Link href='/demo'
             className='inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
               bg-blue-600 hover:bg-blue-500 text-sm font-semibold text-white
               transition-all shadow-lg shadow-blue-900/40 active:scale-[0.98] mb-5'>
-            Upload Your Portfolio Free
+            Try It Free — No Upload Needed
             <ArrowRight size={15} />
           </Link>
           <p className='text-xs text-gray-500'>
