@@ -1,14 +1,14 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 :root {
-  --background: #191c1f;
+  --background: #0A0F1E;
   --foreground: #ffffff;
   --card: rgba(255, 255, 255, 0.04);
   --card-border: rgba(255, 255, 255, 0.10);
   --card-hover: rgba(255, 255, 255, 0.07);
-  --muted: #8d969e;
-  --accent: #494fdf;
-  --teal: #00a87e;
+  --muted: #9ca3af;
+  --accent: #2563eb;
+  --teal: #34d399;
   --fluid: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
@@ -83,7 +83,7 @@ input[type='range']::-webkit-slider-thumb {
   height: 16px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid #494fdf;
+  border: 2px solid #2563eb;
   cursor: pointer;
   box-shadow: 0 0 0 3px rgba(73, 79, 223, 0.2);
   transition: box-shadow 0.3s cubic-bezier(0.32, 0.72, 0, 1);
@@ -96,7 +96,7 @@ input[type='range']::-moz-range-thumb {
   height: 16px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid #494fdf;
+  border: 2px solid #2563eb;
   cursor: pointer;
 }
 
@@ -124,7 +124,7 @@ input[type='range']::-moz-range-thumb {
   content: '';
   width: 3px;
   height: 1rem;
-  background: #494fdf;
+  background: #2563eb;
   border-radius: 2px;
   flex-shrink: 0;
 }
@@ -152,8 +152,8 @@ input[type='range']::-moz-range-thumb {
 tr:hover td { background: rgba(255, 255, 255, 0.02) !important; }
 
 /* ── Number classes ───────────────────────────────────────────── */
-.number-positive { color: #00a87e; }
-.number-negative { color: #e23b4a; }
+.number-positive { color: #34d399; }
+.number-negative { color: #f87171; }
 .number-neutral  { color: #8d969e; }
 .num {
   font-variant-numeric: tabular-nums;
@@ -180,3 +180,4 @@ tr:hover td { background: rgba(255, 255, 255, 0.02) !important; }
 .animate-fade-in    { animation: fadeIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) forwards; }
 .animate-pulse-glow { animation: pulseAccent 2.5s ease infinite; }
 .animate-breathe    { animation: breathe 2.5s ease-in-out infinite; }
+

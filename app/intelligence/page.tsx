@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { runStressTest } from '@/lib/api'
@@ -154,19 +154,19 @@ export default function IntelligencePage() {
   }
 
   return (
-    <main className='min-h-screen bg-[#191c1f] text-white'>
+    <main className='min-h-screen bg-[#0A0F1E] text-white'>
       <div className='max-w-4xl mx-auto px-6 py-10'>
 
         {/* Header */}
         <div className='flex items-center justify-between mb-10'>
           <div className='flex items-center gap-3'>
-            <div className='w-9 h-9 bg-[#494fdf] rounded-xl flex items-center justify-center'>
+            <div className='w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center'>
               <TrendingDown size={18} className='text-white' />
             </div>
             <span className='font-medium text-lg'>PortfolioStress</span>
           </div>
           <Link href='/' className='flex items-center gap-2 text-sm
-            text-[#8d969e] hover:text-white transition-colors'>
+            text-gray-400 hover:text-white transition-colors'>
             <ArrowLeft size={14} />
             Back to home
           </Link>
@@ -175,7 +175,7 @@ export default function IntelligencePage() {
         {/* Title */}
         <div className='mb-8'>
           <div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full
-            bg-[#494fdf]/10 border border-[#494fdf]/20 text-[#494fdf]
+            bg-blue-500/10 border border-blue-500/20 text-blue-400
             text-xs font-medium mb-4'>
             <Brain size={12} />
             Live Portfolio Analysis
@@ -184,7 +184,7 @@ export default function IntelligencePage() {
             style={{ fontSize: 'clamp(28px, 4vw, 48px)', lineHeight: '1.1', letterSpacing: '-0.8px' }}>
             Build your portfolio,<br />stress test it live
           </h1>
-          <p className='text-[#8d969e] text-base max-w-lg' style={{ letterSpacing: '0.16px' }}>
+          <p className='text-gray-400 text-base max-w-lg' style={{ letterSpacing: '0.16px' }}>
             Enter your stocks and weights, pick a scenario, and get the same
             institutional analysis — factor risk, correlation breakdown,
             liquidity, Monte Carlo, and AI memo.
@@ -196,7 +196,7 @@ export default function IntelligencePage() {
 
           {/* Presets */}
           <div>
-            <p className='text-xs text-[#8d969e] font-medium mb-3'>Quick presets</p>
+            <p className='text-xs text-gray-400 font-medium mb-3'>Quick presets</p>
             <div className='flex gap-2 flex-wrap'>
               {PRESETS.map(p => (
                 <button key={p.label} onClick={() => applyPreset(p)}
@@ -211,7 +211,7 @@ export default function IntelligencePage() {
 
           {/* AUM */}
           <div>
-            <label className='text-xs text-[#8d969e] font-medium mb-2 block'>
+            <label className='text-xs text-gray-400 font-medium mb-2 block'>
               Total Portfolio Value (AUM)
             </label>
             <div className='relative w-48'>
@@ -223,7 +223,7 @@ export default function IntelligencePage() {
                 onChange={e => setTotalAum(e.target.value)}
                 className='w-full bg-white/3 border border-white/10 rounded-xl
                   pl-7 pr-4 py-2.5 text-white text-sm focus:outline-none
-                  focus:border-[#494fdf]/50 transition-all'
+                  focus:border-blue-500/50 transition-all'
               />
             </div>
           </div>
@@ -231,19 +231,19 @@ export default function IntelligencePage() {
           {/* Ticker table */}
           <div>
             <div className='flex items-center justify-between mb-3'>
-              <label className='text-xs text-[#8d969e] font-medium'>
+              <label className='text-xs text-gray-400 font-medium'>
                 Portfolio positions
               </label>
               <div className='flex items-center gap-2'>
                 <span className={`text-xs font-medium ${
-                  Math.abs(totalWeight - 100) < 1 ? 'text-[#00a87e]'
-                  : totalWeight > 100 ? 'text-[#e23b4a]' : 'text-[#ec7e00]'
+                  Math.abs(totalWeight - 100) < 1 ? 'text-green-400'
+                  : totalWeight > 100 ? 'text-red-400' : 'text-orange-400'
                 }`}>
                   {totalWeight.toFixed(1)}% / 100%
                 </span>
                 <button onClick={equalizeWeights}
-                  className='text-xs text-[#494fdf] hover:opacity-80
-                    border border-[#494fdf]/30 px-2 py-1 rounded-full
+                  className='text-xs text-blue-400 hover:opacity-80
+                    border border-blue-500/30 px-2 py-1 rounded-full
                     transition-opacity'>
                   Equal weights
                 </button>
@@ -252,8 +252,8 @@ export default function IntelligencePage() {
 
             <div className='space-y-2'>
               <div className='grid grid-cols-12 gap-2 px-2'>
-                <div className='col-span-5 text-xs text-[#505a63]'>Ticker</div>
-                <div className='col-span-5 text-xs text-[#505a63]'>Weight %</div>
+                <div className='col-span-5 text-xs text-gray-600'>Ticker</div>
+                <div className='col-span-5 text-xs text-gray-600'>Weight %</div>
                 <div className='col-span-2' />
               </div>
 
@@ -266,7 +266,7 @@ export default function IntelligencePage() {
                     className='col-span-5 bg-white/3 border border-white/10
                       rounded-xl px-3 py-2.5 text-white text-sm
                       placeholder-gray-600 focus:outline-none
-                      focus:border-[#494fdf]/50 transition-all uppercase'
+                      focus:border-blue-500/50 transition-all uppercase'
                   />
                   <div className='col-span-5 relative'>
                     <input
@@ -277,14 +277,14 @@ export default function IntelligencePage() {
                       className='w-full bg-white/3 border border-white/10
                         rounded-xl px-3 py-2.5 text-white text-sm
                         placeholder-gray-600 focus:outline-none
-                        focus:border-[#494fdf]/50 transition-all pr-7'
+                        focus:border-blue-500/50 transition-all pr-7'
                     />
                     <span className='absolute right-3 top-1/2 -translate-y-1/2
                       text-gray-500 text-sm'>%</span>
                   </div>
                   <button onClick={() => removeRow(i)}
                     className='col-span-2 flex items-center justify-center
-                      text-gray-600 hover:text-[#e23b4a] transition-colors'>
+                      text-gray-600 hover:text-red-400 transition-colors'>
                     <X size={14} />
                   </button>
                 </div>
@@ -292,7 +292,7 @@ export default function IntelligencePage() {
             </div>
 
             <button onClick={addRow}
-              className='mt-3 flex items-center gap-1.5 text-xs text-[#8d969e]
+              className='mt-3 flex items-center gap-1.5 text-xs text-gray-400
                 hover:text-gray-200 transition-colors'>
               <Plus size={13} />
               Add position
@@ -302,11 +302,11 @@ export default function IntelligencePage() {
           {/* Scenario */}
           <div>
             <div className='flex items-center justify-between mb-2'>
-              <label className='text-xs text-[#8d969e] font-medium'>
+              <label className='text-xs text-gray-400 font-medium'>
                 Stress scenario
               </label>
               {activeScenario && (
-                <span className='text-xs text-[#494fdf]'>{activeScenario} loaded</span>
+                <span className='text-xs text-blue-400'>{activeScenario} loaded</span>
               )}
             </div>
             <textarea
@@ -319,7 +319,7 @@ export default function IntelligencePage() {
               placeholder='e.g. Market crashes 30%, rates rise 2%, tech drops 50%'
               className='w-full bg-white/3 border border-white/10 rounded-xl
                 p-4 text-white placeholder-gray-600 resize-none
-                focus:outline-none focus:border-[#494fdf]/50 text-sm
+                focus:outline-none focus:border-blue-500/50 text-sm
                 transition-all mb-3'
             />
             <div className='flex flex-wrap gap-2'>
@@ -332,8 +332,8 @@ export default function IntelligencePage() {
                   className={`text-xs px-3 py-1.5 rounded-full border
                     transition-all
                     ${activeScenario === s.label
-                      ? 'border-[#494fdf]/50 bg-[#494fdf]/10 text-[#494fdf]'
-                      : 'border-white/8 bg-white/3 text-[#8d969e] hover:text-gray-200 hover:border-white/15'
+                      ? 'border-blue-500/50 bg-blue-500/10 text-blue-400'
+                      : 'border-white/8 bg-white/3 text-gray-400 hover:text-gray-200 hover:border-white/15'
                     }`}>
                   {s.label}
                 </button>
@@ -342,8 +342,8 @@ export default function IntelligencePage() {
           </div>
 
           {error && (
-            <div className='flex items-center gap-2 text-[#e23b4a] text-sm
-              bg-[#e23b4a]/10 border border-[#e23b4a]/20 rounded-xl px-4 py-3'>
+            <div className='flex items-center gap-2 text-red-400 text-sm
+              bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3'>
               <AlertCircle size={14} />
               {error}
             </div>
@@ -355,7 +355,7 @@ export default function IntelligencePage() {
             className='w-full py-4 rounded-full font-medium text-sm
               transition-opacity duration-150 active:scale-[0.98]
               disabled:opacity-50 disabled:cursor-not-allowed
-              bg-[#494fdf] hover:opacity-85'>
+              bg-blue-600 hover:opacity-85'>
             {loading ? (
               <span className='flex items-center justify-center gap-2'>
                 <span className='w-4 h-4 border-2 border-white/30
@@ -370,7 +370,7 @@ export default function IntelligencePage() {
             )}
           </button>
 
-          <p className='text-center text-xs text-[#505a63]'>
+          <p className='text-center text-xs text-gray-600'>
             Results include factor model, correlation breakdown, liquidity
             analysis, Monte Carlo simulation, and AI analyst memo
           </p>
@@ -379,3 +379,4 @@ export default function IntelligencePage() {
     </main>
   )
 }
+

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useMemo } from 'react'
 import {
@@ -203,7 +203,7 @@ export default function MonteCarlo({
           <button
             onClick={handleRun}
             disabled={running}
-            className='bg-[#494fdf] hover:opacity-85 active:scale-[0.98]
+            className='bg-blue-600 hover:opacity-85 active:scale-[0.98]
               disabled:opacity-50 text-white font-medium px-6 py-2.5 rounded-full
               transition-opacity duration-150 text-sm'>
             {running ? 'Running 1,000 simulations...' : ran ? 'Re-run Simulation' : 'Run Monte Carlo (1,000 paths)'}

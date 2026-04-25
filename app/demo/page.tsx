@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -37,18 +37,18 @@ const SCENARIOS = [
     key: 'rate',
     label: '2022 Rate Shock',
     desc: 'Fed hikes 425bps',
-    badge: 'bg-[#494fdf]/20 text-[#494fdf]',
+    badge: 'bg-blue-600/20 text-blue-400',
     severity: 'Severe',
     text: '2022 rate shock: Fed raises rates 425bps, bonds crash 15%, tech drops 35%, inflation hits 9%, growth stocks fall 50%',
   },
 ]
 
 const SECTOR_COLORS: Record<string, string> = {
-  Technology:   'text-[#494fdf]',
-  Financials:   'text-[#00a87e]',
+  Technology:   'text-blue-400',
+  Financials:   'text-green-400',
   Consumer:     'text-orange-400',
   Bonds:        'text-purple-400',
-  Commodities:  'text-[#b09000]',
+  Commodities:  'text-yellow-400',
   Energy:       'text-red-400',
   Healthcare:   'text-teal-400',
 }
@@ -102,23 +102,23 @@ export default function DemoPage() {
   }
 
   return (
-    <main className='min-h-screen bg-[#191c1f] text-white'>
+    <main className='min-h-screen bg-[#0A0F1E] text-white'>
       <div className='max-w-3xl mx-auto px-6 py-12'>
 
         {/* Header */}
         <div className='flex items-center justify-between mb-14'>
           <div className='flex items-center gap-3'>
-            <Link href='/' className='flex items-center gap-2 text-[#8d969e]
+            <Link href='/' className='flex items-center gap-2 text-gray-400
               hover:text-white transition-colors'>
               <ArrowLeft size={14} />
             </Link>
-            <div className='w-9 h-9 bg-[#494fdf] rounded-xl flex items-center justify-center'>
+            <div className='w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center'>
               <TrendingDown size={18} className='text-white' />
             </div>
             <span className='font-medium'>PortfolioStress</span>
           </div>
           <Link href='/upload'
-            className='text-sm text-[#8d969e] hover:text-white transition-colors'>
+            className='text-sm text-gray-400 hover:text-white transition-colors'>
             Have your own portfolio? Upload it →
           </Link>
         </div>
@@ -126,16 +126,16 @@ export default function DemoPage() {
         {/* Hero text */}
         <div className='text-center mb-10'>
           <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-            bg-[#494fdf]/10 border border-[#494fdf]/20 text-[#494fdf] text-xs
+            bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs
             font-medium mb-6'>
-            <Play size={11} className='fill-[#494fdf] text-[#494fdf]' />
+            <Play size={11} className='fill-blue-400 text-blue-400' />
             Live demo — no account needed
           </div>
           <h1 className='font-medium text-white mb-4'
             style={{ fontSize: 'clamp(28px, 4vw, 48px)', lineHeight: '1.1', letterSpacing: '-0.8px' }}>
             See a full stress test<br />in 10 seconds
           </h1>
-          <p className='text-[#8d969e] max-w-md mx-auto leading-relaxed' style={{ letterSpacing: '0.16px' }}>
+          <p className='text-gray-400 max-w-md mx-auto leading-relaxed' style={{ letterSpacing: '0.16px' }}>
             We've pre-loaded a sample portfolio. Pick a crisis scenario
             and see exactly what your clients would see.
           </p>
@@ -147,9 +147,9 @@ export default function DemoPage() {
             border-b border-white/8'>
             <div>
               <span className='text-sm font-medium text-white'>Sample portfolio</span>
-              <span className='ml-2 text-xs text-[#8d969e]'>8 positions · $500,000 AUM</span>
+              <span className='ml-2 text-xs text-gray-400'>8 positions · $500,000 AUM</span>
             </div>
-            <span className='text-xs text-[#494fdf] bg-[#494fdf]/10 border border-[#494fdf]/20
+            <span className='text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20
               px-2.5 py-1 rounded-full'>Pre-loaded</span>
           </div>
           <div className='divide-y divide-white/5'>
@@ -159,20 +159,20 @@ export default function DemoPage() {
                 <span className='text-sm font-medium text-white w-12 shrink-0 tabular-nums'>
                   {p.ticker}
                 </span>
-                <span className='text-xs text-[#505a63] flex-1 truncate'>{p.name}</span>
-                <span className={`text-xs shrink-0 ${SECTOR_COLORS[p.sector] ?? 'text-[#8d969e]'}`}>
+                <span className='text-xs text-gray-600 flex-1 truncate'>{p.name}</span>
+                <span className={`text-xs shrink-0 ${SECTOR_COLORS[p.sector] ?? 'text-gray-400'}`}>
                   {p.sector}
                 </span>
                 <div className='w-20 shrink-0'>
                   <div className='flex items-center justify-between mb-0.5'>
-                    <span className='text-xs text-[#8d969e] tabular-nums'>{p.weight}%</span>
+                    <span className='text-xs text-gray-400 tabular-nums'>{p.weight}%</span>
                   </div>
                   <div className='h-1 bg-white/10 rounded-full'>
-                    <div className='h-full bg-[#494fdf]/60 rounded-full'
+                    <div className='h-full bg-blue-600/60 rounded-full'
                       style={{ width: `${(p.weight / 18) * 100}%` }} />
                   </div>
                 </div>
-                <span className='text-xs text-[#8d969e] tabular-nums w-16 text-right shrink-0'>
+                <span className='text-xs text-gray-400 tabular-nums w-16 text-right shrink-0'>
                   ${(p.value / 1000).toFixed(0)}k
                 </span>
               </div>
@@ -182,7 +182,7 @@ export default function DemoPage() {
 
         {/* Scenario picker */}
         <div className='mb-6'>
-          <p className='text-xs text-[#8d969e] font-medium mb-3 px-1'>
+          <p className='text-xs text-gray-400 font-medium mb-3 px-1'>
             Choose a crisis scenario to stress test against
           </p>
           <div className='grid grid-cols-3 gap-3'>
@@ -200,13 +200,13 @@ export default function DemoPage() {
                     {s.label}
                   </span>
                   {activeScenario.key === s.key && (
-                    <div className='w-4 h-4 bg-[#494fdf] rounded-full flex items-center
+                    <div className='w-4 h-4 bg-blue-600 rounded-full flex items-center
                       justify-center shrink-0 mt-0.5'>
                       <div className='w-1.5 h-1.5 bg-white rounded-full' />
                     </div>
                   )}
                 </div>
-                <p className='text-xs text-[#505a63] mb-2 leading-snug'>{s.desc}</p>
+                <p className='text-xs text-gray-600 mb-2 leading-snug'>{s.desc}</p>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${s.badge}`}>
                   {s.severity}
                 </span>
@@ -216,8 +216,8 @@ export default function DemoPage() {
         </div>
 
         {error && (
-          <div className='mb-4 text-sm text-[#e23b4a] bg-[#e23b4a]/10 border
-            border-[#e23b4a]/20 rounded-xl px-4 py-3'>
+          <div className='mb-4 text-sm text-red-400 bg-red-500/10 border
+            border-red-500/20 rounded-xl px-4 py-3'>
             {error}
           </div>
         )}
@@ -227,7 +227,7 @@ export default function DemoPage() {
           disabled={loading}
           className='w-full py-4 rounded-full font-medium text-sm transition-opacity
             duration-150 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed
-            bg-[#494fdf] hover:opacity-85'>
+            bg-blue-600 hover:opacity-85'>
           {loading ? (
             <span className='flex items-center justify-center gap-2'>
               <span className='w-4 h-4 border-2 border-white/30 border-t-white
@@ -242,17 +242,17 @@ export default function DemoPage() {
           )}
         </button>
 
-        <p className='text-center text-xs text-[#505a63] mt-4'>
+        <p className='text-center text-xs text-gray-600 mt-4'>
           No account needed · Sample data only · Takes ~10 seconds
         </p>
 
         <div className='mt-8 bg-white/2 border border-white/6 rounded-2xl p-5'>
-          <p className='text-xs text-[#8d969e] font-medium mb-3'>
+          <p className='text-xs text-gray-400 font-medium mb-3'>
             Full analysis includes 12 sections — unlock by plan:
           </p>
           <div className='space-y-3'>
             <div>
-              <p className='text-[11px] font-medium text-[#505a63] uppercase tracking-wider mb-1.5'>
+              <p className='text-[11px] font-medium text-gray-600 uppercase tracking-wider mb-1.5'>
                 Starter — $99/mo
               </p>
               <div className='grid grid-cols-2 gap-x-6 gap-y-1.5'>
@@ -267,14 +267,14 @@ export default function DemoPage() {
                   'PDF export',
                 ].map(label => (
                   <div key={label} className='flex items-center gap-2'>
-                    <div className='w-1.5 h-1.5 rounded-full shrink-0 bg-[#494fdf]/60' />
-                    <span className='text-xs text-[#505a63]'>{label}</span>
+                    <div className='w-1.5 h-1.5 rounded-full shrink-0 bg-blue-600/60' />
+                    <span className='text-xs text-gray-600'>{label}</span>
                   </div>
                 ))}
               </div>
             </div>
             <div className='pt-3 border-t border-white/6'>
-              <p className='text-[11px] font-medium text-[#505a63] uppercase tracking-wider mb-1.5'>
+              <p className='text-[11px] font-medium text-gray-600 uppercase tracking-wider mb-1.5'>
                 Professional — $299/mo
               </p>
               <div className='grid grid-cols-2 gap-x-6 gap-y-1.5'>
@@ -288,7 +288,7 @@ export default function DemoPage() {
                 ].map(label => (
                   <div key={label} className='flex items-center gap-2'>
                     <div className='w-1.5 h-1.5 rounded-full shrink-0 bg-purple-400/60' />
-                    <span className='text-xs text-[#505a63]'>{label}</span>
+                    <span className='text-xs text-gray-600'>{label}</span>
                   </div>
                 ))}
               </div>
@@ -296,11 +296,11 @@ export default function DemoPage() {
           </div>
           <div className='mt-4 pt-4 border-t border-white/6 flex items-center
             justify-between gap-4'>
-            <p className='text-xs text-[#8d969e]'>
+            <p className='text-xs text-gray-400'>
               Start with Starter from $99/mo
             </p>
             <Link href='/#pricing'
-              className='flex items-center gap-1.5 text-xs text-[#494fdf]
+              className='flex items-center gap-1.5 text-xs text-blue-400
                 hover:opacity-80 transition-opacity shrink-0 font-medium'>
               See pricing
               <ArrowRight size={11} />
@@ -312,3 +312,4 @@ export default function DemoPage() {
     </main>
   )
 }
+

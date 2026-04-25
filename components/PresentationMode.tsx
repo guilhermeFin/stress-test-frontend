@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import { StressTestResult } from '@/lib/api'
@@ -73,8 +73,8 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
   const slides = [
     // 0 — Cover
     <div key='cover' className='flex flex-col items-center justify-center h-full text-center px-12'>
-      <div className='w-16 h-16 bg-[#494fdf]/20 rounded-2xl flex items-center justify-center mb-8'>
-        <BarChart3 size={32} className='text-[#494fdf]' />
+      <div className='w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center mb-8'>
+        <BarChart3 size={32} className='text-blue-400' />
       </div>
       <p className='text-sm font-semibold text-blue-400 uppercase tracking-widest mb-4'>
         Portfolio Stress Test
@@ -212,13 +212,13 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
       ) : (
         <>
           <div className='flex items-baseline gap-4 mb-4'>
-            <span className='text-8xl font-black text-[#494fdf]'>{rv}</span>
+            <span className='text-8xl font-black text-blue-400'>{rv}</span>
             <span className='text-3xl text-gray-400 font-semibold'>
               {rv === 1 ? 'year' : 'years'}
             </span>
           </div>
           <p className='text-2xl text-white font-semibold mb-4'>
-            Recovery by <span className='text-[#494fdf]'>{recoveryYear}</span>
+            Recovery by <span className='text-blue-400'>{recoveryYear}</span>
           </p>
           <p className='text-lg text-gray-300 max-w-lg leading-relaxed'>
             Continuing regular contributions at historical average returns,
@@ -298,7 +298,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
   ]
 
   return (
-    <div className='fixed inset-0 z-50 bg-[#0d0f12] flex flex-col'>
+    <div className='fixed inset-0 z-50 bg-[#060B18] flex flex-col'>
       {/* Top bar */}
       <div className='flex items-center justify-between px-8 py-4 border-b border-white/8 shrink-0'>
         <div className='flex items-center gap-3'>
@@ -319,7 +319,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
 
       {/* Slide progress bar */}
       <div className='h-0.5 bg-white/5 shrink-0'>
-        <div className='h-full bg-[#494fdf] transition-all duration-300'
+        <div className='h-full bg-blue-600 transition-all duration-300'
           style={{ width: `${((slide + 1) / TOTAL_SLIDES) * 100}%` }} />
       </div>
 
@@ -345,7 +345,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
           {Array.from({ length: TOTAL_SLIDES }).map((_, i) => (
             <button key={i} onClick={() => setSlide(i)}
               className={`rounded-full transition-all ${
-                i === slide ? 'w-4 h-2 bg-[#494fdf]' : 'w-2 h-2 bg-white/20 hover:bg-white/40'
+                i === slide ? 'w-4 h-2 bg-blue-600' : 'w-2 h-2 bg-white/20 hover:bg-white/40'
               }`} />
           ))}
         </div>
@@ -354,7 +354,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
           <button
             onClick={next}
             className='flex items-center gap-2 px-5 py-2.5 rounded-full
-              bg-[#494fdf] hover:opacity-85
+              bg-blue-600 hover:opacity-85
               text-sm text-white font-medium transition-opacity'>
             Next
             <ChevronRight size={16} />
@@ -377,3 +377,4 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
     </div>
   )
 }
+
