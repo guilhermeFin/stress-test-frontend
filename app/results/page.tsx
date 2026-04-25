@@ -9,7 +9,7 @@ import PositionTable from '@/components/PositionTable'
 import ExplanationPanel from '@/components/ExplanationPanel'
 import CorrelationMatrix from '@/components/CorrelationMatrix'
 import LiquidityPanel from '@/components/LiquidityPanel'
-import ClientImpact from '@/components/ClientImpact'
+import ClientImpact, { ClientProfile, DEFAULT_PROFILE } from '@/components/ClientImpact'
 import RebalancingPanel from '@/components/RebalancingPanel'
 import TaxImpact from '@/components/TaxImpact'
 import MonteCarlo from '@/components/MonteCarlo'
@@ -648,6 +648,7 @@ export default function ResultsPage() {
   const [results, setResults]     = useState<StressTestResult | null>(null)
   const [exporting, setExporting] = useState(false)
   const [view, setView]           = useState<'advisor' | 'client'>('advisor')
+  const [profile, setProfile]     = useState<ClientProfile>(DEFAULT_PROFILE)
 
   useEffect(() => {
     const raw = sessionStorage.getItem('stressResults')
@@ -888,12 +889,14 @@ export default function ResultsPage() {
                 <ClientImpact
                   portfolioValue={results.summary.total_value}
                   stressedValue={results.summary.stressed_value}
+                  profile={profile}
+                  setProfile={setProfile}
                 />
               </CollapsibleSection>
 
               <CollapsibleSection id='tax' title='Tax impact' metric='Opportunities available'
                 status='blue' defaultExpanded={false}>
-                <TaxImpact results={results} />
+                <TaxImpact results={results} profile={profile} />
               </CollapsibleSection>
             </SectionGroup>
 

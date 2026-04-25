@@ -9,22 +9,30 @@ import {
   ResponsiveContainer, ReferenceLine, Legend,
 } from 'recharts'
 
-interface ClientProfile {
+export interface ClientProfile {
   age: number
   retirementAge: number
   annualWithdrawal: number
   monthlyContribution: number
   riskTolerance: 'conservative' | 'moderate' | 'aggressive'
   inflationRate: number
+  taxBracket: 0.22 | 0.24 | 0.32 | 0.37
+  taxablePct: number
+  traditionalPct: number
+  rothPct: number
 }
 
-const DEFAULT_PROFILE: ClientProfile = {
+export const DEFAULT_PROFILE: ClientProfile = {
   age: 45,
   retirementAge: 65,
   annualWithdrawal: 60000,
   monthlyContribution: 2000,
   riskTolerance: 'moderate',
   inflationRate: 0.03,
+  taxBracket: 0.24,
+  taxablePct: 60,
+  traditionalPct: 30,
+  rothPct: 10,
 }
 
 function gaussianRandom(mean: number, std: number): number {
@@ -199,15 +207,41 @@ function InputField({ label, value, onChange, min, max, step = 1, prefix, suffix
 export default function ClientImpact({
   portfolioValue,
   stressedValue,
+  profile,
+  setProfile,
 }: {
   portfolioValue: number
   stressedValue: number
+  profile: ClientProfile
+  setProfile: (p: ClientProfile) => void
 }) {
-  const [profile, setProfile] = useState<ClientProfile>(DEFAULT_PROFILE)
   const [expanded, setExpanded] = useState(true)
 
   const set = (key: keyof ClientProfile) => (val: number | string) =>
-    setProfile(prev => ({ ...prev, [key]: val }))
+    setProfile({ ...profile, [key]: val })
+
+  const handleTaxableChange = (val: number) => {
+    const taxable = Math.min(100, Math.max(0, val))
+    const remaining = 100 - taxable
+    const otherTotal = profile.traditionalPct + profile.rothPct
+    if (otherTotal === 0) {
+      const half = Math.round(remaining / 2)
+      setProfile({ ...profile, taxablePct: taxable, traditionalPct: half, rothPct: remaining - half })
+    } else {
+      const newTrad = Math.round(profile.traditionalPct / otherTotal * remaining)
+      setProfile({ ...profile, taxablePct: taxable, traditionalPct: newTrad, rothPct: remaining - newTrad })
+    }
+  }
+
+  const handleTraditionalChange = (val: number) => {
+    const trad = Math.min(100 - profile.taxablePct, Math.max(0, val))
+    setProfile({ ...profile, traditionalPct: trad, rothPct: 100 - profile.taxablePct - trad })
+  }
+
+  const handleRothChange = (val: number) => {
+    const roth = Math.min(100 - profile.taxablePct, Math.max(0, val))
+    setProfile({ ...profile, rothPct: roth, traditionalPct: 100 - profile.taxablePct - roth })
+  }
 
   const impact = useMemo(
     () => computeImpact(portfolioValue, stressedValue, profile),
@@ -340,6 +374,71 @@ export default function ClientImpact({
                   <option value='moderate' className='bg-[#0d1528] text-white'>Moderate (7% return)</option>
                   <option value='aggressive' className='bg-[#0d1528] text-white'>Aggressive (9% return)</option>
                 </select>
+              </div>
+            </div>
+
+            {/* Tax profile */}
+            <div className='border-t border-white/8 pt-4 space-y-3'>
+              <p className='text-xs text-gray-500 uppercase tracking-wider'>Tax profile</p>
+
+              <div>
+                <label className='block text-xs text-gray-400 mb-1'>Tax bracket</label>
+                <select
+                  value={profile.taxBracket}
+                  onChange={e =>
+                    setProfile({ ...profile, taxBracket: Number(e.target.value) as ClientProfile['taxBracket'] })
+                  }
+                  className='w-full bg-[#0d1528] border border-white/10 rounded-lg
+                    px-3 py-2 text-white text-sm focus:outline-none'>
+                  <option value={0.22} className='bg-[#0d1528] text-white'>22%</option>
+                  <option value={0.24} className='bg-[#0d1528] text-white'>24%</option>
+                  <option value={0.32} className='bg-[#0d1528] text-white'>32%</option>
+                  <option value={0.37} className='bg-[#0d1528] text-white'>37%</option>
+                </select>
+              </div>
+
+              <div className='space-y-3'>
+                <div className='flex items-center justify-between'>
+                  <p className='text-xs text-gray-400'>Account type mix</p>
+                  <span className={`text-xs font-medium ${
+                    profile.taxablePct + profile.traditionalPct + profile.rothPct === 100
+                      ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    = {profile.taxablePct + profile.traditionalPct + profile.rothPct}%
+                  </span>
+                </div>
+
+                <div>
+                  <div className='flex justify-between text-xs text-gray-400 mb-1'>
+                    <span>Taxable accounts</span>
+                    <span className='text-white'>{profile.taxablePct}%</span>
+                  </div>
+                  <input type='range' min={0} max={100} value={profile.taxablePct}
+                    onChange={e => handleTaxableChange(Number(e.target.value))}
+                    className='w-full accent-green-500' />
+                </div>
+
+                <div>
+                  <div className='flex justify-between text-xs text-gray-400 mb-1'>
+                    <span>Traditional IRA / 401k</span>
+                    <span className='text-white'>{profile.traditionalPct}%</span>
+                  </div>
+                  <input type='range' min={0} max={Math.max(0, 100 - profile.taxablePct)}
+                    value={profile.traditionalPct}
+                    onChange={e => handleTraditionalChange(Number(e.target.value))}
+                    className='w-full accent-blue-500' />
+                </div>
+
+                <div>
+                  <div className='flex justify-between text-xs text-gray-400 mb-1'>
+                    <span>Roth IRA / 401k</span>
+                    <span className='text-white'>{profile.rothPct}%</span>
+                  </div>
+                  <input type='range' min={0} max={Math.max(0, 100 - profile.taxablePct)}
+                    value={profile.rothPct}
+                    onChange={e => handleRothChange(Number(e.target.value))}
+                    className='w-full accent-purple-500' />
+                </div>
               </div>
             </div>
           </div>
