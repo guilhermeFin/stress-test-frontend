@@ -669,7 +669,7 @@ export default function ResultsPage() {
     <main className='min-h-screen bg-[#0A0F1E] text-white flex items-center
       justify-center'>
       <p className='text-gray-400 text-sm'>No results found.{' '}
-        <Link href='/' className='text-blue-400 hover:underline'>Run a stress test</Link>
+        <Link href='/upload' className='text-blue-400 hover:underline'>Run a stress test</Link>
       </p>
     </main>
   )
@@ -722,7 +722,7 @@ export default function ResultsPage() {
               )}
               {exporting ? 'Generating...' : 'Export PDF'}
             </button>
-            <Link href='/' className='text-sm text-blue-400 hover:text-blue-300 transition-colors'>
+            <Link href='/upload' className='text-sm text-blue-400 hover:text-blue-300 transition-colors'>
               Run new test
             </Link>
           </div>

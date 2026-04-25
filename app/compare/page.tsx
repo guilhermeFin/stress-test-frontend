@@ -537,7 +537,7 @@ export default function ComparePage() {
                   breakdown, and AI memo on the winning portfolio.
                 </p>
               </div>
-              <Link href='/'
+              <Link href='/upload'
                 className='flex items-center gap-2 px-4 py-2 rounded-xl
                   bg-blue-600 hover:bg-blue-500 text-white text-sm
                   font-medium transition-all whitespace-nowrap ml-4'>
