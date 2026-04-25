@@ -15,7 +15,8 @@ import TaxImpact from '@/components/TaxImpact'
 import MonteCarlo from '@/components/MonteCarlo'
 import FactorModel from '@/components/FactorModel'
 import ResultsNav from '@/components/ResultsNav'
-import { TrendingDown, Landmark, BarChart3, Lightbulb, Brain, Users, Briefcase, CheckCircle, AlertTriangle, XCircle, ArrowRight, ChevronDown, Lock } from 'lucide-react'
+import PresentationMode from '@/components/PresentationMode'
+import { TrendingDown, Landmark, BarChart3, Lightbulb, Brain, Users, Briefcase, CheckCircle, AlertTriangle, XCircle, ArrowRight, ChevronDown, Lock, MonitorPlay, BookmarkPlus, Layers } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Cell, ReferenceLine
@@ -731,18 +732,60 @@ function ClientView({ results }: { results: StressTestResult }) {
   )
 }
 
+interface HouseholdAccount {
+  name: string
+  type: string
+  aum: number
+  positions: { ticker: string; weight: number }[]
+}
+
+interface SaveModal {
+  open: boolean
+  clientName: string
+  saving: boolean
+}
+
 export default function ResultsPage() {
-  const [results, setResults]     = useState<StressTestResult | null>(null)
-  const [exporting, setExporting] = useState(false)
-  const [view, setView]           = useState<'advisor' | 'client'>('advisor')
-  const [profile, setProfile]     = useState<ClientProfile>(DEFAULT_PROFILE)
-  const [isDemo, setIsDemo]       = useState(false)
+  const [results, setResults]         = useState<StressTestResult | null>(null)
+  const [exporting, setExporting]     = useState(false)
+  const [view, setView]               = useState<'advisor' | 'client'>('advisor')
+  const [profile, setProfile]         = useState<ClientProfile>(DEFAULT_PROFILE)
+  const [isDemo, setIsDemo]           = useState(false)
+  const [isPresenting, setPresenting] = useState(false)
+  const [saveModal, setSaveModal]     = useState<SaveModal>({ open: false, clientName: '', saving: false })
+  const [household, setHousehold]     = useState<HouseholdAccount[] | null>(null)
 
   useEffect(() => {
     const raw = sessionStorage.getItem('stressResults')
     if (raw) setResults(JSON.parse(raw))
     setIsDemo(sessionStorage.getItem('isDemoMode') === 'true')
+    try {
+      const hRaw = sessionStorage.getItem('householdData')
+      if (hRaw) setHousehold(JSON.parse(hRaw))
+    } catch {}
   }, [])
+
+  const handleSaveReview = () => {
+    if (!results || !saveModal.clientName.trim()) return
+    setSaveModal(m => ({ ...m, saving: true }))
+    try {
+      const existing = JSON.parse(localStorage.getItem('savedReviews') || '[]')
+      const review = {
+        id:             Math.random().toString(36).slice(2),
+        clientName:     saveModal.clientName.trim(),
+        date:           new Date().toISOString(),
+        scenario:       results.summary.scenario_text,
+        totalLossPct:   results.summary.total_loss_pct,
+        healthScore:    Math.max(1, Math.min(10, 10 + results.summary.total_loss_pct / 5)),
+        severityLabel:  results.summary.severity_label,
+        portfolioValue: results.summary.total_value,
+        stressedValue:  results.summary.stressed_value,
+        results,
+      }
+      localStorage.setItem('savedReviews', JSON.stringify([review, ...existing]))
+    } catch {}
+    setSaveModal({ open: false, clientName: '', saving: false })
+  }
 
   const handleExportPdf = async () => {
     if (!results) return
@@ -765,6 +808,52 @@ export default function ResultsPage() {
 
   return (
     <main className='min-h-screen bg-[#0A0F1E] text-white'>
+      {/* ── Presentation mode overlay ── */}
+      {isPresenting && (
+        <PresentationMode results={results} profile={profile} onClose={() => setPresenting(false)} />
+      )}
+
+      {/* ── Save review modal ── */}
+      {saveModal.open && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center p-4
+          bg-black/70 backdrop-blur-sm'>
+          <div className='bg-[#0D1530] border border-white/12 rounded-2xl p-6 w-full max-w-sm shadow-xl'>
+            <h3 className='text-lg font-semibold text-white mb-1'>Save review</h3>
+            <p className='text-xs text-gray-500 mb-5'>
+              Saved reviews appear in{' '}
+              <Link href='/clients' className='text-blue-400 hover:underline'>Annual Review</Link>
+              {' '}for year-over-year comparison.
+            </p>
+            <input
+              autoFocus
+              value={saveModal.clientName}
+              onChange={e => setSaveModal(m => ({ ...m, clientName: e.target.value }))}
+              onKeyDown={e => { if (e.key === 'Enter') handleSaveReview() }}
+              placeholder='Client name (e.g. John Smith)'
+              className='w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3
+                text-sm text-white placeholder-gray-600 focus:outline-none
+                focus:border-blue-500/50 mb-4'
+            />
+            <div className='flex gap-3'>
+              <button
+                onClick={() => setSaveModal({ open: false, clientName: '', saving: false })}
+                className='flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/8
+                  border border-white/10 text-sm text-gray-400 transition-all'>
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveReview}
+                disabled={!saveModal.clientName.trim() || saveModal.saving}
+                className='flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500
+                  text-sm text-white font-semibold transition-all
+                  disabled:opacity-50 disabled:cursor-not-allowed'>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {view === 'advisor' && <ResultsNav />}
 
       {/* ── Toggle bar + sticky summary ── */}
@@ -793,11 +882,31 @@ export default function ResultsPage() {
               Client view
             </button>
           </div>
-          <div className='flex items-center gap-3'>
+          <div className='flex items-center gap-2'>
+            {!isDemo && (
+              <>
+                <button
+                  onClick={() => setSaveModal(m => ({ ...m, open: true }))}
+                  className='flex items-center gap-1.5 px-3 py-2 rounded-xl
+                    bg-white/5 hover:bg-white/8 border border-white/10
+                    text-sm text-gray-300 transition-all duration-150'>
+                  <BookmarkPlus size={14} />
+                  <span className='hidden sm:inline'>Save</span>
+                </button>
+                <button
+                  onClick={() => setPresenting(true)}
+                  className='flex items-center gap-1.5 px-3 py-2 rounded-xl
+                    bg-white/5 hover:bg-white/8 border border-white/10
+                    text-sm text-gray-300 transition-all duration-150'>
+                  <MonitorPlay size={14} />
+                  <span className='hidden sm:inline'>Present</span>
+                </button>
+              </>
+            )}
             <button
               onClick={handleExportPdf}
               disabled={exporting}
-              className='flex items-center gap-2 px-4 py-2 rounded-xl
+              className='flex items-center gap-1.5 px-3 py-2 rounded-xl
                 bg-white/5 hover:bg-white/8 active:scale-[0.98] border border-white/10
                 text-sm text-gray-300 transition-all duration-150 disabled:opacity-50'>
               {exporting ? (
@@ -809,9 +918,9 @@ export default function ResultsPage() {
                   <line x1='12' y1='15' x2='12' y2='3'/>
                 </svg>
               )}
-              {exporting ? 'Generating...' : 'Export PDF'}
+              <span className='hidden sm:inline'>{exporting ? 'Generating...' : 'Export PDF'}</span>
             </button>
-            <Link href='/upload' className='text-sm text-blue-400 hover:text-blue-300 transition-colors'>
+            <Link href='/upload' className='text-sm text-blue-400 hover:text-blue-300 transition-colors hidden md:inline'>
               Run new test
             </Link>
           </div>
@@ -933,6 +1042,65 @@ export default function ResultsPage() {
                 {results.summary.scenario_text}
               </p>
             </div>
+
+            {/* ── Household breakdown (shown if household data exists) ── */}
+            {household && household.length > 0 && (() => {
+              const totalAum  = household.reduce((s, a) => s + a.aum, 0)
+              const totalLoss = results.summary.total_loss
+              return (
+                <div className='rounded-2xl border border-blue-500/20 bg-blue-950/20 overflow-hidden mb-1'>
+                  <div className='flex items-center gap-3 px-5 py-4 border-b border-blue-500/15'>
+                    <Layers size={16} className='text-blue-400 shrink-0' />
+                    <span className='font-semibold text-white'>Household breakdown</span>
+                    <span className='text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20
+                      px-2.5 py-0.5 rounded-full ml-auto'>
+                      {household.length} accounts
+                    </span>
+                  </div>
+                  <div className='p-4 grid grid-cols-1 md:grid-cols-2 gap-3'>
+                    {household.map((acct, i) => {
+                      const acctPct  = totalAum > 0 ? acct.aum / totalAum : 1 / household.length
+                      const acctLoss = totalLoss * acctPct
+                      const fmt      = (n: number) => new Intl.NumberFormat('en-US', {
+                        style: 'currency', currency: 'USD', maximumFractionDigits: 0,
+                      }).format(n)
+                      return (
+                        <div key={i} className='bg-white/3 border border-white/8 rounded-xl p-4'>
+                          <div className='flex items-center justify-between mb-3'>
+                            <div>
+                              <p className='font-semibold text-sm text-white'>{acct.name || acct.type}</p>
+                              <p className='text-xs text-blue-400'>{acct.type}</p>
+                            </div>
+                            <div className='text-right'>
+                              <p className='text-sm font-bold text-white'>{fmt(acct.aum)}</p>
+                              <p className='text-xs text-gray-500'>
+                                {(acctPct * 100).toFixed(0)}% of household
+                              </p>
+                            </div>
+                          </div>
+                          <div className='flex items-center justify-between text-xs'>
+                            <span className='text-gray-500'>Estimated stress impact</span>
+                            <span className='font-semibold text-red-400 tabular-nums'>
+                              {fmt(acctLoss)}
+                            </span>
+                          </div>
+                          <div className='mt-2 h-1 bg-white/8 rounded-full overflow-hidden'>
+                            <div className='h-full bg-blue-500/50 rounded-full'
+                              style={{ width: `${acctPct * 100}%` }} />
+                          </div>
+                          {acct.positions.length > 0 && (
+                            <p className='text-xs text-gray-600 mt-2'>
+                              {acct.positions.slice(0, 4).map(p => p.ticker).join(', ')}
+                              {acct.positions.length > 4 && ` +${acct.positions.length - 4} more`}
+                            </p>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })()}
 
             {/* ── Top-level standalone sections ── */}
             <CollapsibleSection id='summary' title='Summary' metric={summaryMetric}

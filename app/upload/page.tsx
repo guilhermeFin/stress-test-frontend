@@ -142,6 +142,13 @@ export default function UploadPage() {
             <span className='font-bold text-lg tracking-tight'>PortfolioStress</span>
           </div>
           <div className='flex items-center gap-2'>
+            <Link href='/household'
+              className='flex items-center gap-2 px-4 py-2 rounded-xl
+                bg-white/5 hover:bg-white/10 border border-white/10
+                text-sm text-gray-300 transition-all'>
+              <Brain size={14} className='text-blue-400' />
+              Household View
+            </Link>
             <Link href='/compare'
               className='flex items-center gap-2 px-4 py-2 rounded-xl
                 bg-white/5 hover:bg-white/10 border border-white/10
