@@ -79,11 +79,61 @@ function getBenchmarkLosses(scenarioText: string) {
   ]
 }
 
+// ── Shared tab pill ──────────────────────────────────────────────────────────
+function TabPills<T extends string>({
+  tabs, active, onChange,
+}: { tabs: { id: T; label: string }[]; active: T; onChange: (t: T) => void }) {
+  return (
+    <div className='flex gap-1 bg-white/5 rounded-lg p-1 w-fit border border-white/8'>
+      {tabs.map(t => (
+        <button key={t.id} onClick={() => onChange(t.id)}
+          className={`px-3 py-1 rounded text-xs font-medium transition-all duration-150
+            ${active === t.id ? 'bg-white/12 text-white' : 'text-gray-500 hover:text-gray-300'}`}>
+          {t.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+// ── Section group divider ─────────────────────────────────────────────────────
+function SectionGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className='space-y-3'>
+      <div className='flex items-center gap-3 px-1 pt-2'>
+        <span className='text-[11px] font-semibold text-gray-600 uppercase tracking-[0.12em]'>
+          {label}
+        </span>
+        <div className='flex-1 h-px bg-white/6' />
+      </div>
+      {children}
+    </div>
+  )
+}
+
+// ── Charts section with primary / secondary tabs ──────────────────────────────
+function ChartsTabs({ results }: { results: StressTestResult }) {
+  const [tab, setTab] = useState<'overview' | 'breakdown'>('overview')
+  return (
+    <div className='space-y-4'>
+      <TabPills
+        tabs={[{ id: 'overview', label: 'Key metrics' }, { id: 'breakdown', label: 'Position breakdown' }]}
+        active={tab} onChange={setTab}
+      />
+      {tab === 'overview'
+        ? <SummaryCards summary={results.summary} />
+        : <StressCharts charts={results.charts} positions={results.positions} />}
+    </div>
+  )
+}
+
+// ── Benchmark with primary chart / detail tabs ────────────────────────────────
 function BenchmarkComparison({ summary }: { summary: any }) {
+  const [tab, setTab] = useState<'chart' | 'detail'>('chart')
+
   const benchmarks    = getBenchmarkLosses(summary.scenario_text)
   const portfolioLoss = summary.total_loss_pct
 
-  // Sort descending — less negative = better = ranked higher
   const allData = [
     { name: 'Your Portfolio', loss: portfolioLoss, color: '#6366F1', isPortfolio: true },
     ...benchmarks.map(b => ({ ...b, isPortfolio: false })),
@@ -104,99 +154,89 @@ function BenchmarkComparison({ summary }: { summary: any }) {
     : portfolioRank <= Math.ceil(totalItems / 2) ? 'text-green-400'
     : 'text-orange-400'
 
-  const fmt = (n: number) => new Intl.NumberFormat('en-US', {
-    style: 'currency', currency: 'USD', maximumFractionDigits: 0
-  }).format(n)
-
   return (
     <div className='space-y-4'>
+      <TabPills
+        tabs={[{ id: 'chart', label: 'Comparison chart' }, { id: 'detail', label: 'Benchmark detail' }]}
+        active={tab} onChange={setTab}
+      />
 
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-        <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
-          <p className='text-xs text-gray-500 mb-1'>Benchmark Rank</p>
-          <p className='text-3xl font-bold text-white'>
-            #{portfolioRank}<span className='text-gray-500 text-lg'>/{totalItems}</span>
-          </p>
-          <p className={`text-sm font-medium mt-1 ${rankColor}`}>{rankLabel}</p>
-        </div>
-        <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
-          <p className='text-xs text-gray-500 mb-1'>Better Than</p>
-          <p className='text-3xl font-bold text-green-400'>{betterThan}</p>
-          <p className='text-sm text-gray-500 mt-1'>
-            benchmark{betterThan !== 1 ? 's' : ''}
-          </p>
-        </div>
-        <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
-          <p className='text-xs text-gray-500 mb-1'>Worse Than</p>
-          <p className='text-3xl font-bold text-red-400'>{worseThan}</p>
-          <p className='text-sm text-gray-500 mt-1'>
-            benchmark{worseThan !== 1 ? 's' : ''}
-          </p>
-        </div>
-      </div>
-
-      <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
-        <h3 className='font-semibold text-gray-200 mb-1'>
-          Portfolio vs Benchmarks
-        </h3>
-        <p className='text-xs text-gray-500 mb-4'>
-          Stress loss comparison — your portfolio (indigo) vs standard benchmarks
-        </p>
-        <ResponsiveContainer width='100%' height={260}>
-          <BarChart data={allData} layout='vertical'>
-            <XAxis type='number' tick={{ fill: '#6B7280', fontSize: 11 }}
-              tickFormatter={v => `${v}%`} />
-            <YAxis dataKey='name' type='category'
-              tick={{ fill: '#9CA3AF', fontSize: 11 }} width={120} />
-            <Tooltip
-              formatter={(v: any) => [`${Number(v).toFixed(1)}%`, 'Loss']}
-              contentStyle={TOOLTIP_STYLE}
-              labelStyle={{ color: '#F9FAFB' }}
-              itemStyle={{ color: '#F9FAFB' }} />
-            <ReferenceLine x={0} stroke='#374151' />
-            <Bar dataKey='loss' radius={[0, 4, 4, 0]}>
-              {allData.map((entry, i) => (
-                <Cell key={i} fill={entry.color}
-                  opacity={entry.isPortfolio ? 1 : 0.7} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
-        {benchmarks.map(({ name, loss, color }) => {
-          const diff            = portfolioLoss - loss
-          const portfolioBetter = portfolioLoss > loss
-          return (
-            <div key={name} className='bg-white/3 rounded-xl p-4
-              border border-white/8'>
-              <p className='text-xs text-gray-500 mb-2'>{name}</p>
-              <p className='text-xl font-bold' style={{ color }}>
-                {loss.toFixed(1)}%
+      {tab === 'chart' && (
+        <div className='space-y-4'>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+            <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
+              <p className='text-xs text-gray-500 mb-1'>Benchmark rank</p>
+              <p className='text-3xl font-bold text-white'>
+                #{portfolioRank}<span className='text-gray-500 text-lg'>/{totalItems}</span>
               </p>
-              <div className={`mt-2 text-xs font-medium ${
-                portfolioBetter ? 'text-green-400' : 'text-red-400'
-              }`}>
-                {portfolioBetter
-                  ? `✓ You outperform by ${Math.abs(diff).toFixed(1)}%`
-                  : `✗ You underperform by ${Math.abs(diff).toFixed(1)}%`
-                }
-              </div>
+              <p className={`text-sm font-medium mt-1 ${rankColor}`}>{rankLabel}</p>
             </div>
-          )
-        })}
-      </div>
+            <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
+              <p className='text-xs text-gray-500 mb-1'>Better than</p>
+              <p className='text-3xl font-bold text-green-400'>{betterThan}</p>
+              <p className='text-sm text-gray-500 mt-1'>benchmark{betterThan !== 1 ? 's' : ''}</p>
+            </div>
+            <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
+              <p className='text-xs text-gray-500 mb-1'>Worse than</p>
+              <p className='text-3xl font-bold text-red-400'>{worseThan}</p>
+              <p className='text-sm text-gray-500 mt-1'>benchmark{worseThan !== 1 ? 's' : ''}</p>
+            </div>
+          </div>
+          <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
+            <h3 className='font-semibold text-gray-200 mb-1'>Portfolio vs benchmarks</h3>
+            <p className='text-xs text-gray-500 mb-4'>
+              Stress loss comparison — your portfolio (indigo) vs standard benchmarks
+            </p>
+            <ResponsiveContainer width='100%' height={240}>
+              <BarChart data={allData} layout='vertical'>
+                <XAxis type='number' tick={{ fill: '#6B7280', fontSize: 11 }}
+                  tickFormatter={v => `${v}%`} />
+                <YAxis dataKey='name' type='category'
+                  tick={{ fill: '#9CA3AF', fontSize: 11 }} width={120} />
+                <Tooltip formatter={(v: any) => [`${Number(v).toFixed(1)}%`, 'Loss']}
+                  contentStyle={TOOLTIP_STYLE} labelStyle={{ color: '#F9FAFB' }}
+                  itemStyle={{ color: '#F9FAFB' }} />
+                <ReferenceLine x={0} stroke='#374151' />
+                <Bar dataKey='loss' radius={[0, 4, 4, 0]}>
+                  {allData.map((entry, i) => (
+                    <Cell key={i} fill={entry.color} opacity={entry.isPortfolio ? 1 : 0.7} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
-      <div className='bg-white/2 rounded-xl p-4 border border-white/6'>
-        <p className='text-xs text-gray-400 leading-relaxed'>
-          <span className='text-gray-300 font-medium'>Note: </span>
-          Benchmark losses are based on historical data for comparable stress
-          scenarios. S&P 500 = broad US equity market. 60/40 = 60% equities,
-          40% bonds. All-Weather = Ray Dalio risk-parity strategy.
-          Global Bonds = Bloomberg Global Aggregate Bond Index.
-        </p>
-      </div>
+      {tab === 'detail' && (
+        <div className='space-y-3'>
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+            {benchmarks.map(({ name, loss, color }) => {
+              const diff = portfolioLoss - loss
+              const better = portfolioLoss > loss
+              return (
+                <div key={name} className='bg-white/3 rounded-xl p-4 border border-white/8'>
+                  <p className='text-xs text-gray-500 mb-2'>{name}</p>
+                  <p className='text-xl font-bold' style={{ color }}>{loss.toFixed(1)}%</p>
+                  <div className={`mt-2 text-xs font-medium ${better ? 'text-green-400' : 'text-red-400'}`}>
+                    {better
+                      ? `✓ Outperform by ${Math.abs(diff).toFixed(1)}%`
+                      : `✗ Underperform by ${Math.abs(diff).toFixed(1)}%`}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          <div className='bg-white/2 rounded-xl p-4 border border-white/6'>
+            <p className='text-xs text-gray-400 leading-relaxed'>
+              <span className='text-gray-300 font-medium'>Note: </span>
+              Losses based on historical data for comparable stress scenarios.
+              S&P 500 = broad US equity. 60/40 = 60% equities / 40% bonds.
+              All-Weather = Ray Dalio risk-parity. Global Bonds = Bloomberg Global Aggregate.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -637,9 +677,9 @@ export default function ResultsPage() {
     <main className='min-h-screen bg-[#0A0F1E] text-white'>
       {view === 'advisor' && <ResultsNav />}
 
-      {/* ── View toggle bar ── */}
-      <div className={`sticky top-0 z-40 bg-[#0A0F1E]/95 backdrop-blur border-b border-white/6
-        ${view === 'advisor' ? '' : 'shadow-lg shadow-black/40'}`}>
+      {/* ── Toggle bar + sticky summary ── */}
+      <div className={`sticky top-0 z-40 bg-[#0A0F1E]/95 backdrop-blur
+        ${view === 'advisor' ? 'border-b border-white/6' : 'border-b border-white/6 shadow-lg shadow-black/40'}`}>
         <div className='max-w-7xl mx-auto px-6 py-3 flex items-center justify-between'>
           <div className='flex items-center gap-1 bg-white/5 rounded-xl p-1 border border-white/8'>
             <button
@@ -686,6 +726,51 @@ export default function ResultsPage() {
             </Link>
           </div>
         </div>
+
+        {/* Sticky summary bar — advisor only */}
+        {view === 'advisor' && (() => {
+          const hs  = Math.max(1, Math.min(10, 10 + results.summary.total_loss_pct / 5))
+          const hsColor = hs >= 7 ? 'text-green-400' : hs >= 5 ? 'text-yellow-400' : 'text-red-400'
+          const hsDot   = hs >= 7 ? 'bg-green-400'   : hs >= 5 ? 'bg-yellow-400'   : 'bg-red-400'
+          let rv = 0, val = results.summary.stressed_value
+          while (val < results.summary.total_value && rv < 30) { val = val * 1.07 + 24000; rv++ }
+          const goalOk   = results.summary.total_loss_pct > -15
+          const goalWarn = results.summary.total_loss_pct <= -15 && results.summary.total_loss_pct > -30
+          const goalDot  = goalOk ? 'bg-green-400' : goalWarn ? 'bg-yellow-400' : 'bg-red-400'
+          const goalText = goalOk ? 'On track'     : goalWarn ? 'At risk'       : 'Off track'
+          const goalColor = goalOk ? 'text-green-400' : goalWarn ? 'text-yellow-400' : 'text-red-400'
+          return (
+            <div className='border-t border-white/5 bg-white/2'>
+              <div className='max-w-7xl mx-auto px-6 py-2 flex items-center gap-6 overflow-x-auto'>
+                <div className='flex items-center gap-2 shrink-0'>
+                  <div className={`w-1.5 h-1.5 rounded-full ${hsDot}`} />
+                  <span className='text-xs text-gray-500'>Health</span>
+                  <span className={`text-xs font-semibold tabular-nums ${hsColor}`}>{hs.toFixed(1)}/10</span>
+                </div>
+                <div className='w-px h-3 bg-white/10 shrink-0' />
+                <div className='flex items-center gap-2 shrink-0'>
+                  <span className='text-xs text-gray-500'>Stress loss</span>
+                  <span className='text-xs font-semibold tabular-nums text-red-400'>
+                    {results.summary.total_loss_pct.toFixed(1)}%
+                  </span>
+                </div>
+                <div className='w-px h-3 bg-white/10 shrink-0' />
+                <div className='flex items-center gap-2 shrink-0'>
+                  <span className='text-xs text-gray-500'>Recovery</span>
+                  <span className='text-xs font-semibold tabular-nums text-blue-400'>
+                    {rv >= 30 ? '>30 yrs' : `${rv} yr${rv !== 1 ? 's' : ''}`}
+                  </span>
+                </div>
+                <div className='w-px h-3 bg-white/10 shrink-0' />
+                <div className='flex items-center gap-2 shrink-0'>
+                  <div className={`w-1.5 h-1.5 rounded-full ${goalDot}`} />
+                  <span className='text-xs text-gray-500'>Goals</span>
+                  <span className={`text-xs font-semibold ${goalColor}`}>{goalText}</span>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
       </div>
 
       {/* ── Client view ── */}
@@ -759,6 +844,7 @@ export default function ResultsPage() {
               </p>
             </div>
 
+            {/* ── Top-level standalone sections ── */}
             <CollapsibleSection id='summary' title='Summary' metric={summaryMetric}
               status={summaryStatus} defaultExpanded={summaryStatus !== 'green'}>
               <SmartSummary results={results} />
@@ -766,64 +852,73 @@ export default function ResultsPage() {
 
             <CollapsibleSection id='charts' title='Charts' metric={chartsMetric}
               status={chartsStatus} defaultExpanded={chartsStatus !== 'green'}>
-              <SummaryCards summary={results.summary} />
-              <StressCharts charts={results.charts} positions={results.positions} />
+              <ChartsTabs results={results} />
             </CollapsibleSection>
 
-            <CollapsibleSection id='factors' title='Factor risk model' metric={factorMetric}
-              status={factorStatus} defaultExpanded={factorStatus !== 'green'}>
-              <FactorModel positions={results.positions} scenarioText={results.summary.scenario_text} />
-            </CollapsibleSection>
+            {/* ── Risk group ── */}
+            <SectionGroup label='Risk'>
+              <CollapsibleSection id='factors' title='Factor risk model' metric={factorMetric}
+                status={factorStatus} defaultExpanded={factorStatus !== 'green'}>
+                <FactorModel positions={results.positions} scenarioText={results.summary.scenario_text} />
+              </CollapsibleSection>
 
-            <CollapsibleSection id='correlation' title='Correlation breakdown' metric={corrMetric}
-              status={corrStatus} defaultExpanded={corrStatus !== 'green'}>
-              <CorrelationMatrix positions={results.positions} />
-            </CollapsibleSection>
+              <CollapsibleSection id='correlation' title='Correlation breakdown' metric={corrMetric}
+                status={corrStatus} defaultExpanded={corrStatus !== 'green'}>
+                <CorrelationMatrix positions={results.positions} />
+              </CollapsibleSection>
 
-            <CollapsibleSection id='benchmark' title='Benchmark comparison' metric={benchMetric}
-              status={benchStatus} defaultExpanded={benchStatus !== 'green'}>
-              <BenchmarkComparison summary={results.summary} />
-            </CollapsibleSection>
+              <CollapsibleSection id='liquidity' title='Liquidity stress analysis' metric={liquidityMetric}
+                status={liquidityStatus} defaultExpanded={liquidityStatus !== 'green'}>
+                <LiquidityPanel positions={results.positions} />
+              </CollapsibleSection>
 
-            <CollapsibleSection id='liquidity' title='Liquidity stress analysis' metric={liquidityMetric}
-              status={liquidityStatus} defaultExpanded={liquidityStatus !== 'green'}>
-              <LiquidityPanel positions={results.positions} />
-            </CollapsibleSection>
+              <CollapsibleSection id='monte-carlo' title='Monte Carlo simulation' metric='1,000 simulation paths'
+                status='gray' defaultExpanded={false}>
+                <MonteCarlo
+                  portfolioValue={results.summary.total_value}
+                  stressedValue={results.summary.stressed_value}
+                />
+              </CollapsibleSection>
+            </SectionGroup>
 
-            <CollapsibleSection id='client' title='Client impact analysis' metric={clientMetric}
-              status={clientStatus} defaultExpanded={clientStatus !== 'green'}>
-              <ClientImpact
-                portfolioValue={results.summary.total_value}
-                stressedValue={results.summary.stressed_value}
-              />
-            </CollapsibleSection>
+            {/* ── Goals group ── */}
+            <SectionGroup label='Goals'>
+              <CollapsibleSection id='client' title='Client impact & retirement' metric={clientMetric}
+                status={clientStatus} defaultExpanded={clientStatus !== 'green'}>
+                <ClientImpact
+                  portfolioValue={results.summary.total_value}
+                  stressedValue={results.summary.stressed_value}
+                />
+              </CollapsibleSection>
 
-            <CollapsibleSection id='rebalancing' title='Rebalancing recommendations' metric={rebalMetric}
-              status={rebalStatus} defaultExpanded={rebalStatus !== 'green'}>
-              <RebalancingPanel results={results} />
-            </CollapsibleSection>
+              <CollapsibleSection id='tax' title='Tax impact' metric='Opportunities available'
+                status='blue' defaultExpanded={false}>
+                <TaxImpact results={results} />
+              </CollapsibleSection>
+            </SectionGroup>
 
-            <CollapsibleSection id='tax' title='Tax impact' metric='Opportunities available'
-              status='blue' defaultExpanded={false}>
-              <TaxImpact results={results} />
-            </CollapsibleSection>
+            {/* ── Action group ── */}
+            <SectionGroup label='Action'>
+              <CollapsibleSection id='rebalancing' title='Rebalancing recommendations' metric={rebalMetric}
+                status={rebalStatus} defaultExpanded={rebalStatus !== 'green'}>
+                <RebalancingPanel results={results} />
+              </CollapsibleSection>
 
-            <CollapsibleSection id='monte-carlo' title='Monte Carlo simulation' metric='1,000 simulation paths'
-              status='gray' defaultExpanded={false}>
-              <MonteCarlo
-                portfolioValue={results.summary.total_value}
-                stressedValue={results.summary.stressed_value}
-              />
-            </CollapsibleSection>
+              <CollapsibleSection id='benchmark' title='Benchmark comparison' metric={benchMetric}
+                status={benchStatus} defaultExpanded={benchStatus !== 'green'}>
+                <BenchmarkComparison summary={results.summary} />
+              </CollapsibleSection>
 
+              <CollapsibleSection id='explanation' title='AI analysis' metric={`${sevLabel} scenario`}
+                status={aiStatus} defaultExpanded={aiStatus !== 'green'}>
+                <ExplanationPanel explanation={results.explanation} />
+              </CollapsibleSection>
+            </SectionGroup>
+
+            {/* ── Positions standalone ── */}
             <CollapsibleSection id='positions' title='Position detail' metric={positionMetric}
               status={positionStatus} defaultExpanded={positionStatus !== 'green'}>
               <PositionTable positions={results.positions} />
-            </CollapsibleSection>
-
-            <CollapsibleSection id='explanation' title='AI analysis' metric={`${sevLabel} scenario`}
-              status={aiStatus} defaultExpanded={aiStatus !== 'green'}>
-              <ExplanationPanel explanation={results.explanation} />
             </CollapsibleSection>
 
           </div>
