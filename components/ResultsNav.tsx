@@ -79,14 +79,14 @@ export default function ResultsNav() {
   }
 
   return (
-    <div ref={navRef} className='sticky top-0 z-50 bg-[#0A0F1E]/95 backdrop-blur-md
+    <div ref={navRef} className='sticky top-0 z-50 bg-[#191c1f]/95 backdrop-blur-md
       border-b border-white/8 px-6 py-2'>
       <div className='max-w-7xl mx-auto flex items-center gap-3'>
 
         <Link href='/' className='flex items-center gap-1.5 shrink-0 mr-1
           text-gray-400 hover:text-white transition-colors group'>
           <ArrowLeft size={13} className='group-hover:-translate-x-0.5 transition-transform' />
-          <div className='w-5 h-5 bg-blue-600 rounded flex items-center justify-center'>
+          <div className='w-5 h-5 bg-[#494fdf] rounded flex items-center justify-center'>
             <TrendingDown size={11} className='text-white' />
           </div>
           <span className='text-xs font-semibold text-white hidden sm:block'>
@@ -109,7 +109,7 @@ export default function ResultsNav() {
                 }`}>
               {SECTION_LABELS[id]}
               {active === id && (
-                <span className='absolute bottom-0 left-2 right-2 h-0.5 bg-blue-400 rounded-full' />
+                <span className='absolute bottom-0 left-2 right-2 h-0.5 bg-[#494fdf] rounded-full' />
               )}
             </button>
           ))}

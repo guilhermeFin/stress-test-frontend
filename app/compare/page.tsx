@@ -10,7 +10,7 @@ import {
 import Link from 'next/link'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  RadarChart, Radar, PolarGrid, PolarAngleAxis, Cell
+  RadarChart, Radar, PolarGrid, PolarAngleAxis,
 } from 'recharts'
 
 const TOOLTIP_STYLE = {
@@ -36,17 +36,17 @@ function DropZone({ label, file, onDrop }: {
       {...getRootProps()}
       className={`border-2 border-dashed rounded-2xl p-6 text-center
         cursor-pointer transition-all
-        ${isDragActive ? 'border-blue-500 bg-blue-500/10'
-          : file ? 'border-green-500/50 bg-green-500/5'
+        ${isDragActive ? 'border-[#494fdf] bg-[#494fdf]/10'
+          : file ? 'border-[#00a87e]/50 bg-[#00a87e]/5'
           : 'border-white/10 hover:border-white/20'}`}>
       <input {...getInputProps()} />
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center
-        mx-auto mb-2 ${file ? 'bg-green-500/20' : 'bg-white/5'}`}>
-        <Upload size={18} className={file ? 'text-green-400' : 'text-gray-500'} />
+        mx-auto mb-2 ${file ? 'bg-[#00a87e]/20' : 'bg-white/5'}`}>
+        <Upload size={18} className={file ? 'text-[#00a87e]' : 'text-gray-500'} />
       </div>
       <p className='text-xs text-gray-400 font-medium mb-1'>{label}</p>
       {file
-        ? <p className='text-green-400 text-xs font-medium'>{file.name}</p>
+        ? <p className='text-[#00a87e] text-xs font-medium'>{file.name}</p>
         : <p className='text-gray-600 text-xs'>Drop .xlsx here</p>
       }
     </div>
@@ -59,24 +59,24 @@ function MetricCompare({ label, a, b, format = (v: number) => v.toFixed(1) + '%'
 
   return (
     <div className='bg-white/3 rounded-xl p-4 border border-white/8'>
-      <p className='text-xs text-gray-500 mb-3'>{label}</p>
+      <p className='text-xs text-[#8d969e] mb-3'>{label}</p>
       <div className='grid grid-cols-2 gap-3'>
-        <div className={`rounded-lg p-3 text-center ${!aWins ? 'bg-green-950/50 border border-green-800' : 'bg-white/5'}`}>
-          <div className={`text-xl font-bold ${!aWins ? 'text-green-400' : 'text-red-400'}`}>
+        <div className={`rounded-lg p-3 text-center ${!aWins ? 'bg-[#00a87e]/10 border border-[#00a87e]/30' : 'bg-white/5'}`}>
+          <div className={`text-xl font-bold ${!aWins ? 'text-[#00a87e]' : 'text-[#e23b4a]'}`}>
             {format(a)}
           </div>
-          <div className='text-xs text-gray-500 mt-1'>Portfolio A</div>
-          {!aWins && <div className='text-xs text-green-400 mt-1'>✓ Better</div>}
+          <div className='text-xs text-[#8d969e] mt-1'>Portfolio A</div>
+          {!aWins && <div className='text-xs text-[#00a87e] mt-1'>✓ Better</div>}
         </div>
-        <div className={`rounded-lg p-3 text-center ${aWins ? 'bg-green-950/50 border border-green-800' : 'bg-white/5'}`}>
-          <div className={`text-xl font-bold ${aWins ? 'text-green-400' : 'text-red-400'}`}>
+        <div className={`rounded-lg p-3 text-center ${aWins ? 'bg-[#00a87e]/10 border border-[#00a87e]/30' : 'bg-white/5'}`}>
+          <div className={`text-xl font-bold ${aWins ? 'text-[#00a87e]' : 'text-[#e23b4a]'}`}>
             {format(b)}
           </div>
-          <div className='text-xs text-gray-500 mt-1'>Portfolio B</div>
-          {aWins && <div className='text-xs text-green-400 mt-1'>✓ Better</div>}
+          <div className='text-xs text-[#8d969e] mt-1'>Portfolio B</div>
+          {aWins && <div className='text-xs text-[#00a87e] mt-1'>✓ Better</div>}
         </div>
       </div>
-      <div className='mt-2 text-center text-xs text-gray-600'>
+      <div className='mt-2 text-center text-xs text-[#505a63]'>
         Difference: {format(diff)}
       </div>
     </div>
@@ -86,23 +86,23 @@ function MetricCompare({ label, a, b, format = (v: number) => v.toFixed(1) + '%'
 function WinnerBadge({ results }: { results: { a: StressTestResult; b: StressTestResult } }) {
   const aLoss = results.a.summary.total_loss_pct
   const bLoss = results.b.summary.total_loss_pct
-  const aWins = aLoss > bLoss // less negative = better
+  const aWins = aLoss > bLoss
 
   const fmt = (n: number) => new Intl.NumberFormat('en-US', {
     style: 'currency', currency: 'USD', maximumFractionDigits: 0
   }).format(n)
 
   return (
-    <div className='bg-green-950/30 border border-green-800/40 rounded-2xl p-6 text-center'>
-      <Trophy size={32} className='text-yellow-400 mx-auto mb-3' />
-      <p className='text-sm text-gray-400 mb-1'>More Resilient Portfolio</p>
-      <p className='text-3xl font-bold text-white mb-2'>
+    <div className='bg-[#00a87e]/10 border border-[#00a87e]/30 rounded-2xl p-6 text-center'>
+      <Trophy size={32} className='text-[#b09000] mx-auto mb-3' />
+      <p className='text-sm text-[#8d969e] mb-1'>More Resilient Portfolio</p>
+      <p className='text-3xl font-medium text-white mb-2'>
         Portfolio {aWins ? 'A' : 'B'}
       </p>
-      <p className='text-green-400 text-sm'>
+      <p className='text-[#00a87e] text-sm'>
         {Math.abs(aLoss - bLoss).toFixed(1)}% less loss under stress
       </p>
-      <p className='text-gray-500 text-xs mt-2'>
+      <p className='text-[#505a63] text-xs mt-2'>
         Saves {fmt(Math.abs(
           results.a.summary.stressed_value - results.b.summary.stressed_value
         ))} in stressed value
@@ -146,7 +146,6 @@ export default function ComparePage() {
     style: 'currency', currency: 'USD', maximumFractionDigits: 0
   }).format(n)
 
-  // Chart data
   const barData = results ? [
     {
       name: 'Portfolio Value',
@@ -207,24 +206,18 @@ export default function ComparePage() {
   ] : []
 
   return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white'>
-      <div className='fixed inset-0 overflow-hidden pointer-events-none'>
-        <div className='absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px]
-          bg-blue-950/25 rounded-full blur-3xl' />
-      </div>
-
-      <div className='relative max-w-6xl mx-auto px-6 py-10'>
+    <main className='min-h-screen bg-[#191c1f] text-white'>
+      <div className='max-w-6xl mx-auto px-6 py-10'>
 
         {/* Header */}
         <div className='flex items-center justify-between mb-10'>
           <div className='flex items-center gap-3'>
-            <div className='w-9 h-9 bg-blue-600 rounded-xl flex items-center
-              justify-center'>
+            <div className='w-9 h-9 bg-[#494fdf] rounded-xl flex items-center justify-center'>
               <TrendingDown size={18} className='text-white' />
             </div>
-            <span className='font-bold text-lg tracking-tight'>PortfolioStress</span>
+            <span className='font-medium text-lg'>PortfolioStress</span>
           </div>
-          <Link href='/' className='flex items-center gap-2 text-sm text-gray-400
+          <Link href='/' className='flex items-center gap-2 text-sm text-[#8d969e]
             hover:text-white transition-colors'>
             <ArrowLeft size={14} />
             Back to home
@@ -234,24 +227,23 @@ export default function ComparePage() {
         {/* Title */}
         <div className='mb-10'>
           <div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full
-            bg-purple-500/10 border border-purple-500/20 text-purple-400
+            bg-[#494fdf]/10 border border-[#494fdf]/20 text-[#494fdf]
             text-xs font-medium mb-4'>
             <Shield size={12} />
             Portfolio Comparison
           </div>
-          <h1 className='text-4xl font-bold tracking-tight mb-3
-            bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent'>
+          <h1 className='font-medium text-white mb-3'
+            style={{ fontSize: 'clamp(28px, 4vw, 48px)', lineHeight: '1.1', letterSpacing: '-0.8px' }}>
             Which portfolio<br />survives the storm?
           </h1>
-          <p className='text-gray-400 text-base max-w-lg'>
+          <p className='text-[#8d969e] text-base max-w-lg' style={{ letterSpacing: '0.16px' }}>
             Upload two portfolios, run the same stress scenario, and see
             side-by-side which one is more resilient.
           </p>
         </div>
 
         {/* Input card */}
-        <div className='bg-white/3 border border-white/8 rounded-3xl p-6
-          backdrop-blur-sm mb-8'>
+        <div className='bg-white/4 border border-white/10 rounded-3xl p-6 mb-8'>
 
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-5'>
             <DropZone label='Portfolio A' file={fileA} onDrop={setFileA} />
@@ -259,7 +251,7 @@ export default function ComparePage() {
           </div>
 
           <div className='mb-4'>
-            <label className='block text-xs text-gray-400 font-medium mb-2'>
+            <label className='block text-xs text-[#8d969e] font-medium mb-2'>
               Stress scenario (same for both)
             </label>
             <textarea
@@ -267,7 +259,7 @@ export default function ComparePage() {
               onChange={e => setScenario(e.target.value)}
               className='w-full bg-white/3 border border-white/10 rounded-xl p-4
                 text-white placeholder-gray-600 resize-none focus:outline-none
-                focus:border-blue-500/50 text-sm transition-all'
+                focus:border-[#494fdf]/50 text-sm transition-all'
               rows={2}
               placeholder='e.g. Market crashes 30%, rates rise 2%, tech sector drops 50%'
             />
@@ -277,16 +269,16 @@ export default function ComparePage() {
             {SAMPLE_SCENARIOS.map(s => (
               <button key={s} onClick={() => setScenario(s)}
                 className='text-xs bg-white/3 hover:bg-white/8 border border-white/8
-                  hover:border-white/15 text-gray-400 hover:text-gray-200
-                  px-3 py-1.5 rounded-lg transition-all'>
+                  hover:border-white/15 text-[#8d969e] hover:text-gray-200
+                  px-3 py-1.5 rounded-full transition-all'>
                 {s.split(':')[0].split(',')[0]}
               </button>
             ))}
           </div>
 
           {error && (
-            <div className='mb-4 flex items-center gap-2 text-red-400 text-sm
-              bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3'>
+            <div className='mb-4 flex items-center gap-2 text-[#e23b4a] text-sm
+              bg-[#e23b4a]/10 border border-[#e23b4a]/20 rounded-xl px-4 py-3'>
               <AlertCircle size={14} />
               {error}
             </div>
@@ -295,10 +287,10 @@ export default function ComparePage() {
           <button
             onClick={handleCompare}
             disabled={loading}
-            className='w-full py-3.5 rounded-2xl font-semibold text-sm
-              transition-all duration-150 active:scale-[0.98] disabled:opacity-50
-              bg-blue-600 hover:bg-blue-500 active:bg-blue-700
-              shadow-lg shadow-blue-900/40'>
+            className='w-full py-4 rounded-full font-medium text-sm
+              transition-opacity duration-150 active:scale-[0.98]
+              disabled:opacity-50 disabled:cursor-not-allowed
+              bg-[#494fdf] hover:opacity-85'>
             {loading ? (
               <span className='flex items-center justify-center gap-2'>
                 <span className='w-4 h-4 border-2 border-white/30 border-t-white
@@ -318,12 +310,10 @@ export default function ComparePage() {
         {results && (
           <div className='space-y-6'>
 
-            {/* Winner */}
             <WinnerBadge results={results} />
 
-            {/* Key metrics comparison */}
             <div>
-              <h2 className='section-header'>Key metrics</h2>
+              <h2 className='text-sm font-medium text-[#8d969e] uppercase tracking-wider mb-4'>Key metrics</h2>
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                 <MetricCompare
                   label='Total Loss %'
@@ -362,17 +352,11 @@ export default function ComparePage() {
               </div>
             </div>
 
-            {/* Charts */}
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
 
-              {/* Value comparison */}
               <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
-                <h3 className='font-semibold text-gray-200 mb-1'>
-                  Portfolio Value Comparison
-                </h3>
-                <p className='text-xs text-gray-500 mb-4'>
-                  Before and after stress
-                </p>
+                <h3 className='font-medium text-gray-200 mb-1'>Portfolio Value Comparison</h3>
+                <p className='text-xs text-[#8d969e] mb-4'>Before and after stress</p>
                 <ResponsiveContainer width='100%' height={220}>
                   <BarChart data={barData}>
                     <XAxis dataKey='name' tick={{ fill: '#9CA3AF', fontSize: 11 }} />
@@ -383,22 +367,15 @@ export default function ComparePage() {
                       contentStyle={TOOLTIP_STYLE}
                       labelStyle={{ color: '#F9FAFB' }}
                       itemStyle={{ color: '#F9FAFB' }} />
-                    <Bar dataKey='A' name='Portfolio A' fill='#3B82F6'
-                      radius={[4,4,0,0]} />
-                    <Bar dataKey='B' name='Portfolio B' fill='#8B5CF6'
-                      radius={[4,4,0,0]} />
+                    <Bar dataKey='A' name='Portfolio A' fill='#494fdf' radius={[4,4,0,0]} />
+                    <Bar dataKey='B' name='Portfolio B' fill='#8B5CF6' radius={[4,4,0,0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
-              {/* Loss by position */}
               <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
-                <h3 className='font-semibold text-gray-200 mb-1'>
-                  Loss by Position (%)
-                </h3>
-                <p className='text-xs text-gray-500 mb-4'>
-                  Top 8 positions compared
-                </p>
+                <h3 className='font-medium text-gray-200 mb-1'>Loss by Position (%)</h3>
+                <p className='text-xs text-[#8d969e] mb-4'>Top 8 positions compared</p>
                 <ResponsiveContainer width='100%' height={220}>
                   <BarChart data={lossBarData} layout='vertical'>
                     <XAxis type='number' tick={{ fill: '#6B7280', fontSize: 11 }} />
@@ -409,68 +386,50 @@ export default function ComparePage() {
                       contentStyle={TOOLTIP_STYLE}
                       labelStyle={{ color: '#F9FAFB' }}
                       itemStyle={{ color: '#F9FAFB' }} />
-                    <Bar dataKey='A' name='Portfolio A' fill='#3B82F6'
-                      radius={[0,4,4,0]} />
-                    <Bar dataKey='B' name='Portfolio B' fill='#8B5CF6'
-                      radius={[0,4,4,0]} />
+                    <Bar dataKey='A' name='Portfolio A' fill='#494fdf' radius={[0,4,4,0]} />
+                    <Bar dataKey='B' name='Portfolio B' fill='#8B5CF6' radius={[0,4,4,0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Radar comparison */}
             <div className='bg-white/3 rounded-2xl p-6 border border-white/8'>
-              <h3 className='font-semibold text-gray-200 mb-1'>
-                Risk Profile Radar
-              </h3>
-              <p className='text-xs text-gray-500 mb-4'>
-                Multi-dimensional risk comparison — smaller area = less risk
-              </p>
+              <h3 className='font-medium text-gray-200 mb-1'>Risk Profile Radar</h3>
+              <p className='text-xs text-[#8d969e] mb-4'>Multi-dimensional risk comparison — smaller area = less risk</p>
               <ResponsiveContainer width='100%' height={300}>
                 <RadarChart data={radarData}>
                   <PolarGrid stroke='#374151' />
-                  <PolarAngleAxis dataKey='metric'
-                    tick={{ fill: '#9CA3AF', fontSize: 11 }} />
+                  <PolarAngleAxis dataKey='metric' tick={{ fill: '#9CA3AF', fontSize: 11 }} />
                   <Radar name='Portfolio A' dataKey='A'
-                    stroke='#3B82F6' fill='#3B82F6' fillOpacity={0.25} />
+                    stroke='#494fdf' fill='#494fdf' fillOpacity={0.25} />
                   <Radar name='Portfolio B' dataKey='B'
                     stroke='#8B5CF6' fill='#8B5CF6' fillOpacity={0.25} />
                 </RadarChart>
               </ResponsiveContainer>
               <div className='flex items-center gap-6 justify-center mt-2'>
                 <div className='flex items-center gap-2'>
-                  <div className='w-3 h-3 rounded-full bg-blue-500' />
-                  <span className='text-xs text-gray-400'>Portfolio A</span>
+                  <div className='w-3 h-3 rounded-full bg-[#494fdf]' />
+                  <span className='text-xs text-[#8d969e]'>Portfolio A</span>
                 </div>
                 <div className='flex items-center gap-2'>
                   <div className='w-3 h-3 rounded-full bg-purple-500' />
-                  <span className='text-xs text-gray-400'>Portfolio B</span>
+                  <span className='text-xs text-[#8d969e]'>Portfolio B</span>
                 </div>
               </div>
             </div>
 
-            {/* Position comparison table */}
-            <div className='bg-white/3 rounded-2xl border border-white/8
-              overflow-hidden'>
+            <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
               <div className='p-5 pb-3'>
-                <h3 className='font-semibold text-gray-200'>
-                  Position-by-Position Comparison
-                </h3>
-                <p className='text-xs text-gray-500 mt-1'>
-                  Common positions across both portfolios
-                </p>
+                <h3 className='font-medium text-gray-200'>Position-by-Position Comparison</h3>
+                <p className='text-xs text-[#8d969e] mt-1'>Common positions across both portfolios</p>
               </div>
               <div className='overflow-x-auto'>
                 <table className='w-full text-sm'>
-                  <thead className='bg-white/5 text-gray-400 text-xs'>
+                  <thead className='bg-white/5 text-[#8d969e] text-xs'>
                     <tr>
                       <th className='px-4 py-3 text-left'>Ticker</th>
-                      <th className='px-4 py-3 text-right text-blue-400'>
-                        A Loss %
-                      </th>
-                      <th className='px-4 py-3 text-right text-purple-400'>
-                        B Loss %
-                      </th>
+                      <th className='px-4 py-3 text-right text-[#494fdf]'>A Loss %</th>
+                      <th className='px-4 py-3 text-right text-purple-400'>B Loss %</th>
                       <th className='px-4 py-3 text-right'>Difference</th>
                       <th className='px-4 py-3 text-center'>Winner</th>
                     </tr>
@@ -479,38 +438,32 @@ export default function ComparePage() {
                     {results.a.positions
                       .sort((a, b) => a.loss_pct - b.loss_pct)
                       .map((posA, i) => {
-                        const posB = results.b.positions.find(
-                          p => p.ticker === posA.ticker
-                        )
+                        const posB = results.b.positions.find(p => p.ticker === posA.ticker)
                         if (!posB) return null
                         const diff = posA.loss_pct - posB.loss_pct
                         const aWins = posA.loss_pct > posB.loss_pct
                         return (
                           <tr key={posA.ticker}
-                            className={`border-t border-white/6
-                              hover:bg-white/4
+                            className={`border-t border-white/6 hover:bg-white/4
                               ${i % 2 === 0 ? '' : 'bg-white/2'}`}>
-                            <td className='px-4 py-3 font-medium text-white'>
-                              {posA.ticker}
-                            </td>
-                            <td className='px-4 py-3 text-right text-blue-400'>
+                            <td className='px-4 py-3 font-medium text-white'>{posA.ticker}</td>
+                            <td className='px-4 py-3 text-right text-[#494fdf]'>
                               {posA.loss_pct.toFixed(1)}%
                             </td>
                             <td className='px-4 py-3 text-right text-purple-400'>
                               {posB.loss_pct.toFixed(1)}%
                             </td>
                             <td className={`px-4 py-3 text-right text-xs font-medium
-                              ${Math.abs(diff) < 0.5 ? 'text-gray-500'
-                                : diff > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              ${Math.abs(diff) < 0.5 ? 'text-[#505a63]'
+                                : diff > 0 ? 'text-[#00a87e]' : 'text-[#e23b4a]'}`}>
                               {diff > 0 ? '+' : ''}{diff.toFixed(1)}%
                             </td>
                             <td className='px-4 py-3 text-center'>
                               {Math.abs(diff) < 0.5
-                                ? <span className='text-xs text-gray-500'>Tied</span>
-                                : <span className={`text-xs font-bold px-2 py-0.5
-                                    rounded-full
+                                ? <span className='text-xs text-[#505a63]'>Tied</span>
+                                : <span className={`text-xs font-medium px-2 py-0.5 rounded-full
                                     ${aWins
-                                      ? 'bg-blue-900/50 text-blue-400'
+                                      ? 'bg-[#494fdf]/20 text-[#494fdf]'
                                       : 'bg-purple-900/50 text-purple-400'
                                     }`}>
                                     {aWins ? 'A' : 'B'}
@@ -525,22 +478,19 @@ export default function ComparePage() {
               </div>
             </div>
 
-            {/* CTA to run full analysis */}
-            <div className='bg-blue-950/40 border border-blue-800 rounded-2xl
+            <div className='bg-[#494fdf]/10 border border-[#494fdf]/30 rounded-2xl
               p-5 flex items-center justify-between'>
               <div>
-                <p className='text-blue-300 font-medium text-sm'>
-                  Want the full analysis?
-                </p>
-                <p className='text-blue-400/70 text-xs mt-0.5'>
+                <p className='text-[#494fdf] font-medium text-sm'>Want the full analysis?</p>
+                <p className='text-[#494fdf]/70 text-xs mt-0.5'>
                   Run a complete stress test with factor model, correlation
                   breakdown, and AI memo on the winning portfolio.
                 </p>
               </div>
               <Link href='/upload'
-                className='flex items-center gap-2 px-4 py-2 rounded-xl
-                  bg-blue-600 hover:bg-blue-500 text-white text-sm
-                  font-medium transition-all whitespace-nowrap ml-4'>
+                className='flex items-center gap-2 px-5 py-2.5 rounded-full
+                  bg-[#494fdf] hover:opacity-85 text-white text-sm
+                  font-medium transition-opacity whitespace-nowrap ml-4'>
                 Full Analysis
                 <ChevronRight size={14} />
               </Link>

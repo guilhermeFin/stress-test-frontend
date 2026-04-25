@@ -28,7 +28,7 @@ const HISTORICAL_SCENARIOS = [
   {
     key: 'rate',
     label: '2022 Rate Shock',
-    badge: 'bg-blue-900/50 text-blue-400',
+    badge: 'bg-[#494fdf]/20 text-[#494fdf]',
     severity: 'Severe',
     text: '2022 rate shock: Fed raises rates 425bps, bonds crash 15%, tech drops 35%, inflation hits 9%, growth stocks fall 50%',
   },
@@ -124,7 +124,6 @@ export default function HouseholdPage() {
 
       if (!rows.length) { setError('No valid positions found. Use format: AAPL 40 MSFT 30'); return }
 
-      // Re-normalise weights to sum to 100
       const wSum = rows.reduce((s, r) => s + (r.weight as number), 0)
       rows.forEach(r => { r.weight = parseFloat(((r.weight as number) / wSum * 100).toFixed(2)) })
 
@@ -162,29 +161,23 @@ export default function HouseholdPage() {
   }
 
   return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white'>
-
-      <div className='fixed inset-0 overflow-hidden pointer-events-none'>
-        <div className='absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px]
-          bg-blue-950/25 rounded-full blur-3xl' />
-      </div>
-
-      <div className='relative max-w-3xl mx-auto px-6 py-12'>
+    <main className='min-h-screen bg-[#191c1f] text-white'>
+      <div className='max-w-3xl mx-auto px-6 py-12'>
 
         {/* Header */}
         <div className='flex items-center justify-between mb-14'>
           <div className='flex items-center gap-3'>
-            <Link href='/upload' className='flex items-center gap-2 text-gray-400
+            <Link href='/upload' className='flex items-center gap-2 text-[#8d969e]
               hover:text-white transition-colors'>
               <ArrowLeft size={14} />
             </Link>
-            <div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center'>
-              <TrendingDown size={15} className='text-white' />
+            <div className='w-9 h-9 bg-[#494fdf] rounded-xl flex items-center justify-center'>
+              <TrendingDown size={18} className='text-white' />
             </div>
-            <span className='font-bold tracking-tight'>PortfolioStress</span>
+            <span className='font-medium'>PortfolioStress</span>
           </div>
           <Link href='/upload'
-            className='text-sm text-gray-400 hover:text-white transition-colors'>
+            className='text-sm text-[#8d969e] hover:text-white transition-colors'>
             Single portfolio →
           </Link>
         </div>
@@ -192,28 +185,27 @@ export default function HouseholdPage() {
         {/* Hero */}
         <div className='mb-8'>
           <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-            bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-5'>
+            bg-[#494fdf]/10 border border-[#494fdf]/20 text-[#494fdf] text-xs font-medium mb-5'>
             <Users size={11} />
             Household / Multi-Account View
           </div>
-          <h1 className='text-4xl font-bold tracking-tight mb-3
-            bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent'>
+          <h1 className='font-medium text-white mb-3'
+            style={{ fontSize: 'clamp(28px, 4vw, 48px)', lineHeight: '1.1', letterSpacing: '-0.8px' }}>
             Stress test the whole household
           </h1>
-          <p className='text-gray-400 leading-relaxed'>
+          <p className='text-[#8d969e] leading-relaxed' style={{ letterSpacing: '0.16px' }}>
             Add all accounts — brokerage, IRA, 401(k), trusts — and see the combined
             stress impact across the entire household.
           </p>
         </div>
 
-
         {/* Total AUM indicator */}
         {totalAum > 0 && (
           <div className='flex items-center gap-3 bg-white/3 border border-white/8
             rounded-xl px-5 py-3 mb-5'>
-            <Briefcase size={15} className='text-blue-400 shrink-0' />
-            <span className='text-sm text-gray-400'>Total household AUM</span>
-            <span className='text-sm font-bold text-white ml-auto'>
+            <Briefcase size={15} className='text-[#494fdf] shrink-0' />
+            <span className='text-sm text-[#8d969e]'>Total household AUM</span>
+            <span className='text-sm font-medium text-white ml-auto'>
               {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(totalAum)}
             </span>
           </div>
@@ -225,8 +217,8 @@ export default function HouseholdPage() {
             <div key={account.id}
               className='bg-white/3 border border-white/8 rounded-2xl overflow-hidden'>
               <div className='flex items-center gap-3 px-5 py-3.5 border-b border-white/8'>
-                <div className='w-6 h-6 bg-blue-600/20 rounded-lg flex items-center
-                  justify-center shrink-0 text-xs font-bold text-blue-400'>
+                <div className='w-6 h-6 bg-[#494fdf]/20 rounded-lg flex items-center
+                  justify-center shrink-0 text-xs font-medium text-[#494fdf]'>
                   {idx + 1}
                 </div>
                 <input
@@ -238,7 +230,7 @@ export default function HouseholdPage() {
                 />
                 {accounts.length > 1 && (
                   <button onClick={() => removeAccount(account.id)}
-                    className='text-gray-600 hover:text-red-400 transition-colors ml-2'>
+                    className='text-[#505a63] hover:text-[#e23b4a] transition-colors ml-2'>
                     <Trash2 size={14} />
                   </button>
                 )}
@@ -247,35 +239,35 @@ export default function HouseholdPage() {
               <div className='p-5 space-y-4'>
                 <div className='grid grid-cols-2 gap-4'>
                   <div>
-                    <label className='block text-xs text-gray-500 mb-1.5'>Account type</label>
+                    <label className='block text-xs text-[#505a63] mb-1.5'>Account type</label>
                     <select
                       value={account.type}
                       onChange={e => patchAccount(account.id, { type: e.target.value })}
                       className='w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2
-                        text-sm text-white focus:outline-none focus:border-blue-500/50
+                        text-sm text-white focus:outline-none focus:border-[#494fdf]/50
                         appearance-none cursor-pointer'>
                       {ACCOUNT_TYPES.map(t => (
-                        <option key={t} value={t} className='bg-[#1a2035]'>{t}</option>
+                        <option key={t} value={t} className='bg-[#191c1f]'>{t}</option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className='block text-xs text-gray-500 mb-1.5'>Account value (AUM)</label>
+                    <label className='block text-xs text-[#505a63] mb-1.5'>Account value (AUM)</label>
                     <input
                       value={account.aum}
                       onChange={e => patchAccount(account.id, { aum: e.target.value })}
                       placeholder='$250,000'
                       className='w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2
                         text-sm text-white placeholder-gray-600 focus:outline-none
-                        focus:border-blue-500/50'
+                        focus:border-[#494fdf]/50'
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className='block text-xs text-gray-500 mb-1.5'>
+                  <label className='block text-xs text-[#505a63] mb-1.5'>
                     Positions &nbsp;
-                    <span className='text-gray-600'>— TICKER WEIGHT per line, e.g. "AAPL 40 MSFT 30 AMZN 30"</span>
+                    <span className='text-[#505a63]'>— TICKER WEIGHT per line, e.g. "AAPL 40 MSFT 30 AMZN 30"</span>
                   </label>
                   <textarea
                     value={account.positions}
@@ -284,12 +276,12 @@ export default function HouseholdPage() {
                     rows={4}
                     className='w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3
                       text-sm text-white placeholder-gray-600 focus:outline-none
-                      focus:border-blue-500/50 resize-none font-mono'
+                      focus:border-[#494fdf]/50 resize-none font-mono'
                   />
                   {account.positions.trim() && (() => {
                     const parsed = parsePositionsText(account.positions)
                     return parsed.length > 0 ? (
-                      <p className='text-xs text-green-400 mt-1'>
+                      <p className='text-xs text-[#00a87e] mt-1'>
                         {parsed.length} position{parsed.length !== 1 ? 's' : ''} detected
                       </p>
                     ) : null
@@ -300,11 +292,10 @@ export default function HouseholdPage() {
           ))}
         </div>
 
-        {/* Add account */}
         <button
           onClick={addAccount}
           className='w-full py-3 rounded-2xl border border-dashed border-white/10
-            hover:border-white/20 text-sm text-gray-500 hover:text-gray-300
+            hover:border-white/20 text-sm text-[#505a63] hover:text-gray-300
             transition-all flex items-center justify-center gap-2 mb-8'>
           <Plus size={14} />
           Add another account
@@ -312,7 +303,7 @@ export default function HouseholdPage() {
 
         {/* Scenario */}
         <div className='mb-6'>
-          <p className='text-xs text-gray-500 font-medium mb-3 px-1'>Choose a crisis scenario</p>
+          <p className='text-xs text-[#8d969e] font-medium mb-3 px-1'>Choose a crisis scenario</p>
           <div className='grid grid-cols-3 gap-3 mb-4'>
             {HISTORICAL_SCENARIOS.map(s => (
               <button
@@ -324,9 +315,9 @@ export default function HouseholdPage() {
                     : 'bg-white/3 border-white/8 hover:bg-white/5'
                   }`}>
                 <div className='flex items-start justify-between gap-2 mb-2'>
-                  <span className='text-sm font-semibold text-white'>{s.label}</span>
+                  <span className='text-sm font-medium text-white'>{s.label}</span>
                   {activeScenarioKey === s.key && (
-                    <div className='w-4 h-4 bg-blue-600 rounded-full flex items-center
+                    <div className='w-4 h-4 bg-[#494fdf] rounded-full flex items-center
                       justify-center shrink-0'>
                       <div className='w-1.5 h-1.5 bg-white rounded-full' />
                     </div>
@@ -345,13 +336,13 @@ export default function HouseholdPage() {
             rows={2}
             className='w-full bg-white/3 border border-white/10 rounded-xl px-4 py-3
               text-sm text-white placeholder-gray-600 focus:outline-none
-              focus:border-blue-500/50 resize-none'
+              focus:border-[#494fdf]/50 resize-none'
           />
         </div>
 
         {error && (
-          <div className='mb-4 text-sm text-red-400 bg-red-500/10 border
-            border-red-500/20 rounded-xl px-4 py-3'>
+          <div className='mb-4 text-sm text-[#e23b4a] bg-[#e23b4a]/10 border
+            border-[#e23b4a]/20 rounded-xl px-4 py-3'>
             {error}
           </div>
         )}
@@ -359,9 +350,9 @@ export default function HouseholdPage() {
         <button
           onClick={handleRun}
           disabled={loading}
-          className='w-full py-4 rounded-2xl font-semibold text-sm transition-all
+          className='w-full py-4 rounded-full font-medium text-sm transition-opacity
             duration-150 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed
-            bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-900/40'>
+            bg-[#494fdf] hover:opacity-85'>
           {loading ? (
             <span className='flex items-center justify-center gap-2'>
               <span className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
@@ -375,7 +366,7 @@ export default function HouseholdPage() {
           )}
         </button>
 
-        <p className='text-center text-xs text-gray-600 mt-4'>
+        <p className='text-center text-xs text-[#505a63] mt-4'>
           All accounts are combined into a single stress test
         </p>
       </div>

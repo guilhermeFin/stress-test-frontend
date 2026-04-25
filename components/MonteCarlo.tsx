@@ -203,9 +203,9 @@ export default function MonteCarlo({
           <button
             onClick={handleRun}
             disabled={running}
-            className='bg-blue-600 hover:bg-blue-500 active:bg-blue-700 active:scale-[0.98]
-              disabled:opacity-50 text-white font-medium px-6 py-2.5 rounded-xl
-              transition-all duration-150 text-sm'>
+            className='bg-[#494fdf] hover:opacity-85 active:scale-[0.98]
+              disabled:opacity-50 text-white font-medium px-6 py-2.5 rounded-full
+              transition-opacity duration-150 text-sm'>
             {running ? 'Running 1,000 simulations...' : ran ? 'Re-run Simulation' : 'Run Monte Carlo (1,000 paths)'}
           </button>
           {ran && (

@@ -335,10 +335,10 @@ const SmartSummary = memo(function SmartSummary({ results }: { results: StressTe
 
   return (
     <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
-      <div className='bg-[#0f1628] px-4 md:px-6 py-4 border-b border-white/8 flex items-center justify-between'>
+      <div className='bg-white/3 px-4 md:px-6 py-4 border-b border-white/8 flex items-center justify-between'>
         <div className='flex items-center gap-3'>
-          <div className='w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center'>
-            <Brain size={16} className='text-blue-400' />
+          <div className='w-8 h-8 bg-[#494fdf]/20 rounded-lg flex items-center justify-center'>
+            <Brain size={16} className='text-[#494fdf]' />
           </div>
           <div>
             <h2 className='font-semibold text-white tracking-tight'>Smart Risk Summary</h2>
@@ -535,7 +535,7 @@ const ClientView = memo(function ClientView({ results }: { results: StressTestRe
         flex flex-col sm:flex-row items-center gap-5 sm:gap-8'>
         <div className='shrink-0 w-28 h-28 rounded-full flex items-center justify-center'
           style={{ background: `conic-gradient(${healthColor} ${healthScore * 10}%, rgba(255,255,255,0.06) 0)` }}>
-          <div className='w-20 h-20 rounded-full bg-[#0A0F1E] flex flex-col items-center justify-center'>
+          <div className='w-20 h-20 rounded-full bg-[#191c1f] flex flex-col items-center justify-center'>
             <span className='text-2xl font-black text-white'>{healthScore.toFixed(1)}</span>
             <span className='text-xs text-gray-400'>/10</span>
           </div>
@@ -594,20 +594,20 @@ const ClientView = memo(function ClientView({ results }: { results: StressTestRe
       </div>
 
       {explanation?.client_explanation && (
-        <div className='bg-blue-950/40 border border-blue-800 rounded-3xl p-5 md:p-8'>
+        <div className='bg-[#494fdf]/10 border border-[#494fdf]/30 rounded-3xl p-5 md:p-8'>
           <div className='flex items-center gap-3 mb-4'>
-            <div className='w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center'>
-              <Brain size={16} className='text-blue-400' />
+            <div className='w-8 h-8 bg-[#494fdf]/20 rounded-lg flex items-center justify-center'>
+              <Brain size={16} className='text-[#494fdf]' />
             </div>
-            <p className='text-blue-300 font-semibold text-lg'>What this means for you</p>
+            <p className='text-[#494fdf] font-medium text-lg'>What this means for you</p>
           </div>
-          <p className='text-blue-100/90 text-lg leading-relaxed whitespace-pre-line'>
+          <p className='text-white/90 text-lg leading-relaxed whitespace-pre-line'>
             {explanation.client_explanation}
           </p>
           {explanation.suggestions && (
-            <div className='mt-6 pt-6 border-t border-blue-800/50'>
-              <p className='text-blue-300 font-semibold mb-3'>Suggested next steps</p>
-              <p className='text-blue-100/80 text-base leading-relaxed whitespace-pre-line'>
+            <div className='mt-6 pt-6 border-t border-[#494fdf]/30'>
+              <p className='text-[#494fdf] font-medium mb-3'>Suggested next steps</p>
+              <p className='text-white/80 text-base leading-relaxed whitespace-pre-line'>
                 {explanation.suggestions}
               </p>
             </div>
@@ -909,7 +909,7 @@ export default function ResultsPage() {
   }, [results])
 
   if (!results) return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white flex items-center justify-center'>
+    <main className='min-h-screen bg-[#191c1f] text-white flex items-center justify-center'>
       <p className='text-gray-400 text-sm'>No results found.{' '}
         <Link href='/upload' className='text-blue-400 hover:underline'>Run a stress test</Link>
       </p>
@@ -929,7 +929,7 @@ export default function ResultsPage() {
   const goalColor = goalOk ? 'text-green-400' : goalWarn ? 'text-yellow-400' : 'text-red-400'
 
   return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white'>
+    <main className='min-h-screen bg-[#191c1f] text-white'>
 
       {isPresenting && (
         <PresentationMode results={results} profile={profile} onClose={() => setPresenting(false)} />
@@ -938,7 +938,7 @@ export default function ResultsPage() {
       {saveModal.open && (
         <div className='fixed inset-0 z-50 flex items-center justify-center p-4
           bg-black/70 backdrop-blur-sm'>
-          <div className='bg-[#0D1530] border border-white/12 rounded-2xl p-6 w-full max-w-sm shadow-xl'>
+          <div className='bg-[#252830] border border-white/12 rounded-2xl p-6 w-full max-w-sm shadow-xl'>
             <h3 className='text-lg font-semibold text-white mb-1'>Save review</h3>
             <p className='text-xs text-gray-500 mb-5'>
               Saved reviews appear in{' '}
@@ -965,8 +965,8 @@ export default function ResultsPage() {
               <button
                 onClick={handleSaveReview}
                 disabled={!saveModal.clientName.trim() || saveModal.saving}
-                className='flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500
-                  text-sm text-white font-semibold transition-all
+                className='flex-1 py-2.5 rounded-full bg-[#494fdf] hover:opacity-85
+                  text-sm text-white font-medium transition-opacity
                   disabled:opacity-50 disabled:cursor-not-allowed'>
                 Save
               </button>
@@ -978,7 +978,7 @@ export default function ResultsPage() {
       {view === 'advisor' && <ResultsNav />}
 
       {/* Toggle bar + sticky summary */}
-      <div className={`sticky top-0 z-40 bg-[#0A0F1E]/95 backdrop-blur
+      <div className={`sticky top-0 z-40 bg-[#191c1f]/95 backdrop-blur
         ${view === 'advisor' ? 'border-b border-white/6' : 'border-b border-white/6 shadow-lg shadow-black/40'}`}>
         <div className='max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between'>
           <div className='flex items-center gap-1 bg-white/5 rounded-xl p-1 border border-white/8'>
@@ -994,7 +994,7 @@ export default function ResultsPage() {
               onClick={() => setView('client')}
               className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium
                 transition-all duration-200
-                ${view === 'client' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}>
+                ${view === 'client' ? 'bg-[#494fdf] text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}>
               <Users size={14} />
               <span className='hidden sm:inline'>Client view</span>
             </button>
