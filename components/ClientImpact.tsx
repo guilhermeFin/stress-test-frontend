@@ -334,11 +334,11 @@ export default function ClientImpact({
                 <select
                   value={profile.riskTolerance}
                   onChange={e => set('riskTolerance')(e.target.value)}
-                  className='w-full bg-white/5 border border-white/10 rounded-lg
+                  className='w-full bg-[#0d1528] border border-white/10 rounded-lg
                     px-3 py-2 text-white text-sm focus:outline-none'>
-                  <option value='conservative'>Conservative (5% return)</option>
-                  <option value='moderate'>Moderate (7% return)</option>
-                  <option value='aggressive'>Aggressive (9% return)</option>
+                  <option value='conservative' className='bg-[#0d1528] text-white'>Conservative (5% return)</option>
+                  <option value='moderate' className='bg-[#0d1528] text-white'>Moderate (7% return)</option>
+                  <option value='aggressive' className='bg-[#0d1528] text-white'>Aggressive (9% return)</option>
                 </select>
               </div>
             </div>

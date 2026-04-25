@@ -202,12 +202,12 @@ export default function TaxImpact({ results }: { results: StressTestResult }) {
                   onChange={e =>
                     setProfile(prev => ({ ...prev, taxBracket: Number(e.target.value) as TaxProfile['taxBracket'] }))
                   }
-                  className='w-full bg-white/5 border border-white/10 rounded-lg
+                  className='w-full bg-[#0d1528] border border-white/10 rounded-lg
                     px-3 py-2 text-white text-sm focus:outline-none'>
-                  <option value={0.22}>22%</option>
-                  <option value={0.24}>24%</option>
-                  <option value={0.32}>32%</option>
-                  <option value={0.37}>37%</option>
+                  <option value={0.22} className='bg-[#0d1528] text-white'>22%</option>
+                  <option value={0.24} className='bg-[#0d1528] text-white'>24%</option>
+                  <option value={0.32} className='bg-[#0d1528] text-white'>32%</option>
+                  <option value={0.37} className='bg-[#0d1528] text-white'>37%</option>
                 </select>
               </div>
 
@@ -218,11 +218,11 @@ export default function TaxImpact({ results }: { results: StressTestResult }) {
                   onChange={e =>
                     setProfile(prev => ({ ...prev, holdingPeriod: e.target.value as TaxProfile['holdingPeriod'] }))
                   }
-                  className='w-full bg-white/5 border border-white/10 rounded-lg
+                  className='w-full bg-[#0d1528] border border-white/10 rounded-lg
                     px-3 py-2 text-white text-sm focus:outline-none'>
-                  <option value='short'>Short-term (&lt;1 yr)</option>
-                  <option value='long'>Long-term (&gt;1 yr)</option>
-                  <option value='mixed'>Mixed</option>
+                  <option value='short' className='bg-[#0d1528] text-white'>Short-term (&lt;1 yr)</option>
+                  <option value='long' className='bg-[#0d1528] text-white'>Long-term (&gt;1 yr)</option>
+                  <option value='mixed' className='bg-[#0d1528] text-white'>Mixed</option>
                 </select>
               </div>
             </div>
