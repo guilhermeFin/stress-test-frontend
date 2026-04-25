@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   TrendingDown, ArrowLeft, Plus, Trash2,
-  ChevronRight, Users, Briefcase,
+  ChevronRight, Users, Briefcase, Lock, ArrowRight,
 } from 'lucide-react'
 
 const ACCOUNT_TYPES = ['Brokerage', 'IRA', 'Roth IRA', '401(k)', '403(b)', 'Pension', 'Trust', 'Other']
@@ -190,7 +190,7 @@ export default function HouseholdPage() {
         </div>
 
         {/* Hero */}
-        <div className='mb-10'>
+        <div className='mb-8'>
           <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
             bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-5'>
             <Users size={11} />
@@ -204,6 +204,31 @@ export default function HouseholdPage() {
             Add all accounts — brokerage, IRA, 401(k), trusts — and see the combined
             stress impact across the entire household.
           </p>
+        </div>
+
+        {/* Professional plan gate */}
+        <div className='bg-gradient-to-br from-[#0D1530] to-[#0A0F1E]
+          border border-blue-500/20 rounded-2xl p-6 mb-8'>
+          <div className='flex items-start gap-4'>
+            <div className='w-10 h-10 bg-blue-600/20 rounded-xl flex items-center
+              justify-center shrink-0'>
+              <Lock size={18} className='text-blue-400' />
+            </div>
+            <div className='flex-1 min-w-0'>
+              <p className='font-semibold text-white mb-1'>Professional plan feature</p>
+              <p className='text-sm text-gray-400 leading-relaxed'>
+                Household View is available on the Professional plan ($299/mo).
+                This preview lets you explore the interface — upgrade to run live analyses.
+              </p>
+            </div>
+            <Link href='/#pricing'
+              className='flex items-center gap-1.5 px-4 py-2 rounded-xl
+                bg-blue-600 hover:bg-blue-500 text-sm text-white font-semibold
+                transition-all shrink-0 shadow-lg shadow-blue-900/30'>
+              Upgrade
+              <ArrowRight size={13} />
+            </Link>
+          </div>
         </div>
 
         {/* Total AUM indicator */}
