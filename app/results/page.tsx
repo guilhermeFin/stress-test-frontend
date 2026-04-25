@@ -15,7 +15,7 @@ import TaxImpact from '@/components/TaxImpact'
 import MonteCarlo from '@/components/MonteCarlo'
 import FactorModel from '@/components/FactorModel'
 import ResultsNav from '@/components/ResultsNav'
-import { TrendingDown, Landmark, BarChart3, Lightbulb, Brain, Users, Briefcase, CheckCircle, AlertTriangle, XCircle, ArrowRight } from 'lucide-react'
+import { TrendingDown, Landmark, BarChart3, Lightbulb, Brain, Users, Briefcase, CheckCircle, AlertTriangle, XCircle, ArrowRight, ChevronDown } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Cell, ReferenceLine
@@ -400,6 +400,66 @@ function SmartSummary({ results }: { results: StressTestResult }) {
   )
 }
 
+type SectionStatus = 'green' | 'yellow' | 'red' | 'blue' | 'gray'
+
+function CollapsibleSection({
+  id, title, metric, status, defaultExpanded, children,
+}: {
+  id: string
+  title: string
+  metric: string
+  status: SectionStatus
+  defaultExpanded: boolean
+  children: React.ReactNode
+}) {
+  const [open, setOpen] = useState(defaultExpanded)
+
+  const dot = {
+    green:  'bg-green-400',
+    yellow: 'bg-yellow-400',
+    red:    'bg-red-400',
+    blue:   'bg-blue-400',
+    gray:   'bg-gray-500',
+  }[status]
+
+  const badge = {
+    green:  'bg-green-950/50 border-green-800/60 text-green-300',
+    yellow: 'bg-yellow-950/50 border-yellow-800/60 text-yellow-300',
+    red:    'bg-red-950/50 border-red-800/60 text-red-300',
+    blue:   'bg-blue-950/50 border-blue-800/60 text-blue-300',
+    gray:   'bg-white/5 border-white/10 text-gray-400',
+  }[status]
+
+  return (
+    <div id={id} className='rounded-2xl border border-white/8 overflow-hidden'>
+      <button
+        onClick={() => setOpen(o => !o)}
+        className='w-full flex items-center justify-between px-6 py-4 bg-white/3
+          hover:bg-white/5 active:bg-white/6 transition-colors text-left'>
+        <div className='flex items-center gap-3'>
+          <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${dot}`} />
+          <span className='font-semibold text-[1.0625rem] tracking-tight text-gray-100'>
+            {title}
+          </span>
+          <span className={`text-xs px-2.5 py-0.5 rounded-full border ${badge}`}>
+            {metric}
+          </span>
+        </div>
+        <ChevronDown size={16} className={`text-gray-500 shrink-0 transition-transform duration-200
+          ${open ? 'rotate-180' : ''}`} />
+      </button>
+      <div className={`grid transition-all duration-300 ease-in-out
+        ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+        <div className='overflow-hidden'>
+          <div className='p-4 space-y-4 border-t border-white/6'>
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ClientView({ results }: { results: StressTestResult }) {
   const { summary, positions, explanation } = results
 
@@ -632,88 +692,143 @@ export default function ResultsPage() {
       {view === 'client' && <ClientView results={results} />}
 
       {/* ── Advisor view ── */}
-      {view === 'advisor' && (
-      <div className='max-w-7xl mx-auto p-6 space-y-8'>
+      {view === 'advisor' && (() => {
+        // ── Per-section status & headline metric ──────────────────────────────
+        const healthScore   = Math.max(1, Math.min(10, 10 + results.summary.total_loss_pct / 5))
+        const lossPct       = results.summary.total_loss_pct
 
-        <div className='flex justify-between items-start'>
-          <div>
-            <h1 className='text-2xl font-semibold tracking-tight'>Stress test results</h1>
-            <p className='text-gray-500 mt-1 text-sm max-w-2xl leading-relaxed'>
-              {results.summary.scenario_text}
-            </p>
+        // Summary
+        const summaryStatus: SectionStatus = healthScore >= 7 ? 'green' : healthScore >= 5 ? 'yellow' : 'red'
+        const summaryMetric = `${healthScore.toFixed(1)}/10 health`
+
+        // Charts
+        const chartsStatus: SectionStatus = lossPct > -10 ? 'green' : lossPct > -25 ? 'yellow' : 'red'
+        const chartsMetric = `${lossPct.toFixed(1)}% stress loss`
+
+        // Factors — proxy: portfolio-weighted avg beta
+        const avgBeta = results.positions.length
+          ? results.positions.reduce((s, p) => s + (p.beta || 1), 0) / results.positions.length
+          : 1
+        const factorStatus: SectionStatus = avgBeta < 1.0 ? 'green' : avgBeta < 1.3 ? 'yellow' : 'red'
+        const factorMetric = `avg β ${avgBeta.toFixed(2)}`
+
+        // Correlation — proxy: count high-beta positions
+        const highBetaCount = results.positions.filter(p => p.beta > 1.3).length
+        const corrStatus: SectionStatus = highBetaCount === 0 ? 'green' : highBetaCount <= 2 ? 'yellow' : 'red'
+        const corrMetric = `${highBetaCount} high-beta position${highBetaCount !== 1 ? 's' : ''}`
+
+        // Benchmark — rank vs standard benchmarks
+        const bmarks     = getBenchmarkLosses(results.summary.scenario_text)
+        const allLosses  = [lossPct, ...bmarks.map(b => b.loss)].sort((a, b) => b - a)
+        const benchRank  = allLosses.indexOf(lossPct) + 1
+        const benchStatus: SectionStatus = benchRank <= 2 ? 'green' : benchRank === 3 ? 'yellow' : 'red'
+        const benchMetric = `#${benchRank} of ${allLosses.length}`
+
+        // Liquidity — proxy: largest single-position weight
+        const maxWeight = results.positions.length ? Math.max(...results.positions.map(p => p.weight)) : 0
+        const liquidityStatus: SectionStatus = maxWeight < 15 ? 'green' : maxWeight < 30 ? 'yellow' : 'red'
+        const liquidityMetric = `${maxWeight.toFixed(0)}% largest position`
+
+        // Client impact
+        const clientStatus: SectionStatus = lossPct > -15 ? 'green' : lossPct > -30 ? 'yellow' : 'red'
+        const clientMetric = lossPct > -15 ? 'Goals on track' : lossPct > -30 ? 'Goals at risk' : 'Goals impacted'
+
+        // Rebalancing — flagged positions
+        const flaggedCount = results.positions.filter(
+          p => p.loss_pct < -15 || (p.beta > 1.4 && p.loss_pct < -10)
+        ).length
+        const rebalStatus: SectionStatus = flaggedCount === 0 ? 'green' : flaggedCount <= 2 ? 'yellow' : 'red'
+        const rebalMetric = `${flaggedCount} position${flaggedCount !== 1 ? 's' : ''} flagged`
+
+        // High-risk positions
+        const highRiskCount = results.positions.filter(p => p.risk_level === 'High').length
+        const positionStatus: SectionStatus = highRiskCount === 0 ? 'green' : highRiskCount <= 2 ? 'yellow' : 'red'
+        const positionMetric = `${highRiskCount} high-risk position${highRiskCount !== 1 ? 's' : ''}`
+
+        // AI analysis severity
+        const sevLabel  = results.summary.severity_label
+        const aiStatus: SectionStatus = sevLabel === 'Mild' || sevLabel === 'Moderate' ? 'green' : sevLabel === 'Severe' ? 'yellow' : 'red'
+
+        return (
+          <div className='max-w-7xl mx-auto p-6 space-y-3'>
+
+            <div className='mb-2'>
+              <h1 className='text-2xl font-semibold tracking-tight'>Stress test results</h1>
+              <p className='text-gray-500 mt-1 text-sm max-w-2xl leading-relaxed'>
+                {results.summary.scenario_text}
+              </p>
+            </div>
+
+            <CollapsibleSection id='summary' title='Summary' metric={summaryMetric}
+              status={summaryStatus} defaultExpanded={summaryStatus !== 'green'}>
+              <SmartSummary results={results} />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='charts' title='Charts' metric={chartsMetric}
+              status={chartsStatus} defaultExpanded={chartsStatus !== 'green'}>
+              <SummaryCards summary={results.summary} />
+              <StressCharts charts={results.charts} positions={results.positions} />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='factors' title='Factor risk model' metric={factorMetric}
+              status={factorStatus} defaultExpanded={factorStatus !== 'green'}>
+              <FactorModel positions={results.positions} scenarioText={results.summary.scenario_text} />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='correlation' title='Correlation breakdown' metric={corrMetric}
+              status={corrStatus} defaultExpanded={corrStatus !== 'green'}>
+              <CorrelationMatrix positions={results.positions} />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='benchmark' title='Benchmark comparison' metric={benchMetric}
+              status={benchStatus} defaultExpanded={benchStatus !== 'green'}>
+              <BenchmarkComparison summary={results.summary} />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='liquidity' title='Liquidity stress analysis' metric={liquidityMetric}
+              status={liquidityStatus} defaultExpanded={liquidityStatus !== 'green'}>
+              <LiquidityPanel positions={results.positions} />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='client' title='Client impact analysis' metric={clientMetric}
+              status={clientStatus} defaultExpanded={clientStatus !== 'green'}>
+              <ClientImpact
+                portfolioValue={results.summary.total_value}
+                stressedValue={results.summary.stressed_value}
+              />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='rebalancing' title='Rebalancing recommendations' metric={rebalMetric}
+              status={rebalStatus} defaultExpanded={rebalStatus !== 'green'}>
+              <RebalancingPanel results={results} />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='tax' title='Tax impact' metric='Opportunities available'
+              status='blue' defaultExpanded={false}>
+              <TaxImpact results={results} />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='monte-carlo' title='Monte Carlo simulation' metric='1,000 simulation paths'
+              status='gray' defaultExpanded={false}>
+              <MonteCarlo
+                portfolioValue={results.summary.total_value}
+                stressedValue={results.summary.stressed_value}
+              />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='positions' title='Position detail' metric={positionMetric}
+              status={positionStatus} defaultExpanded={positionStatus !== 'green'}>
+              <PositionTable positions={results.positions} />
+            </CollapsibleSection>
+
+            <CollapsibleSection id='explanation' title='AI analysis' metric={`${sevLabel} scenario`}
+              status={aiStatus} defaultExpanded={aiStatus !== 'green'}>
+              <ExplanationPanel explanation={results.explanation} />
+            </CollapsibleSection>
+
           </div>
-        </div>
-
-        <div id='summary'>
-          <SmartSummary results={results} />
-        </div>
-
-        <div id='charts'>
-          <SummaryCards summary={results.summary} />
-          <div className='mt-8'>
-            <StressCharts charts={results.charts} positions={results.positions} />
-          </div>
-        </div>
-
-        <div id='factors'>
-          <h2 className='section-header'>Factor risk model</h2>
-          <FactorModel
-            positions={results.positions}
-            scenarioText={results.summary.scenario_text}
-          />
-        </div>
-
-        <div id='correlation'>
-          <h2 className='section-header'>Correlation breakdown</h2>
-          <CorrelationMatrix positions={results.positions} />
-        </div>
-
-        <div id='benchmark'>
-          <h2 className='section-header'>Benchmark comparison</h2>
-          <BenchmarkComparison summary={results.summary} />
-        </div>
-
-        <div id='liquidity'>
-          <h2 className='section-header'>Liquidity stress analysis</h2>
-          <LiquidityPanel positions={results.positions} />
-        </div>
-
-        <div id='client'>
-          <h2 className='section-header'>Client impact analysis</h2>
-          <ClientImpact
-            portfolioValue={results.summary.total_value}
-            stressedValue={results.summary.stressed_value}
-          />
-        </div>
-
-        <div id='rebalancing'>
-          <h2 className='section-header'>Rebalancing recommendations</h2>
-          <RebalancingPanel results={results} />
-        </div>
-
-        <div id='tax'>
-          <h2 className='section-header'>Tax impact</h2>
-          <TaxImpact results={results} />
-        </div>
-
-        <div id='monte-carlo'>
-          <h2 className='section-header'>Monte Carlo simulation</h2>
-          <MonteCarlo
-            portfolioValue={results.summary.total_value}
-            stressedValue={results.summary.stressed_value}
-          />
-        </div>
-
-        <div id='positions'>
-          <PositionTable positions={results.positions} />
-        </div>
-
-        <div id='explanation'>
-          <ExplanationPanel explanation={results.explanation} />
-        </div>
-
-      </div>
-      )}
+        )
+      })()}
     </main>
   )
 }
