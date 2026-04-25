@@ -1,3 +1,4 @@
+import { useMemo, memo } from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell,
@@ -25,64 +26,66 @@ function StatBox({ label, value, sub, color = 'text-white' }: any) {
   )
 }
 
-export default function StressCharts({ charts, positions }: any) {
+const StressCharts = memo(function StressCharts({ charts, positions }: any) {
 
-  const sectorData = Object.entries(charts.sector_weights ?? {}).map(([name, value]) => ({
-    name, value: Number(Number(value).toFixed(1))
-  }))
+  const { sectorData, lossData, compareData, drawdownPath, sectorContrib, weightedVar95, cvar95, var99, maxLoss, totalValue, totalLossPct } =
+    useMemo(() => {
+      const sectorData = Object.entries(charts.sector_weights ?? {}).map(([name, value]) => ({
+        name, value: Number(Number(value).toFixed(1)),
+      }))
 
-  const lossData = (charts.loss_by_position ?? []).slice(0, 10).map((p: any) => ({
-    ticker: p.ticker,
-    loss: Math.abs(p.loss_pct),
-    fill: p.loss_pct < -25 ? '#EF4444' : p.loss_pct < -10 ? '#F59E0B' : '#10B981'
-  }))
+      const lossData = (charts.loss_by_position ?? []).slice(0, 10).map((p: any) => ({
+        ticker: p.ticker,
+        loss: Math.abs(p.loss_pct),
+        fill: p.loss_pct < -25 ? '#EF4444' : p.loss_pct < -10 ? '#F59E0B' : '#10B981',
+      }))
 
-  const compareData = positions.slice(0, 8).map((p: Position) => ({
-    ticker: p.ticker,
-    before: Number(p.value.toFixed(0)),
-    after: Number(p.stressed_value.toFixed(0)),
-  }))
+      const compareData = positions.slice(0, 8).map((p: Position) => ({
+        ticker: p.ticker,
+        before: Number(p.value.toFixed(0)),
+        after:  Number(p.stressed_value.toFixed(0)),
+      }))
 
-  const totalValue = positions.reduce((s: number, p: Position) => s + p.value, 0)
+      const totalValue    = positions.reduce((s: number, p: Position) => s + p.value, 0)
+      const totalLossPct  = positions.reduce((acc: number, p: Position) => acc + (p.loss / totalValue), 0) * 100
 
-  const totalLossPct = positions.reduce((acc: number, p: Position) =>
-    acc + (p.loss / totalValue), 0) * 100
+      const drawdownPath = Array.from({ length: 13 }, (_, i) => {
+        const progress = i / 12
+        const curve    = Math.sin(progress * Math.PI)
+        const loss     = totalLossPct * curve
+        return {
+          month: i === 0 ? 'Start' : i === 6 ? 'Trough' : i === 12 ? 'Recovery' : `M${i}`,
+          value: Number((100 + loss).toFixed(2)),
+        }
+      })
 
-  const drawdownPath = Array.from({ length: 13 }, (_, i) => {
-    const progress = i / 12
-    const curve = Math.sin(progress * Math.PI)
-    const loss = totalLossPct * curve
-    return {
-      month: i === 0 ? 'Start' : i === 6 ? 'Trough' : i === 12 ? 'Recovery' : `M${i}`,
-      value: Number((100 + loss).toFixed(2)),
-    }
-  })
+      const sectorLoss: Record<string, { loss: number; value: number }> = {}
+      positions.forEach((p: Position) => {
+        const s = (p as any).sector || 'Unknown'
+        if (!sectorLoss[s]) sectorLoss[s] = { loss: 0, value: 0 }
+        sectorLoss[s].loss  += p.loss
+        sectorLoss[s].value += p.value
+      })
 
-  const sectorLoss: Record<string, { loss: number; value: number }> = {}
-  positions.forEach((p: Position) => {
-    const s = (p as any).sector || 'Unknown'
-    if (!sectorLoss[s]) sectorLoss[s] = { loss: 0, value: 0 }
-    sectorLoss[s].loss += p.loss
-    sectorLoss[s].value += p.value
-  })
+      const sectorContrib = Object.entries(sectorLoss)
+        .map(([name, { loss, value }]) => ({
+          name,
+          contribution: Number(((loss / totalValue) * 100).toFixed(2)),
+          weight:       Number(((value / totalValue) * 100).toFixed(1)),
+        }))
+        .sort((a, b) => a.contribution - b.contribution)
 
-  const sectorContrib = Object.entries(sectorLoss)
-    .map(([name, { loss, value }]) => ({
-      name,
-      contribution: Number(((loss / totalValue) * 100).toFixed(2)),
-      weight: Number(((value / totalValue) * 100).toFixed(1)),
-    }))
-    .sort((a, b) => a.contribution - b.contribution)
+      const positionsWithVar = positions.filter((p: any) => p.var_95 !== undefined)
+      const weightedVar95    = positionsWithVar.length > 0
+        ? positionsWithVar.reduce((acc: number, p: any) => acc + (p.var_95 * (p.value / totalValue)), 0)
+        : totalLossPct * 0.6
 
-  const positionsWithVar = positions.filter((p: any) => p.var_95 !== undefined)
-  const weightedVar95 = positionsWithVar.length > 0
-    ? positionsWithVar.reduce((acc: number, p: any) =>
-        acc + (p.var_95 * (p.value / totalValue)), 0)
-    : totalLossPct * 0.6
+      const cvar95  = weightedVar95 * 1.4
+      const var99   = weightedVar95 * 1.6
+      const maxLoss = Math.min(...positions.map((p: Position) => p.loss_pct))
 
-  const cvar95  = weightedVar95 * 1.4
-  const var99   = weightedVar95 * 1.6
-  const maxLoss = Math.min(...positions.map((p: Position) => p.loss_pct))
+      return { sectorData, lossData, compareData, drawdownPath, sectorContrib, weightedVar95, cvar95, var99, maxLoss, totalValue, totalLossPct }
+    }, [charts, positions])
 
   const renderLabel = ({ name, value }: { name?: string; value?: number }) => {
     const shortName = (name ?? '').split(' ')[0]
@@ -253,4 +256,6 @@ export default function StressCharts({ charts, positions }: any) {
 
     </div>
   )
-}
+})
+
+export default StressCharts

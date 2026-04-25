@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback, memo } from 'react'
 import Link from 'next/link'
 import { StressTestResult, exportPdf } from '@/lib/api'
 import SummaryCards from '@/components/SummaryCards'
@@ -16,22 +16,25 @@ import MonteCarlo from '@/components/MonteCarlo'
 import FactorModel from '@/components/FactorModel'
 import ResultsNav from '@/components/ResultsNav'
 import PresentationMode from '@/components/PresentationMode'
-import { TrendingDown, Landmark, BarChart3, Lightbulb, Brain, Users, Briefcase, CheckCircle, AlertTriangle, XCircle, ArrowRight, ChevronDown, MonitorPlay, BookmarkPlus, Layers } from 'lucide-react'
+import {
+  TrendingDown, Landmark, BarChart3, Lightbulb, Brain,
+  Users, Briefcase, CheckCircle, AlertTriangle, XCircle,
+  ArrowRight, ChevronDown, MonitorPlay, BookmarkPlus, Layers,
+} from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
-  ResponsiveContainer, Cell, ReferenceLine
+  ResponsiveContainer, Cell, ReferenceLine,
 } from 'recharts'
 
 const TOOLTIP_STYLE = {
   background: '#1F2937',
   border: '1px solid #374151',
   borderRadius: 8,
-  color: '#F9FAFB'
+  color: '#F9FAFB',
 }
 
 function getBenchmarkLosses(scenarioText: string) {
   const text = scenarioText.toLowerCase()
-
   if (text.includes('2008') || text.includes('financial crisis') || text.includes('credit markets freeze')) {
     return [
       { name: 'S&P 500',        loss: -56.8, color: '#EF4444' },
@@ -85,10 +88,10 @@ function TabPills<T extends string>({
   tabs, active, onChange,
 }: { tabs: { id: T; label: string }[]; active: T; onChange: (t: T) => void }) {
   return (
-    <div className='flex gap-1 bg-white/5 rounded-lg p-1 w-fit border border-white/8'>
+    <div className='flex gap-1 bg-white/5 rounded-lg p-1 w-fit border border-white/8 overflow-x-auto'>
       {tabs.map(t => (
         <button key={t.id} onClick={() => onChange(t.id)}
-          className={`px-3 py-1 rounded text-xs font-medium transition-all duration-150
+          className={`px-3 py-1 rounded text-xs font-medium transition-all duration-150 whitespace-nowrap
             ${active === t.id ? 'bg-white/12 text-white' : 'text-gray-500 hover:text-gray-300'}`}>
           {t.label}
         </button>
@@ -97,8 +100,8 @@ function TabPills<T extends string>({
   )
 }
 
-// ── Section group divider ─────────────────────────────────────────────────────
-function SectionGroup({ label, children }: { label: string; children: React.ReactNode }) {
+// ── Section group divider ────────────────────────────────────────────────────
+const SectionGroup = memo(function SectionGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className='space-y-3'>
       <div className='flex items-center gap-3 px-1 pt-2'>
@@ -110,10 +113,10 @@ function SectionGroup({ label, children }: { label: string; children: React.Reac
       {children}
     </div>
   )
-}
+})
 
-// ── Charts section with primary / secondary tabs ──────────────────────────────
-function ChartsTabs({ results }: { results: StressTestResult }) {
+// ── Charts section ───────────────────────────────────────────────────────────
+const ChartsTabs = memo(function ChartsTabs({ results }: { results: StressTestResult }) {
   const [tab, setTab] = useState<'overview' | 'breakdown'>('overview')
   return (
     <div className='space-y-4'>
@@ -126,34 +129,34 @@ function ChartsTabs({ results }: { results: StressTestResult }) {
         : <StressCharts charts={results.charts} positions={results.positions} />}
     </div>
   )
-}
+})
 
-// ── Benchmark with primary chart / detail tabs ────────────────────────────────
-function BenchmarkComparison({ summary }: { summary: any }) {
+// ── Benchmark comparison ─────────────────────────────────────────────────────
+const BenchmarkComparison = memo(function BenchmarkComparison({ summary }: { summary: any }) {
   const [tab, setTab] = useState<'chart' | 'detail'>('chart')
 
-  const benchmarks    = getBenchmarkLosses(summary.scenario_text)
-  const portfolioLoss = summary.total_loss_pct
-
-  const allData = [
-    { name: 'Your Portfolio', loss: portfolioLoss, color: '#6366F1', isPortfolio: true },
-    ...benchmarks.map(b => ({ ...b, isPortfolio: false })),
-  ].sort((a, b) => b.loss - a.loss)
-
-  const portfolioRank = allData.findIndex(d => d.isPortfolio) + 1
-  const totalItems    = allData.length
-  const betterThan    = benchmarks.filter(b => b.loss < portfolioLoss).length
-  const worseThan     = benchmarks.filter(b => b.loss > portfolioLoss).length
-
-  const rankLabel = portfolioRank === 1 ? 'Most Resilient'
-    : portfolioRank === totalItems ? 'Least Resilient'
-    : portfolioRank <= Math.ceil(totalItems / 2) ? 'Above Average'
-    : 'Below Average'
-
-  const rankColor = portfolioRank === 1 ? 'text-green-400'
-    : portfolioRank === totalItems ? 'text-red-400'
-    : portfolioRank <= Math.ceil(totalItems / 2) ? 'text-green-400'
-    : 'text-orange-400'
+  const { benchmarks, allData, portfolioLoss, portfolioRank, totalItems, betterThan, worseThan, rankLabel, rankColor } =
+    useMemo(() => {
+      const benchmarks    = getBenchmarkLosses(summary.scenario_text)
+      const portfolioLoss = summary.total_loss_pct as number
+      const allData = [
+        { name: 'Your Portfolio', loss: portfolioLoss, color: '#6366F1', isPortfolio: true },
+        ...benchmarks.map(b => ({ ...b, isPortfolio: false })),
+      ].sort((a, b) => b.loss - a.loss)
+      const portfolioRank = allData.findIndex(d => d.isPortfolio) + 1
+      const totalItems    = allData.length
+      const betterThan    = benchmarks.filter(b => b.loss < portfolioLoss).length
+      const worseThan     = benchmarks.filter(b => b.loss > portfolioLoss).length
+      const rankLabel = portfolioRank === 1 ? 'Most Resilient'
+        : portfolioRank === totalItems ? 'Least Resilient'
+        : portfolioRank <= Math.ceil(totalItems / 2) ? 'Above Average'
+        : 'Below Average'
+      const rankColor = portfolioRank === 1 ? 'text-green-400'
+        : portfolioRank === totalItems ? 'text-red-400'
+        : portfolioRank <= Math.ceil(totalItems / 2) ? 'text-green-400'
+        : 'text-orange-400'
+      return { benchmarks, allData, portfolioLoss, portfolioRank, totalItems, betterThan, worseThan, rankLabel, rankColor }
+    }, [summary.scenario_text, summary.total_loss_pct])
 
   return (
     <div className='space-y-4'>
@@ -213,7 +216,7 @@ function BenchmarkComparison({ summary }: { summary: any }) {
         <div className='space-y-3'>
           <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
             {benchmarks.map(({ name, loss, color }) => {
-              const diff = portfolioLoss - loss
+              const diff   = portfolioLoss - loss
               const better = portfolioLoss > loss
               return (
                 <div key={name} className='bg-white/3 rounded-xl p-4 border border-white/8'>
@@ -240,9 +243,10 @@ function BenchmarkComparison({ summary }: { summary: any }) {
       )}
     </div>
   )
-}
+})
 
-function SmartSummary({ results }: { results: StressTestResult }) {
+// ── Smart Summary ────────────────────────────────────────────────────────────
+const SmartSummary = memo(function SmartSummary({ results }: { results: StressTestResult }) {
   const { summary, positions } = results
   const totalValue   = summary.total_value
   const totalLossPct = summary.total_loss_pct
@@ -258,28 +262,32 @@ function SmartSummary({ results }: { results: StressTestResult }) {
     : healthScore >= 3 ? 'Vulnerable'
     : 'Critical'
 
-  const sortedLosers  = [...positions].sort((a, b) => a.loss_pct - b.loss_pct)
-  const sortedGainers = [...positions].sort((a, b) => b.loss_pct - a.loss_pct)
+  const { sortedLosers, sortedGainers } = useMemo(() => ({
+    sortedLosers:  [...positions].sort((a, b) => a.loss_pct - b.loss_pct),
+    sortedGainers: [...positions].sort((a, b) => b.loss_pct - a.loss_pct),
+  }), [positions])
+
   const worstPosition = sortedLosers[0]
   const bestPosition  = sortedGainers[0]
 
-  const worstSector = (() => {
+  const worstSector = useMemo(() => {
     const sectorLoss: Record<string, number> = {}
     positions.forEach(p => {
       const s = (p as any).sector || 'Unknown'
       sectorLoss[s] = (sectorLoss[s] || 0) + p.loss
     })
     return Object.entries(sectorLoss).sort((a, b) => a[1] - b[1])[0]
-  })()
+  }, [positions])
 
-  const highBetaPositions = positions.filter(p => p.beta > 1.2)
-  const rateSensitive     = positions.filter((p: any) =>
-    ['Fixed Income', 'Government Bonds', 'Corporate Bonds', 'REITs', 'Utilities']
-      .includes(p.sector))
-  const rateSensitivePct  = rateSensitive.reduce(
-    (s, p) => s + (p.value / totalValue * 100), 0)
+  const { highBetaPositions, rateSensitivePct } = useMemo(() => {
+    const highBeta = positions.filter(p => p.beta > 1.2)
+    const rateSens = positions.filter((p: any) =>
+      ['Fixed Income', 'Government Bonds', 'Corporate Bonds', 'REITs', 'Utilities'].includes(p.sector))
+    const ratePct  = rateSens.reduce((s, p) => s + (p.value / totalValue * 100), 0)
+    return { highBetaPositions: highBeta, rateSensitivePct: ratePct }
+  }, [positions, totalValue])
 
-  const risks = [
+  const risks = useMemo(() => [
     {
       Icon: TrendingDown,
       iconColor: 'text-red-400',
@@ -309,7 +317,7 @@ function SmartSummary({ results }: { results: StressTestResult }) {
         : 'While diversified across sectors, correlation spikes under stress reduce the benefit of diversification.',
       color: 'border-yellow-800 bg-yellow-950/30',
     },
-  ]
+  ], [worstPosition, worstSector, highBetaPositions, rateSensitivePct])
 
   const recommendation = totalLossPct < -20
     ? `Reduce equity beta by trimming ${worstPosition?.ticker} and adding short-duration bonds or gold as a hedge.`
@@ -318,7 +326,7 @@ function SmartSummary({ results }: { results: StressTestResult }) {
     : `Portfolio shows moderate resilience. Monitor ${worstPosition?.ticker} closely and maintain current diversification.`
 
   const fmt = (n: number) => new Intl.NumberFormat('en-US', {
-    style: 'currency', currency: 'USD', maximumFractionDigits: 0
+    style: 'currency', currency: 'USD', maximumFractionDigits: 0,
   }).format(n)
 
   const bestGainStr = bestPosition?.loss_pct > 0
@@ -327,30 +335,26 @@ function SmartSummary({ results }: { results: StressTestResult }) {
 
   return (
     <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
-      <div className='bg-[#0f1628] px-6 py-4
-        border-b border-white/8 flex items-center justify-between'>
+      <div className='bg-[#0f1628] px-4 md:px-6 py-4 border-b border-white/8 flex items-center justify-between'>
         <div className='flex items-center gap-3'>
           <div className='w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center'>
             <Brain size={16} className='text-blue-400' />
           </div>
           <div>
             <h2 className='font-semibold text-white tracking-tight'>Smart Risk Summary</h2>
-            <p className='text-xs text-gray-500'>
-              AI-generated analysis of your stress test results
-            </p>
+            <p className='text-xs text-gray-500'>AI-generated analysis of your stress test results</p>
           </div>
         </div>
-        <div className='text-right'>
+        <div className='text-right shrink-0'>
           <div className='text-xs text-gray-400 mb-0.5'>Portfolio Health Score</div>
           <div className={`text-3xl font-bold ${healthColor}`}>
-            {healthScore.toFixed(1)}
-            <span className='text-lg text-gray-500'>/10</span>
+            {healthScore.toFixed(1)}<span className='text-lg text-gray-500'>/10</span>
           </div>
           <div className={`text-xs font-medium ${healthColor}`}>{healthLabel}</div>
         </div>
       </div>
 
-      <div className='p-6 space-y-5'>
+      <div className='p-4 md:p-6 space-y-4 md:space-y-5'>
         <div className='flex items-center gap-4 bg-white/5 rounded-xl p-4'>
           <div className={`text-4xl font-black ${
             severity === 'Extreme' ? 'text-red-500'
@@ -372,9 +376,7 @@ function SmartSummary({ results }: { results: StressTestResult }) {
         </div>
 
         <div>
-          <p className='text-xs text-gray-500 uppercase tracking-wider mb-3'>
-            3 key risks identified
-          </p>
+          <p className='text-xs text-gray-500 uppercase tracking-wider mb-3'>3 key risks identified</p>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-3'>
             {risks.map(({ Icon, iconColor, title, detail, color }, i) => (
               <div key={i} className={`rounded-xl p-4 border ${color}`}>
@@ -388,46 +390,21 @@ function SmartSummary({ results }: { results: StressTestResult }) {
           </div>
         </div>
 
-        <div className='bg-blue-950/40 border border-blue-800/60 rounded-xl p-4
-          flex items-start gap-3'>
+        <div className='bg-blue-950/40 border border-blue-800/60 rounded-xl p-4 flex items-start gap-3'>
           <Lightbulb size={15} className='text-blue-400 shrink-0 mt-0.5' />
           <div>
-            <p className='text-blue-300 font-medium text-sm mb-1'>
-              Top recommendation
-            </p>
-            <p className='text-blue-200/80 text-sm leading-relaxed'>
-              {recommendation}
-            </p>
+            <p className='text-blue-300 font-medium text-sm mb-1'>Top recommendation</p>
+            <p className='text-blue-200/80 text-sm leading-relaxed'>{recommendation}</p>
           </div>
         </div>
 
         <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
           {[
-            {
-              label: 'Worst position',
-              value: worstPosition?.ticker,
-              sub: `${worstPosition?.loss_pct.toFixed(1)}% loss`,
-              color: 'text-red-400',
-            },
-            {
-              label: 'Positions at risk',
-              value: `${positions.filter(p => p.loss_pct < -10).length}/${positions.length}`,
-              sub: 'Loss > 10%',
-              color: 'text-orange-400',
-            },
-            {
-              label: 'Best performer',
-              value: bestPosition?.ticker,
-              sub: bestGainStr,
-              color: 'text-green-400',
-            },
-            {
-              label: 'Scenario severity',
-              value: severity,
-              sub: summary.scenario_text.split(',')[0],
-              color: severity === 'Extreme' ? 'text-red-400'
-                : severity === 'Severe' ? 'text-orange-400' : 'text-yellow-400',
-            },
+            { label: 'Worst position',    value: worstPosition?.ticker, sub: `${worstPosition?.loss_pct.toFixed(1)}% loss`, color: 'text-red-400' },
+            { label: 'Positions at risk', value: `${positions.filter(p => p.loss_pct < -10).length}/${positions.length}`, sub: 'Loss > 10%', color: 'text-orange-400' },
+            { label: 'Best performer',    value: bestPosition?.ticker,  sub: bestGainStr, color: 'text-green-400' },
+            { label: 'Scenario severity', value: severity, sub: summary.scenario_text.split(',')[0],
+              color: severity === 'Extreme' ? 'text-red-400' : severity === 'Severe' ? 'text-orange-400' : 'text-yellow-400' },
           ].map(({ label, value, sub, color }) => (
             <div key={label} className='bg-white/5 rounded-xl p-3'>
               <div className='text-xs text-gray-500 mb-1'>{label}</div>
@@ -439,8 +416,9 @@ function SmartSummary({ results }: { results: StressTestResult }) {
       </div>
     </div>
   )
-}
+})
 
+// ── Collapsible section ──────────────────────────────────────────────────────
 type SectionStatus = 'green' | 'yellow' | 'red' | 'blue' | 'gray'
 
 function CollapsibleSection({
@@ -475,18 +453,18 @@ function CollapsibleSection({
     <div id={id} className='rounded-2xl border border-white/8 overflow-hidden'>
       <button
         onClick={() => setOpen(o => !o)}
-        className='w-full flex items-center justify-between px-6 py-4 bg-white/3
+        className='w-full flex items-center justify-between px-4 md:px-6 py-4 bg-white/3
           hover:bg-white/5 active:bg-white/6 transition-colors text-left'>
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center gap-2 md:gap-3 min-w-0'>
           <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${dot}`} />
-          <span className='font-semibold text-[1.0625rem] tracking-tight text-gray-100'>
+          <span className='font-semibold text-sm md:text-[1.0625rem] tracking-tight text-gray-100 truncate'>
             {title}
           </span>
-          <span className={`text-xs px-2.5 py-0.5 rounded-full border ${badge}`}>
+          <span className={`text-xs px-2 md:px-2.5 py-0.5 rounded-full border shrink-0 hidden sm:inline-block ${badge}`}>
             {metric}
           </span>
         </div>
-        <ChevronDown size={16} className={`text-gray-500 shrink-0 transition-transform duration-200
+        <ChevronDown size={16} className={`text-gray-500 shrink-0 ml-2 transition-transform duration-200
           ${open ? 'rotate-180' : ''}`} />
       </button>
       <div className={`grid transition-all duration-300 ease-in-out
@@ -501,17 +479,17 @@ function CollapsibleSection({
   )
 }
 
-function ClientView({ results }: { results: StressTestResult }) {
+// ── Client view ──────────────────────────────────────────────────────────────
+const ClientView = memo(function ClientView({ results }: { results: StressTestResult }) {
   const { summary, positions, explanation } = results
 
   const fmt = (n: number) => new Intl.NumberFormat('en-US', {
     style: 'currency', currency: 'USD', maximumFractionDigits: 0,
   }).format(n)
 
-  // Health score (same formula as SmartSummary)
-  const healthScore = Math.max(1, Math.min(10, 10 + summary.total_loss_pct / 5))
-  const healthColor = healthScore >= 7 ? '#10B981' : healthScore >= 5 ? '#F59E0B' : healthScore >= 3 ? '#F97316' : '#EF4444'
-  const healthLabel = healthScore >= 7 ? 'Healthy' : healthScore >= 5 ? 'At Risk' : healthScore >= 3 ? 'Vulnerable' : 'Critical'
+  const healthScore   = Math.max(1, Math.min(10, 10 + summary.total_loss_pct / 5))
+  const healthColor   = healthScore >= 7 ? '#10B981' : healthScore >= 5 ? '#F59E0B' : healthScore >= 3 ? '#F97316' : '#EF4444'
+  const healthLabel   = healthScore >= 7 ? 'Healthy' : healthScore >= 5 ? 'At Risk' : healthScore >= 3 ? 'Vulnerable' : 'Critical'
   const healthSentence = healthScore >= 7
     ? 'Your portfolio is holding up well under this scenario.'
     : healthScore >= 5
@@ -520,40 +498,41 @@ function ClientView({ results }: { results: StressTestResult }) {
     ? 'This scenario puts meaningful strain on your portfolio.'
     : 'This scenario has a significant impact on your portfolio.'
 
-  // Goal impact (simple heuristic using loss pct)
-  const onTrack = summary.total_loss_pct > -15
-  const atRisk  = summary.total_loss_pct <= -15 && summary.total_loss_pct > -30
-  const GoalIcon   = onTrack ? CheckCircle : atRisk ? AlertTriangle : XCircle
-  const goalColor  = onTrack ? 'text-green-400' : atRisk ? 'text-yellow-400' : 'text-red-400'
-  const goalBg     = onTrack ? 'bg-green-950/40 border-green-800' : atRisk ? 'bg-yellow-950/40 border-yellow-800' : 'bg-red-950/40 border-red-800'
-  const goalText   = onTrack
+  const onTrack  = summary.total_loss_pct > -15
+  const atRisk   = summary.total_loss_pct <= -15 && summary.total_loss_pct > -30
+  const GoalIcon  = onTrack ? CheckCircle : atRisk ? AlertTriangle : XCircle
+  const goalColor = onTrack ? 'text-green-400' : atRisk ? 'text-yellow-400' : 'text-red-400'
+  const goalBg    = onTrack ? 'bg-green-950/40 border-green-800' : atRisk ? 'bg-yellow-950/40 border-yellow-800' : 'bg-red-950/40 border-red-800'
+  const goalText  = onTrack
     ? 'Based on this scenario, your retirement timeline remains on track.'
     : atRisk
     ? 'This scenario may push your retirement timeline back by 1–2 years.'
     : 'This scenario could significantly delay your retirement goals.'
 
-  // Worst case loss in plain English
   const lossAmount = Math.abs(summary.total_loss)
   const lossPct    = Math.abs(summary.total_loss_pct)
 
-  // Recovery timeline — years to recover from stressed value to normal, assuming 7% return + $2k/mo contributions
-  const annualReturn    = 0.07
-  const monthlyContrib  = 2000
-  const annualContrib   = monthlyContrib * 12
-  let recoveryYears     = 0
-  let val               = summary.stressed_value
-  while (val < summary.total_value && recoveryYears < 30) {
-    val = val * (1 + annualReturn) + annualContrib
-    recoveryYears++
-  }
-  const recoveryYear    = new Date().getFullYear() + recoveryYears
-  const noRecovery      = recoveryYears >= 30
+  const { recoveryYears, recoveryYear, noRecovery } = useMemo(() => {
+    const annualReturn   = 0.07
+    const annualContrib  = 2000 * 12
+    let rv  = 0
+    let val = summary.stressed_value
+    while (val < summary.total_value && rv < 30) {
+      val = val * (1 + annualReturn) + annualContrib
+      rv++
+    }
+    return {
+      recoveryYears: rv,
+      recoveryYear:  new Date().getFullYear() + rv,
+      noRecovery:    rv >= 30,
+    }
+  }, [summary.stressed_value, summary.total_value])
 
   return (
-    <div className='max-w-3xl mx-auto px-6 py-10 space-y-6'>
+    <div className='max-w-3xl mx-auto px-4 md:px-6 py-8 md:py-10 space-y-5 md:space-y-6'>
 
-      {/* 1 — Health score */}
-      <div className='bg-white/3 rounded-3xl border border-white/8 p-8 flex items-center gap-8'>
+      <div className='bg-white/3 rounded-3xl border border-white/8 p-5 md:p-8
+        flex flex-col sm:flex-row items-center gap-5 sm:gap-8'>
         <div className='shrink-0 w-28 h-28 rounded-full flex items-center justify-center'
           style={{ background: `conic-gradient(${healthColor} ${healthScore * 10}%, rgba(255,255,255,0.06) 0)` }}>
           <div className='w-20 h-20 rounded-full bg-[#0A0F1E] flex flex-col items-center justify-center'>
@@ -561,15 +540,14 @@ function ClientView({ results }: { results: StressTestResult }) {
             <span className='text-xs text-gray-400'>/10</span>
           </div>
         </div>
-        <div>
+        <div className='text-center sm:text-left'>
           <p className='text-xs text-gray-500 uppercase tracking-widest mb-1'>Portfolio health</p>
           <p className='text-3xl font-bold mb-2' style={{ color: healthColor }}>{healthLabel}</p>
           <p className='text-gray-300 text-lg leading-relaxed'>{healthSentence}</p>
         </div>
       </div>
 
-      {/* 2 — Goal impact */}
-      <div className={`rounded-3xl border p-8 flex items-start gap-5 ${goalBg}`}>
+      <div className={`rounded-3xl border p-5 md:p-8 flex items-start gap-5 ${goalBg}`}>
         <GoalIcon size={32} className={`${goalColor} shrink-0 mt-1`} />
         <div>
           <p className='text-xs text-gray-500 uppercase tracking-widest mb-1'>Retirement goal</p>
@@ -580,10 +558,9 @@ function ClientView({ results }: { results: StressTestResult }) {
         </div>
       </div>
 
-      {/* 3 — Worst case loss */}
-      <div className='bg-white/3 rounded-3xl border border-white/8 p-8'>
+      <div className='bg-white/3 rounded-3xl border border-white/8 p-5 md:p-8'>
         <p className='text-xs text-gray-500 uppercase tracking-widest mb-3'>Worst case loss</p>
-        <p className='text-5xl font-black text-red-400 mb-3'>{fmt(lossAmount)}</p>
+        <p className='text-4xl md:text-5xl font-black text-red-400 mb-3'>{fmt(lossAmount)}</p>
         <p className='text-gray-300 text-lg leading-relaxed'>
           Under this scenario, your portfolio would drop from{' '}
           <span className='text-white font-semibold'>{fmt(summary.total_value)}</span> to{' '}
@@ -592,8 +569,7 @@ function ClientView({ results }: { results: StressTestResult }) {
         </p>
       </div>
 
-      {/* 4 — Recovery timeline */}
-      <div className='bg-white/3 rounded-3xl border border-white/8 p-8'>
+      <div className='bg-white/3 rounded-3xl border border-white/8 p-5 md:p-8'>
         <p className='text-xs text-gray-500 uppercase tracking-widest mb-3'>Recovery timeline</p>
         {noRecovery ? (
           <>
@@ -606,10 +582,8 @@ function ClientView({ results }: { results: StressTestResult }) {
         ) : (
           <>
             <div className='flex items-baseline gap-3 mb-3'>
-              <p className='text-5xl font-black text-blue-400'>{recoveryYears}</p>
-              <p className='text-2xl text-gray-400 font-semibold'>
-                {recoveryYears === 1 ? 'year' : 'years'}
-              </p>
+              <p className='text-4xl md:text-5xl font-black text-blue-400'>{recoveryYears}</p>
+              <p className='text-2xl text-gray-400 font-semibold'>{recoveryYears === 1 ? 'year' : 'years'}</p>
             </div>
             <p className='text-gray-300 text-lg leading-relaxed'>
               Continuing current contributions at historical average returns, your portfolio is estimated
@@ -619,9 +593,8 @@ function ClientView({ results }: { results: StressTestResult }) {
         )}
       </div>
 
-      {/* 5 — AI analyst memo */}
       {explanation?.client_explanation && (
-        <div className='bg-blue-950/40 border border-blue-800 rounded-3xl p-8'>
+        <div className='bg-blue-950/40 border border-blue-800 rounded-3xl p-5 md:p-8'>
           <div className='flex items-center gap-3 mb-4'>
             <div className='w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center'>
               <Brain size={16} className='text-blue-400' />
@@ -643,8 +616,9 @@ function ClientView({ results }: { results: StressTestResult }) {
       )}
     </div>
   )
-}
+})
 
+// ── Interfaces ───────────────────────────────────────────────────────────────
 interface HouseholdAccount {
   name: string
   type: string
@@ -658,6 +632,232 @@ interface SaveModal {
   saving: boolean
 }
 
+// ── Advisor view (extracted from IIFE so memo prevents re-renders on modal/export state changes) ──
+interface AdvisorViewProps {
+  results: StressTestResult
+  household: HouseholdAccount[] | null
+  profile: ClientProfile
+  setProfile: (p: ClientProfile) => void
+}
+
+const AdvisorView = memo(function AdvisorView({ results, household, profile, setProfile }: AdvisorViewProps) {
+
+  const metrics = useMemo(() => {
+    const healthScore = Math.max(1, Math.min(10, 10 + results.summary.total_loss_pct / 5))
+    const lossPct     = results.summary.total_loss_pct
+
+    const summaryStatus: SectionStatus = healthScore >= 7 ? 'green' : healthScore >= 5 ? 'yellow' : 'red'
+    const summaryMetric = `${healthScore.toFixed(1)}/10 health`
+
+    const chartsStatus: SectionStatus = lossPct > -10 ? 'green' : lossPct > -25 ? 'yellow' : 'red'
+    const chartsMetric = `${lossPct.toFixed(1)}% stress loss`
+
+    const avgBeta = results.positions.length
+      ? results.positions.reduce((s, p) => s + (p.beta || 1), 0) / results.positions.length
+      : 1
+    const factorStatus: SectionStatus = avgBeta < 1.0 ? 'green' : avgBeta < 1.3 ? 'yellow' : 'red'
+    const factorMetric = `avg β ${avgBeta.toFixed(2)}`
+
+    const highBetaCount = results.positions.filter(p => p.beta > 1.3).length
+    const corrStatus: SectionStatus = highBetaCount === 0 ? 'green' : highBetaCount <= 2 ? 'yellow' : 'red'
+    const corrMetric = `${highBetaCount} high-beta position${highBetaCount !== 1 ? 's' : ''}`
+
+    const bmarks    = getBenchmarkLosses(results.summary.scenario_text)
+    const allLosses = [lossPct, ...bmarks.map(b => b.loss)].sort((a, b) => b - a)
+    const benchRank = allLosses.indexOf(lossPct) + 1
+    const benchStatus: SectionStatus = benchRank <= 2 ? 'green' : benchRank === 3 ? 'yellow' : 'red'
+    const benchMetric = `#${benchRank} of ${allLosses.length}`
+
+    const maxWeight = results.positions.length ? Math.max(...results.positions.map(p => p.weight)) : 0
+    const liquidityStatus: SectionStatus = maxWeight < 15 ? 'green' : maxWeight < 30 ? 'yellow' : 'red'
+    const liquidityMetric = `${maxWeight.toFixed(0)}% largest position`
+
+    const clientStatus: SectionStatus = lossPct > -15 ? 'green' : lossPct > -30 ? 'yellow' : 'red'
+    const clientMetric = lossPct > -15 ? 'Goals on track' : lossPct > -30 ? 'Goals at risk' : 'Goals impacted'
+
+    const flaggedCount = results.positions.filter(
+      p => p.loss_pct < -15 || (p.beta > 1.4 && p.loss_pct < -10)
+    ).length
+    const rebalStatus: SectionStatus = flaggedCount === 0 ? 'green' : flaggedCount <= 2 ? 'yellow' : 'red'
+    const rebalMetric = `${flaggedCount} position${flaggedCount !== 1 ? 's' : ''} flagged`
+
+    const highRiskCount = results.positions.filter(p => p.risk_level === 'High').length
+    const positionStatus: SectionStatus = highRiskCount === 0 ? 'green' : highRiskCount <= 2 ? 'yellow' : 'red'
+    const positionMetric = `${highRiskCount} high-risk position${highRiskCount !== 1 ? 's' : ''}`
+
+    const sevLabel  = results.summary.severity_label
+    const aiStatus: SectionStatus = sevLabel === 'Mild' || sevLabel === 'Moderate' ? 'green' : sevLabel === 'Severe' ? 'yellow' : 'red'
+
+    return {
+      healthScore, lossPct,
+      summaryStatus, summaryMetric,
+      chartsStatus, chartsMetric,
+      factorStatus, factorMetric,
+      corrStatus, corrMetric,
+      benchStatus, benchMetric,
+      liquidityStatus, liquidityMetric,
+      clientStatus, clientMetric,
+      rebalStatus, rebalMetric,
+      positionStatus, positionMetric,
+      sevLabel, aiStatus,
+    }
+  }, [results])
+
+  const fmtCurrency = useCallback((n: number) => new Intl.NumberFormat('en-US', {
+    style: 'currency', currency: 'USD', maximumFractionDigits: 0,
+  }).format(n), [])
+
+  return (
+    <div className='max-w-7xl mx-auto px-4 md:px-6 py-4 space-y-3'>
+
+      <div className='mb-2'>
+        <h1 className='text-2xl font-semibold tracking-tight'>Stress test results</h1>
+        <p className='text-gray-500 mt-1 text-sm max-w-2xl leading-relaxed'>
+          {results.summary.scenario_text}
+        </p>
+      </div>
+
+      {/* Household breakdown */}
+      {household && household.length > 0 && (() => {
+        const totalAum  = household.reduce((s, a) => s + a.aum, 0)
+        const totalLoss = results.summary.total_loss
+        return (
+          <div className='rounded-2xl border border-blue-500/20 bg-blue-950/20 overflow-hidden mb-1'>
+            <div className='flex items-center gap-3 px-5 py-4 border-b border-blue-500/15'>
+              <Layers size={16} className='text-blue-400 shrink-0' />
+              <span className='font-semibold text-white'>Household breakdown</span>
+              <span className='text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20
+                px-2.5 py-0.5 rounded-full ml-auto'>
+                {household.length} accounts
+              </span>
+            </div>
+            <div className='p-4 grid grid-cols-1 md:grid-cols-2 gap-3'>
+              {household.map((acct, i) => {
+                const acctPct  = totalAum > 0 ? acct.aum / totalAum : 1 / household.length
+                const acctLoss = totalLoss * acctPct
+                return (
+                  <div key={i} className='bg-white/3 border border-white/8 rounded-xl p-4'>
+                    <div className='flex items-center justify-between mb-3'>
+                      <div>
+                        <p className='font-semibold text-sm text-white'>{acct.name || acct.type}</p>
+                        <p className='text-xs text-blue-400'>{acct.type}</p>
+                      </div>
+                      <div className='text-right'>
+                        <p className='text-sm font-bold text-white'>{fmtCurrency(acct.aum)}</p>
+                        <p className='text-xs text-gray-500'>
+                          {(acctPct * 100).toFixed(0)}% of household
+                        </p>
+                      </div>
+                    </div>
+                    <div className='flex items-center justify-between text-xs'>
+                      <span className='text-gray-500'>Estimated stress impact</span>
+                      <span className='font-semibold text-red-400 tabular-nums'>
+                        {fmtCurrency(acctLoss)}
+                      </span>
+                    </div>
+                    <div className='mt-2 h-1 bg-white/8 rounded-full overflow-hidden'>
+                      <div className='h-full bg-blue-500/50 rounded-full'
+                        style={{ width: `${acctPct * 100}%` }} />
+                    </div>
+                    {acct.positions.length > 0 && (
+                      <p className='text-xs text-gray-600 mt-2'>
+                        {acct.positions.slice(0, 4).map(p => p.ticker).join(', ')}
+                        {acct.positions.length > 4 && ` +${acct.positions.length - 4} more`}
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* Summary */}
+      <CollapsibleSection id='summary' title='Summary' metric={metrics.summaryMetric}
+        status={metrics.summaryStatus} defaultExpanded={metrics.summaryStatus !== 'green'}>
+        <SmartSummary results={results} />
+      </CollapsibleSection>
+
+      {/* Charts */}
+      <CollapsibleSection id='charts' title='Charts' metric={metrics.chartsMetric}
+        status={metrics.chartsStatus} defaultExpanded={metrics.chartsStatus !== 'green'}>
+        <ChartsTabs results={results} />
+      </CollapsibleSection>
+
+      {/* Risk group */}
+      <SectionGroup label='Risk'>
+        <CollapsibleSection id='factors' title='Factor risk model' metric={metrics.factorMetric}
+          status={metrics.factorStatus} defaultExpanded={metrics.factorStatus !== 'green'}>
+          <FactorModel positions={results.positions} scenarioText={results.summary.scenario_text} />
+        </CollapsibleSection>
+
+        <CollapsibleSection id='correlation' title='Correlation breakdown' metric={metrics.corrMetric}
+          status={metrics.corrStatus} defaultExpanded={metrics.corrStatus !== 'green'}>
+          <CorrelationMatrix positions={results.positions} />
+        </CollapsibleSection>
+
+        <CollapsibleSection id='liquidity' title='Liquidity stress analysis' metric={metrics.liquidityMetric}
+          status={metrics.liquidityStatus} defaultExpanded={metrics.liquidityStatus !== 'green'}>
+          <LiquidityPanel positions={results.positions} />
+        </CollapsibleSection>
+
+        <CollapsibleSection id='monte-carlo' title='Monte Carlo simulation' metric='1,000 simulation paths'
+          status='gray' defaultExpanded={false}>
+          <MonteCarlo
+            portfolioValue={results.summary.total_value}
+            stressedValue={results.summary.stressed_value}
+          />
+        </CollapsibleSection>
+      </SectionGroup>
+
+      {/* Goals group */}
+      <SectionGroup label='Goals'>
+        <CollapsibleSection id='client' title='Client impact & retirement' metric={metrics.clientMetric}
+          status={metrics.clientStatus} defaultExpanded={metrics.clientStatus !== 'green'}>
+          <ClientImpact
+            portfolioValue={results.summary.total_value}
+            stressedValue={results.summary.stressed_value}
+            profile={profile}
+            setProfile={setProfile}
+          />
+        </CollapsibleSection>
+
+        <CollapsibleSection id='tax' title='Tax impact' metric='Opportunities available'
+          status='blue' defaultExpanded={false}>
+          <TaxImpact results={results} profile={profile} />
+        </CollapsibleSection>
+      </SectionGroup>
+
+      {/* Action group */}
+      <SectionGroup label='Action'>
+        <CollapsibleSection id='rebalancing' title='Rebalancing recommendations' metric={metrics.rebalMetric}
+          status={metrics.rebalStatus} defaultExpanded={metrics.rebalStatus !== 'green'}>
+          <RebalancingPanel results={results} />
+        </CollapsibleSection>
+
+        <CollapsibleSection id='benchmark' title='Benchmark comparison' metric={metrics.benchMetric}
+          status={metrics.benchStatus} defaultExpanded={metrics.benchStatus !== 'green'}>
+          <BenchmarkComparison summary={results.summary} />
+        </CollapsibleSection>
+
+        <CollapsibleSection id='explanation' title='AI analysis' metric={`${metrics.sevLabel} scenario`}
+          status={metrics.aiStatus} defaultExpanded={metrics.aiStatus !== 'green'}>
+          <ExplanationPanel explanation={results.explanation} />
+        </CollapsibleSection>
+      </SectionGroup>
+
+      {/* Positions */}
+      <CollapsibleSection id='positions' title='Position detail' metric={metrics.positionMetric}
+        status={metrics.positionStatus} defaultExpanded={metrics.positionStatus !== 'green'}>
+        <PositionTable positions={results.positions} />
+      </CollapsibleSection>
+
+    </div>
+  )
+})
+
+// ── Results page ─────────────────────────────────────────────────────────────
 export default function ResultsPage() {
   const [results, setResults]         = useState<StressTestResult | null>(null)
   const [exporting, setExporting]     = useState(false)
@@ -676,7 +876,7 @@ export default function ResultsPage() {
     } catch {}
   }, [])
 
-  const handleSaveReview = () => {
+  const handleSaveReview = useCallback(() => {
     if (!results || !saveModal.clientName.trim()) return
     setSaveModal(m => ({ ...m, saving: true }))
     try {
@@ -696,9 +896,9 @@ export default function ResultsPage() {
       localStorage.setItem('savedReviews', JSON.stringify([review, ...existing]))
     } catch {}
     setSaveModal({ open: false, clientName: '', saving: false })
-  }
+  }, [results, saveModal.clientName])
 
-  const handleExportPdf = async () => {
+  const handleExportPdf = useCallback(async () => {
     if (!results) return
     setExporting(true)
     try {
@@ -706,25 +906,35 @@ export default function ResultsPage() {
     } finally {
       setExporting(false)
     }
-  }
+  }, [results])
 
   if (!results) return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white flex items-center
-      justify-center'>
+    <main className='min-h-screen bg-[#0A0F1E] text-white flex items-center justify-center'>
       <p className='text-gray-400 text-sm'>No results found.{' '}
         <Link href='/upload' className='text-blue-400 hover:underline'>Run a stress test</Link>
       </p>
     </main>
   )
 
+  // Sticky summary bar values (advisor only)
+  const hs      = Math.max(1, Math.min(10, 10 + results.summary.total_loss_pct / 5))
+  const hsColor = hs >= 7 ? 'text-green-400' : hs >= 5 ? 'text-yellow-400' : 'text-red-400'
+  const hsDot   = hs >= 7 ? 'bg-green-400'   : hs >= 5 ? 'bg-yellow-400'   : 'bg-red-400'
+  let rv = 0, rvVal = results.summary.stressed_value
+  while (rvVal < results.summary.total_value && rv < 30) { rvVal = rvVal * 1.07 + 24000; rv++ }
+  const goalOk    = results.summary.total_loss_pct > -15
+  const goalWarn  = results.summary.total_loss_pct <= -15 && results.summary.total_loss_pct > -30
+  const goalDot   = goalOk ? 'bg-green-400' : goalWarn ? 'bg-yellow-400' : 'bg-red-400'
+  const goalText  = goalOk ? 'On track'     : goalWarn ? 'At risk'       : 'Off track'
+  const goalColor = goalOk ? 'text-green-400' : goalWarn ? 'text-yellow-400' : 'text-red-400'
+
   return (
     <main className='min-h-screen bg-[#0A0F1E] text-white'>
-      {/* ── Presentation mode overlay ── */}
+
       {isPresenting && (
         <PresentationMode results={results} profile={profile} onClose={() => setPresenting(false)} />
       )}
 
-      {/* ── Save review modal ── */}
       {saveModal.open && (
         <div className='fixed inset-0 z-50 flex items-center justify-center p-4
           bg-black/70 backdrop-blur-sm'>
@@ -767,51 +977,45 @@ export default function ResultsPage() {
 
       {view === 'advisor' && <ResultsNav />}
 
-      {/* ── Toggle bar + sticky summary ── */}
+      {/* Toggle bar + sticky summary */}
       <div className={`sticky top-0 z-40 bg-[#0A0F1E]/95 backdrop-blur
         ${view === 'advisor' ? 'border-b border-white/6' : 'border-b border-white/6 shadow-lg shadow-black/40'}`}>
-        <div className='max-w-7xl mx-auto px-6 py-3 flex items-center justify-between'>
+        <div className='max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between'>
           <div className='flex items-center gap-1 bg-white/5 rounded-xl p-1 border border-white/8'>
             <button
               onClick={() => setView('advisor')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+              className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium
                 transition-all duration-200
-                ${view === 'advisor'
-                  ? 'bg-white/10 text-white shadow-sm'
-                  : 'text-gray-500 hover:text-gray-300'}`}>
+                ${view === 'advisor' ? 'bg-white/10 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}>
               <Briefcase size={14} />
-              Advisor view
+              <span className='hidden sm:inline'>Advisor view</span>
             </button>
             <button
               onClick={() => setView('client')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+              className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium
                 transition-all duration-200
-                ${view === 'client'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-gray-500 hover:text-gray-300'}`}>
+                ${view === 'client' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}>
               <Users size={14} />
-              Client view
+              <span className='hidden sm:inline'>Client view</span>
             </button>
           </div>
           <div className='flex items-center gap-2'>
-            <>
-              <button
-                onClick={() => setSaveModal(m => ({ ...m, open: true }))}
-                className='flex items-center gap-1.5 px-3 py-2 rounded-xl
-                  bg-white/5 hover:bg-white/8 border border-white/10
-                  text-sm text-gray-300 transition-all duration-150'>
-                <BookmarkPlus size={14} />
-                <span className='hidden sm:inline'>Save</span>
-              </button>
-              <button
-                onClick={() => setPresenting(true)}
-                className='flex items-center gap-1.5 px-3 py-2 rounded-xl
-                  bg-white/5 hover:bg-white/8 border border-white/10
-                  text-sm text-gray-300 transition-all duration-150'>
-                <MonitorPlay size={14} />
-                <span className='hidden sm:inline'>Present</span>
-              </button>
-            </>
+            <button
+              onClick={() => setSaveModal(m => ({ ...m, open: true }))}
+              className='flex items-center gap-1.5 px-3 py-2 rounded-xl
+                bg-white/5 hover:bg-white/8 border border-white/10
+                text-sm text-gray-300 transition-all duration-150'>
+              <BookmarkPlus size={14} />
+              <span className='hidden sm:inline'>Save</span>
+            </button>
+            <button
+              onClick={() => setPresenting(true)}
+              className='flex items-center gap-1.5 px-3 py-2 rounded-xl
+                bg-white/5 hover:bg-white/8 border border-white/10
+                text-sm text-gray-300 transition-all duration-150'>
+              <MonitorPlay size={14} />
+              <span className='hidden sm:inline'>Present</span>
+            </button>
             <button
               onClick={handleExportPdf}
               disabled={exporting}
@@ -829,272 +1033,58 @@ export default function ResultsPage() {
               )}
               <span className='hidden sm:inline'>{exporting ? 'Generating...' : 'Export PDF'}</span>
             </button>
-            <Link href='/upload' className='text-sm text-blue-400 hover:text-blue-300 transition-colors hidden md:inline'>
+            <Link href='/upload'
+              className='text-sm text-blue-400 hover:text-blue-300 transition-colors hidden md:inline'>
               Run new test
             </Link>
           </div>
         </div>
 
         {/* Sticky summary bar — advisor only */}
-        {view === 'advisor' && (() => {
-          const hs  = Math.max(1, Math.min(10, 10 + results.summary.total_loss_pct / 5))
-          const hsColor = hs >= 7 ? 'text-green-400' : hs >= 5 ? 'text-yellow-400' : 'text-red-400'
-          const hsDot   = hs >= 7 ? 'bg-green-400'   : hs >= 5 ? 'bg-yellow-400'   : 'bg-red-400'
-          let rv = 0, val = results.summary.stressed_value
-          while (val < results.summary.total_value && rv < 30) { val = val * 1.07 + 24000; rv++ }
-          const goalOk   = results.summary.total_loss_pct > -15
-          const goalWarn = results.summary.total_loss_pct <= -15 && results.summary.total_loss_pct > -30
-          const goalDot  = goalOk ? 'bg-green-400' : goalWarn ? 'bg-yellow-400' : 'bg-red-400'
-          const goalText = goalOk ? 'On track'     : goalWarn ? 'At risk'       : 'Off track'
-          const goalColor = goalOk ? 'text-green-400' : goalWarn ? 'text-yellow-400' : 'text-red-400'
-          return (
-            <div className='border-t border-white/5 bg-white/2'>
-              <div className='max-w-7xl mx-auto px-6 py-2 flex items-center gap-6 overflow-x-auto'>
-                <div className='flex items-center gap-2 shrink-0'>
-                  <div className={`w-1.5 h-1.5 rounded-full ${hsDot}`} />
-                  <span className='text-xs text-gray-500'>Health</span>
-                  <span className={`text-xs font-semibold tabular-nums ${hsColor}`}>{hs.toFixed(1)}/10</span>
-                </div>
-                <div className='w-px h-3 bg-white/10 shrink-0' />
-                <div className='flex items-center gap-2 shrink-0'>
-                  <span className='text-xs text-gray-500'>Stress loss</span>
-                  <span className='text-xs font-semibold tabular-nums text-red-400'>
-                    {results.summary.total_loss_pct.toFixed(1)}%
-                  </span>
-                </div>
-                <div className='w-px h-3 bg-white/10 shrink-0' />
-                <div className='flex items-center gap-2 shrink-0'>
-                  <span className='text-xs text-gray-500'>Recovery</span>
-                  <span className='text-xs font-semibold tabular-nums text-blue-400'>
-                    {rv >= 30 ? '>30 yrs' : `${rv} yr${rv !== 1 ? 's' : ''}`}
-                  </span>
-                </div>
-                <div className='w-px h-3 bg-white/10 shrink-0' />
-                <div className='flex items-center gap-2 shrink-0'>
-                  <div className={`w-1.5 h-1.5 rounded-full ${goalDot}`} />
-                  <span className='text-xs text-gray-500'>Goals</span>
-                  <span className={`text-xs font-semibold ${goalColor}`}>{goalText}</span>
-                </div>
+        {view === 'advisor' && (
+          <div className='border-t border-white/5 bg-white/2'>
+            <div className='max-w-7xl mx-auto px-4 md:px-6 py-2 flex items-center gap-4 md:gap-6 overflow-x-auto'>
+              <div className='flex items-center gap-2 shrink-0'>
+                <div className={`w-1.5 h-1.5 rounded-full ${hsDot}`} />
+                <span className='text-xs text-gray-500'>Health</span>
+                <span className={`text-xs font-semibold tabular-nums ${hsColor}`}>{hs.toFixed(1)}/10</span>
+              </div>
+              <div className='w-px h-3 bg-white/10 shrink-0' />
+              <div className='flex items-center gap-2 shrink-0'>
+                <span className='text-xs text-gray-500'>Stress loss</span>
+                <span className='text-xs font-semibold tabular-nums text-red-400'>
+                  {results.summary.total_loss_pct.toFixed(1)}%
+                </span>
+              </div>
+              <div className='w-px h-3 bg-white/10 shrink-0' />
+              <div className='flex items-center gap-2 shrink-0'>
+                <span className='text-xs text-gray-500'>Recovery</span>
+                <span className='text-xs font-semibold tabular-nums text-blue-400'>
+                  {rv >= 30 ? '>30 yrs' : `${rv} yr${rv !== 1 ? 's' : ''}`}
+                </span>
+              </div>
+              <div className='w-px h-3 bg-white/10 shrink-0' />
+              <div className='flex items-center gap-2 shrink-0'>
+                <div className={`w-1.5 h-1.5 rounded-full ${goalDot}`} />
+                <span className='text-xs text-gray-500'>Goals</span>
+                <span className={`text-xs font-semibold ${goalColor}`}>{goalText}</span>
               </div>
             </div>
-          )
-        })()}
+          </div>
+        )}
       </div>
 
-      {/* ── Client view ── */}
       {view === 'client' && <ClientView results={results} />}
 
-      {/* ── Advisor view ── */}
-      {view === 'advisor' && (() => {
-        // ── Per-section status & headline metric ──────────────────────────────
-        const healthScore   = Math.max(1, Math.min(10, 10 + results.summary.total_loss_pct / 5))
-        const lossPct       = results.summary.total_loss_pct
+      {view === 'advisor' && (
+        <AdvisorView
+          results={results}
+          household={household}
+          profile={profile}
+          setProfile={setProfile}
+        />
+      )}
 
-        // Summary
-        const summaryStatus: SectionStatus = healthScore >= 7 ? 'green' : healthScore >= 5 ? 'yellow' : 'red'
-        const summaryMetric = `${healthScore.toFixed(1)}/10 health`
-
-        // Charts
-        const chartsStatus: SectionStatus = lossPct > -10 ? 'green' : lossPct > -25 ? 'yellow' : 'red'
-        const chartsMetric = `${lossPct.toFixed(1)}% stress loss`
-
-        // Factors — proxy: portfolio-weighted avg beta
-        const avgBeta = results.positions.length
-          ? results.positions.reduce((s, p) => s + (p.beta || 1), 0) / results.positions.length
-          : 1
-        const factorStatus: SectionStatus = avgBeta < 1.0 ? 'green' : avgBeta < 1.3 ? 'yellow' : 'red'
-        const factorMetric = `avg β ${avgBeta.toFixed(2)}`
-
-        // Correlation — proxy: count high-beta positions
-        const highBetaCount = results.positions.filter(p => p.beta > 1.3).length
-        const corrStatus: SectionStatus = highBetaCount === 0 ? 'green' : highBetaCount <= 2 ? 'yellow' : 'red'
-        const corrMetric = `${highBetaCount} high-beta position${highBetaCount !== 1 ? 's' : ''}`
-
-        // Benchmark — rank vs standard benchmarks
-        const bmarks     = getBenchmarkLosses(results.summary.scenario_text)
-        const allLosses  = [lossPct, ...bmarks.map(b => b.loss)].sort((a, b) => b - a)
-        const benchRank  = allLosses.indexOf(lossPct) + 1
-        const benchStatus: SectionStatus = benchRank <= 2 ? 'green' : benchRank === 3 ? 'yellow' : 'red'
-        const benchMetric = `#${benchRank} of ${allLosses.length}`
-
-        // Liquidity — proxy: largest single-position weight
-        const maxWeight = results.positions.length ? Math.max(...results.positions.map(p => p.weight)) : 0
-        const liquidityStatus: SectionStatus = maxWeight < 15 ? 'green' : maxWeight < 30 ? 'yellow' : 'red'
-        const liquidityMetric = `${maxWeight.toFixed(0)}% largest position`
-
-        // Client impact
-        const clientStatus: SectionStatus = lossPct > -15 ? 'green' : lossPct > -30 ? 'yellow' : 'red'
-        const clientMetric = lossPct > -15 ? 'Goals on track' : lossPct > -30 ? 'Goals at risk' : 'Goals impacted'
-
-        // Rebalancing — flagged positions
-        const flaggedCount = results.positions.filter(
-          p => p.loss_pct < -15 || (p.beta > 1.4 && p.loss_pct < -10)
-        ).length
-        const rebalStatus: SectionStatus = flaggedCount === 0 ? 'green' : flaggedCount <= 2 ? 'yellow' : 'red'
-        const rebalMetric = `${flaggedCount} position${flaggedCount !== 1 ? 's' : ''} flagged`
-
-        // High-risk positions
-        const highRiskCount = results.positions.filter(p => p.risk_level === 'High').length
-        const positionStatus: SectionStatus = highRiskCount === 0 ? 'green' : highRiskCount <= 2 ? 'yellow' : 'red'
-        const positionMetric = `${highRiskCount} high-risk position${highRiskCount !== 1 ? 's' : ''}`
-
-        // AI analysis severity
-        const sevLabel  = results.summary.severity_label
-        const aiStatus: SectionStatus = sevLabel === 'Mild' || sevLabel === 'Moderate' ? 'green' : sevLabel === 'Severe' ? 'yellow' : 'red'
-
-        return (
-          <div className='max-w-7xl mx-auto p-6 space-y-3'>
-
-            <div className='mb-2'>
-              <h1 className='text-2xl font-semibold tracking-tight'>Stress test results</h1>
-              <p className='text-gray-500 mt-1 text-sm max-w-2xl leading-relaxed'>
-                {results.summary.scenario_text}
-              </p>
-            </div>
-
-            {/* ── Household breakdown (shown if household data exists) ── */}
-            {household && household.length > 0 && (() => {
-              const totalAum  = household.reduce((s, a) => s + a.aum, 0)
-              const totalLoss = results.summary.total_loss
-              return (
-                <div className='rounded-2xl border border-blue-500/20 bg-blue-950/20 overflow-hidden mb-1'>
-                  <div className='flex items-center gap-3 px-5 py-4 border-b border-blue-500/15'>
-                    <Layers size={16} className='text-blue-400 shrink-0' />
-                    <span className='font-semibold text-white'>Household breakdown</span>
-                    <span className='text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20
-                      px-2.5 py-0.5 rounded-full ml-auto'>
-                      {household.length} accounts
-                    </span>
-                  </div>
-                  <div className='p-4 grid grid-cols-1 md:grid-cols-2 gap-3'>
-                    {household.map((acct, i) => {
-                      const acctPct  = totalAum > 0 ? acct.aum / totalAum : 1 / household.length
-                      const acctLoss = totalLoss * acctPct
-                      const fmt      = (n: number) => new Intl.NumberFormat('en-US', {
-                        style: 'currency', currency: 'USD', maximumFractionDigits: 0,
-                      }).format(n)
-                      return (
-                        <div key={i} className='bg-white/3 border border-white/8 rounded-xl p-4'>
-                          <div className='flex items-center justify-between mb-3'>
-                            <div>
-                              <p className='font-semibold text-sm text-white'>{acct.name || acct.type}</p>
-                              <p className='text-xs text-blue-400'>{acct.type}</p>
-                            </div>
-                            <div className='text-right'>
-                              <p className='text-sm font-bold text-white'>{fmt(acct.aum)}</p>
-                              <p className='text-xs text-gray-500'>
-                                {(acctPct * 100).toFixed(0)}% of household
-                              </p>
-                            </div>
-                          </div>
-                          <div className='flex items-center justify-between text-xs'>
-                            <span className='text-gray-500'>Estimated stress impact</span>
-                            <span className='font-semibold text-red-400 tabular-nums'>
-                              {fmt(acctLoss)}
-                            </span>
-                          </div>
-                          <div className='mt-2 h-1 bg-white/8 rounded-full overflow-hidden'>
-                            <div className='h-full bg-blue-500/50 rounded-full'
-                              style={{ width: `${acctPct * 100}%` }} />
-                          </div>
-                          {acct.positions.length > 0 && (
-                            <p className='text-xs text-gray-600 mt-2'>
-                              {acct.positions.slice(0, 4).map(p => p.ticker).join(', ')}
-                              {acct.positions.length > 4 && ` +${acct.positions.length - 4} more`}
-                            </p>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })()}
-
-            {/* ── Top-level standalone sections ── */}
-            <CollapsibleSection id='summary' title='Summary' metric={summaryMetric}
-              status={summaryStatus} defaultExpanded={summaryStatus !== 'green'}>
-              <SmartSummary results={results} />
-            </CollapsibleSection>
-
-            <>
-                <CollapsibleSection id='charts' title='Charts' metric={chartsMetric}
-                  status={chartsStatus} defaultExpanded={chartsStatus !== 'green'}>
-                  <ChartsTabs results={results} />
-                </CollapsibleSection>
-
-                {/* ── Risk group ── */}
-                <SectionGroup label='Risk'>
-                  <CollapsibleSection id='factors' title='Factor risk model' metric={factorMetric}
-                    status={factorStatus} defaultExpanded={factorStatus !== 'green'}>
-                    <FactorModel positions={results.positions} scenarioText={results.summary.scenario_text} />
-                  </CollapsibleSection>
-
-                  <CollapsibleSection id='correlation' title='Correlation breakdown' metric={corrMetric}
-                    status={corrStatus} defaultExpanded={corrStatus !== 'green'}>
-                    <CorrelationMatrix positions={results.positions} />
-                  </CollapsibleSection>
-
-                  <CollapsibleSection id='liquidity' title='Liquidity stress analysis' metric={liquidityMetric}
-                    status={liquidityStatus} defaultExpanded={liquidityStatus !== 'green'}>
-                    <LiquidityPanel positions={results.positions} />
-                  </CollapsibleSection>
-
-                  <CollapsibleSection id='monte-carlo' title='Monte Carlo simulation' metric='1,000 simulation paths'
-                    status='gray' defaultExpanded={false}>
-                    <MonteCarlo
-                      portfolioValue={results.summary.total_value}
-                      stressedValue={results.summary.stressed_value}
-                    />
-                  </CollapsibleSection>
-                </SectionGroup>
-
-                {/* ── Goals group ── */}
-                <SectionGroup label='Goals'>
-                  <CollapsibleSection id='client' title='Client impact & retirement' metric={clientMetric}
-                    status={clientStatus} defaultExpanded={clientStatus !== 'green'}>
-                    <ClientImpact
-                      portfolioValue={results.summary.total_value}
-                      stressedValue={results.summary.stressed_value}
-                      profile={profile}
-                      setProfile={setProfile}
-                    />
-                  </CollapsibleSection>
-
-                  <CollapsibleSection id='tax' title='Tax impact' metric='Opportunities available'
-                    status='blue' defaultExpanded={false}>
-                    <TaxImpact results={results} profile={profile} />
-                  </CollapsibleSection>
-                </SectionGroup>
-
-                {/* ── Action group ── */}
-                <SectionGroup label='Action'>
-                  <CollapsibleSection id='rebalancing' title='Rebalancing recommendations' metric={rebalMetric}
-                    status={rebalStatus} defaultExpanded={rebalStatus !== 'green'}>
-                    <RebalancingPanel results={results} />
-                  </CollapsibleSection>
-
-                  <CollapsibleSection id='benchmark' title='Benchmark comparison' metric={benchMetric}
-                    status={benchStatus} defaultExpanded={benchStatus !== 'green'}>
-                    <BenchmarkComparison summary={results.summary} />
-                  </CollapsibleSection>
-
-                  <CollapsibleSection id='explanation' title='AI analysis' metric={`${sevLabel} scenario`}
-                    status={aiStatus} defaultExpanded={aiStatus !== 'green'}>
-                    <ExplanationPanel explanation={results.explanation} />
-                  </CollapsibleSection>
-                </SectionGroup>
-
-                {/* ── Positions standalone ── */}
-                <CollapsibleSection id='positions' title='Position detail' metric={positionMetric}
-                  status={positionStatus} defaultExpanded={positionStatus !== 'green'}>
-                  <PositionTable positions={results.positions} />
-                </CollapsibleSection>
-            </>
-
-          </div>
-        )
-      })()}
     </main>
   )
 }

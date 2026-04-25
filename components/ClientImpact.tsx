@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback, memo } from 'react'
 import {
   User, Target, TrendingDown, Calendar, Clock, ArrowRight,
 } from 'lucide-react'
@@ -204,7 +204,7 @@ function InputField({ label, value, onChange, min, max, step = 1, prefix, suffix
   )
 }
 
-export default function ClientImpact({
+const ClientImpact = memo(function ClientImpact({
   portfolioValue,
   stressedValue,
   profile,
@@ -217,10 +217,13 @@ export default function ClientImpact({
 }) {
   const [expanded, setExpanded] = useState(true)
 
-  const set = (key: keyof ClientProfile) => (val: number | string) =>
-    setProfile({ ...profile, [key]: val })
+  const set = useCallback(
+    (key: keyof ClientProfile) => (val: number | string) =>
+      setProfile({ ...profile, [key]: val }),
+    [profile, setProfile],
+  )
 
-  const handleTaxableChange = (val: number) => {
+  const handleTaxableChange = useCallback((val: number) => {
     const taxable = Math.min(100, Math.max(0, val))
     const remaining = 100 - taxable
     const otherTotal = profile.traditionalPct + profile.rothPct
@@ -231,17 +234,17 @@ export default function ClientImpact({
       const newTrad = Math.round(profile.traditionalPct / otherTotal * remaining)
       setProfile({ ...profile, taxablePct: taxable, traditionalPct: newTrad, rothPct: remaining - newTrad })
     }
-  }
+  }, [profile, setProfile])
 
-  const handleTraditionalChange = (val: number) => {
+  const handleTraditionalChange = useCallback((val: number) => {
     const trad = Math.min(100 - profile.taxablePct, Math.max(0, val))
     setProfile({ ...profile, traditionalPct: trad, rothPct: 100 - profile.taxablePct - trad })
-  }
+  }, [profile, setProfile])
 
-  const handleRothChange = (val: number) => {
+  const handleRothChange = useCallback((val: number) => {
     const roth = Math.min(100 - profile.taxablePct, Math.max(0, val))
     setProfile({ ...profile, rothPct: roth, traditionalPct: 100 - profile.taxablePct - roth })
-  }
+  }, [profile, setProfile])
 
   const impact = useMemo(
     () => computeImpact(portfolioValue, stressedValue, profile),
@@ -722,4 +725,6 @@ export default function ClientImpact({
 
     </div>
   )
-}
+})
+
+export default ClientImpact
