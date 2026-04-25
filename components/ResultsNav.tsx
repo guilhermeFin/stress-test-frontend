@@ -1,39 +1,64 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { TrendingDown, ArrowLeft } from 'lucide-react'
+import { ArrowLeft, TrendingDown } from 'lucide-react'
 
-// Order must match the DOM render order in page.tsx exactly
-const SECTIONS = [
-  { id: 'summary',     label: 'Summary' },
-  { id: 'charts',      label: 'Charts' },
-  { id: 'factors',     label: 'Factors' },
-  { id: 'correlation', label: 'Correlation' },
-  { id: 'liquidity',   label: 'Liquidity' },
-  { id: 'monte-carlo', label: 'Monte Carlo' },
-  { id: 'client',      label: 'Client Impact' },
-  { id: 'tax',         label: 'Tax impact' },
-  { id: 'rebalancing', label: 'Rebalancing' },
-  { id: 'benchmark',   label: 'Benchmark' },
-  { id: 'explanation', label: 'AI Analysis' },
-  { id: 'positions',   label: 'Positions' },
-]
+// Labels keyed by section ID. Order is derived from the DOM at runtime so it
+// automatically stays in sync when sections are reordered in page.tsx.
+const SECTION_LABELS: Record<string, string> = {
+  summary:       'Summary',
+  charts:        'Charts',
+  factors:       'Factors',
+  correlation:   'Correlation',
+  liquidity:     'Liquidity',
+  'monte-carlo': 'Monte Carlo',
+  client:        'Client Impact',
+  tax:           'Tax impact',
+  rebalancing:   'Rebalancing',
+  benchmark:     'Benchmark',
+  explanation:   'AI Analysis',
+  positions:     'Positions',
+}
+
+function getStickyOffset(mainEl: Element | null): number {
+  if (!mainEl) return 92
+  const heights = Array.from(mainEl.children)
+    .filter(el => window.getComputedStyle(el).position === 'sticky')
+    .map(el => (el as HTMLElement).offsetHeight)
+  return heights.length > 0 ? Math.max(...heights) + 8 : 92
+}
 
 export default function ResultsNav() {
-  const [active, setActive] = useState('summary')
-  const navRef = useRef<HTMLDivElement>(null)
+  const navRef                  = useRef<HTMLDivElement>(null)
+  const [sections, setSections] = useState<string[]>(Object.keys(SECTION_LABELS))
+  const [active, setActive]     = useState<string>(Object.keys(SECTION_LABELS)[0])
 
   useEffect(() => {
+    // ── Discover actual DOM order ────────────────────────────────────────
+    const discovered = Object.keys(SECTION_LABELS)
+      .map(id => ({ id, el: document.getElementById(id) }))
+      .filter((x): x is { id: string; el: HTMLElement } => x.el !== null)
+      .sort((a, b) =>
+        a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
+      )
+      .map(x => x.id)
+
+    if (discovered.length > 0) setSections(discovered)
+
+    const ids    = discovered.length > 0 ? discovered : Object.keys(SECTION_LABELS)
+    const mainEl = navRef.current?.closest('main') ?? null
+
+    // Compute once — sticky header heights don't change during a session
+    const offset = getStickyOffset(mainEl)
+
+    // ── Scroll tracker ───────────────────────────────────────────────────
     const handleScroll = () => {
-      // Threshold = this nav height + the toggle/summary bar below it (~92px)
-      const threshold = (navRef.current?.offsetHeight ?? 44) + 92
-      // Walk sections in DOM order; the last one whose top is above the threshold is active
-      let current = SECTIONS[0].id
-      for (const { id } of SECTIONS) {
+      let current = ids[0]
+      for (const id of ids) {
         const el = document.getElementById(id)
         if (!el) continue
-        if (el.getBoundingClientRect().top <= threshold) current = id
+        if (el.getBoundingClientRect().top <= offset) current = id
       }
       setActive(current)
     }
@@ -45,7 +70,12 @@ export default function ResultsNav() {
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (!el) return
+    const offset = getStickyOffset(navRef.current?.closest('main') ?? null)
+    window.scrollTo({
+      top: window.scrollY + el.getBoundingClientRect().top - offset,
+      behavior: 'smooth',
+    })
   }
 
   return (
@@ -67,17 +97,20 @@ export default function ResultsNav() {
         <div className='w-px h-4 bg-white/10 hidden sm:block shrink-0' />
 
         <div className='flex items-center gap-0.5 overflow-x-auto scrollbar-hide flex-1'>
-          {SECTIONS.map(({ id, label }) => (
+          {sections.map(id => (
             <button
               key={id}
               onClick={() => scrollTo(id)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium
-                whitespace-nowrap transition-all duration-150 flex-shrink-0
+              className={`relative px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap
+                transition-colors duration-150 flex-shrink-0
                 ${active === id
-                  ? 'bg-white/10 text-white'
+                  ? 'text-white'
                   : 'text-gray-500 hover:text-gray-200 hover:bg-white/5'
                 }`}>
-              {label}
+              {SECTION_LABELS[id]}
+              {active === id && (
+                <span className='absolute bottom-0 left-2 right-2 h-0.5 bg-blue-400 rounded-full' />
+              )}
             </button>
           ))}
         </div>

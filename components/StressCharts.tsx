@@ -27,11 +27,11 @@ function StatBox({ label, value, sub, color = 'text-white' }: any) {
 
 export default function StressCharts({ charts, positions }: any) {
 
-  const sectorData = Object.entries(charts.sector_weights).map(([name, value]) => ({
+  const sectorData = Object.entries(charts.sector_weights ?? {}).map(([name, value]) => ({
     name, value: Number(Number(value).toFixed(1))
   }))
 
-  const lossData = charts.loss_by_position.slice(0, 10).map((p: any) => ({
+  const lossData = (charts.loss_by_position ?? []).slice(0, 10).map((p: any) => ({
     ticker: p.ticker,
     loss: Math.abs(p.loss_pct),
     fill: p.loss_pct < -25 ? '#EF4444' : p.loss_pct < -10 ? '#F59E0B' : '#10B981'
