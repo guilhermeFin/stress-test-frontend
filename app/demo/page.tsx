@@ -94,7 +94,6 @@ export default function DemoPage() {
       const results = await response.json()
 
       sessionStorage.setItem('stressResults', JSON.stringify(results))
-      sessionStorage.setItem('isDemoMode', 'true')
       router.push('/results')
     } catch {
       setError('Something went wrong. Please try again in a moment.')
