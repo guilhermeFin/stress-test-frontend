@@ -1,41 +1,46 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { TrendingDown, ArrowLeft } from 'lucide-react'
 
+// Order must match the DOM render order in page.tsx exactly
 const SECTIONS = [
   { id: 'summary',     label: 'Summary' },
   { id: 'charts',      label: 'Charts' },
   { id: 'factors',     label: 'Factors' },
   { id: 'correlation', label: 'Correlation' },
-  { id: 'benchmark',   label: 'Benchmark' },
   { id: 'liquidity',   label: 'Liquidity' },
-  { id: 'client',       label: 'Client Impact' },
-  { id: 'rebalancing', label: 'Rebalancing' },
-  { id: 'tax',         label: 'Tax impact' },
   { id: 'monte-carlo', label: 'Monte Carlo' },
-  { id: 'positions',   label: 'Positions' },
+  { id: 'client',      label: 'Client Impact' },
+  { id: 'tax',         label: 'Tax impact' },
+  { id: 'rebalancing', label: 'Rebalancing' },
+  { id: 'benchmark',   label: 'Benchmark' },
   { id: 'explanation', label: 'AI Analysis' },
+  { id: 'positions',   label: 'Positions' },
 ]
 
 export default function ResultsNav() {
   const [active, setActive] = useState('summary')
+  const navRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) setActive(entry.target.id)
-        })
-      },
-      { rootMargin: '-20% 0px -70% 0px' }
-    )
-    SECTIONS.forEach(({ id }) => {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    })
-    return () => observer.disconnect()
+    const handleScroll = () => {
+      // Threshold = this nav height + the toggle/summary bar below it (~92px)
+      const threshold = (navRef.current?.offsetHeight ?? 44) + 92
+      // Walk sections in DOM order; the last one whose top is above the threshold is active
+      let current = SECTIONS[0].id
+      for (const { id } of SECTIONS) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        if (el.getBoundingClientRect().top <= threshold) current = id
+      }
+      setActive(current)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const scrollTo = (id: string) => {
@@ -44,7 +49,7 @@ export default function ResultsNav() {
   }
 
   return (
-    <div className='sticky top-0 z-50 bg-[#0A0F1E]/95 backdrop-blur-md
+    <div ref={navRef} className='sticky top-0 z-50 bg-[#0A0F1E]/95 backdrop-blur-md
       border-b border-white/8 px-6 py-2'>
       <div className='max-w-7xl mx-auto flex items-center gap-3'>
 
