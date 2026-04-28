@@ -16,10 +16,11 @@ import MonteCarlo from '@/components/MonteCarlo'
 import FactorModel from '@/components/FactorModel'
 import ResultsNav from '@/components/ResultsNav'
 import PresentationMode from '@/components/PresentationMode'
+import WealthPresentation, { PortfolioData } from '@/components/results/WealthPresentation'
 import {
   TrendingDown, Landmark, BarChart3, Lightbulb, Brain,
   Users, Briefcase, CheckCircle, AlertTriangle, XCircle,
-  ArrowRight, ChevronDown, MonitorPlay, BookmarkPlus, Layers,
+  ArrowRight, ChevronDown, MonitorPlay, BookmarkPlus, Layers, FileText,
 } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
@@ -857,11 +858,64 @@ const AdvisorView = memo(function AdvisorView({ results, household, profile, set
   )
 })
 
+// ── StressTestResult → PortfolioData transformer ─────────────────────────────
+const SECTOR_COLORS = ['#C9A84C','#4A7FC1','#6DB87A','#8888AA','#E07070','#5B7FE6','#E0A050']
+
+function toPortfolioData(results: StressTestResult): PortfolioData {
+  const { summary, positions, explanation } = results
+
+  const sectorValues: Record<string, number> = {}
+  for (const p of positions) {
+    const s = (p as any).sector || 'Other'
+    sectorValues[s] = (sectorValues[s] ?? 0) + p.value
+  }
+  const total = summary.total_value || 1
+  const allocation = Object.entries(sectorValues)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([name, v], i) => ({ name, pct: Math.round(v / total * 100), color: SECTOR_COLORS[i] }))
+
+  const sevMap: Record<string, number> = { Mild:1, Moderate:2, Significant:3, Severe:4, Extreme:5 }
+  const recMap: Record<string, number> = { Mild:3, Moderate:6, Significant:9, Severe:14, Extreme:24 }
+  const sev = summary.severity_label || 'Moderate'
+
+  return {
+    clientName:  'Your Portfolio',
+    advisorName: 'PortfolioStress',
+    date: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }),
+    totalUsd:  summary.total_value,
+    brlPerUsd: 5.20,
+    allocation,
+    performance: {
+      oneMonth: 0, ytd: 0, oneYear: 0,
+      benchmark: { oneMonth:0, ytd:0, oneYear:0 },
+      benchmarkName: '60/40 Blend',
+    },
+    scenarios: [{
+      id:       'current',
+      name:     summary.scenario_text.length > 60
+                  ? summary.scenario_text.slice(0, 60) + '…'
+                  : summary.scenario_text,
+      year:     new Date().getFullYear(),
+      narrative: (explanation as any)?.client_explanation || summary.scenario_text,
+      severity: sevMap[sev] ?? 3,
+      impactUsd:      summary.total_loss,
+      impactPct:      summary.total_loss_pct,
+      impactBrl:      0,
+      recoveryMonths: recMap[sev] ?? 9,
+      recoveryNote:   `Based on historical ${sev.toLowerCase()} market scenarios`,
+    }],
+    goals:          [],
+    illiquidAssets: [],
+    recommendedAction: (explanation as any)?.advisor_summary || '',
+  }
+}
+
 // ── Results page ─────────────────────────────────────────────────────────────
 export default function ResultsPage() {
   const [results, setResults]         = useState<StressTestResult | null>(null)
   const [exporting, setExporting]     = useState(false)
-  const [view, setView]               = useState<'advisor' | 'client'>('advisor')
+  const [view, setView]               = useState<'advisor' | 'client' | 'presentation'>('advisor')
   const [profile, setProfile]         = useState<ClientProfile>(DEFAULT_PROFILE)
   const [isPresenting, setPresenting] = useState(false)
   const [saveModal, setSaveModal]     = useState<SaveModal>({ open: false, clientName: '', saving: false })
@@ -998,6 +1052,14 @@ export default function ResultsPage() {
               <Users size={14} />
               <span className='hidden sm:inline'>Client view</span>
             </button>
+            <button
+              onClick={() => setView('presentation')}
+              className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium
+                transition-all duration-200
+                ${view === 'presentation' ? 'bg-yellow-500 text-black shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}>
+              <FileText size={14} />
+              <span className='hidden sm:inline'>Client Presentation</span>
+            </button>
           </div>
           <div className='flex items-center gap-2'>
             <button
@@ -1075,6 +1137,10 @@ export default function ResultsPage() {
       </div>
 
       {view === 'client' && <ClientView results={results} />}
+
+      {view === 'presentation' && (
+        <WealthPresentation portfolioData={toPortfolioData(results)} advisorMode={true} />
+      )}
 
       {view === 'advisor' && (
         <AdvisorView

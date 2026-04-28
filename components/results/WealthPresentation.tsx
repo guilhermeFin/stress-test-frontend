@@ -65,7 +65,7 @@ interface IlliquidAsset {
   haircut:     number;   // fraction e.g. 0.20
 }
 
-interface PortfolioData {
+export interface PortfolioData {
   clientName:    string;
   advisorName:   string;
   date:          string;
