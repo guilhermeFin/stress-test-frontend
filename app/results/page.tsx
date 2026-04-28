@@ -20,7 +20,7 @@ import WealthPresentation, { PortfolioData } from '@/components/results/WealthPr
 import {
   TrendingDown, Landmark, BarChart3, Lightbulb, Brain,
   Users, Briefcase, CheckCircle, AlertTriangle, XCircle,
-  ArrowRight, ChevronDown, MonitorPlay, BookmarkPlus, Layers, FileText,
+  ArrowRight, ChevronDown, BookmarkPlus, Layers, FileText,
 } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
@@ -1052,14 +1052,6 @@ export default function ResultsPage() {
               <Users size={14} />
               <span className='hidden sm:inline'>Client view</span>
             </button>
-            <button
-              onClick={() => setView('presentation')}
-              className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium
-                transition-all duration-200
-                ${view === 'presentation' ? 'bg-yellow-500 text-black shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}>
-              <FileText size={14} />
-              <span className='hidden sm:inline'>Client Presentation</span>
-            </button>
           </div>
           <div className='flex items-center gap-2'>
             <button
@@ -1071,12 +1063,12 @@ export default function ResultsPage() {
               <span className='hidden sm:inline'>Save</span>
             </button>
             <button
-              onClick={() => setPresenting(true)}
+              onClick={() => setView('presentation')}
               className='flex items-center gap-1.5 px-3 py-2 rounded-xl
                 bg-white/5 hover:bg-white/8 border border-white/10
                 text-sm text-gray-300 transition-all duration-150'>
-              <MonitorPlay size={14} />
-              <span className='hidden sm:inline'>Present</span>
+              <FileText size={14} />
+              <span className='hidden sm:inline'>Client Presentation</span>
             </button>
             <button
               onClick={handleExportPdf}

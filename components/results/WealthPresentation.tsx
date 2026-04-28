@@ -239,8 +239,8 @@ const Section = ({ title, children, printHide = false }: {
 
 // ── 1. Header ──────────────────────────────────────────────────────────────
 
-const Header = ({ data, brl, onBrlChange }: {
-  data: PortfolioData; brl: number; onBrlChange: (v: number) => void;
+const Header = ({ data, brl, onBrlChange, showBrl = true }: {
+  data: PortfolioData; brl: number; onBrlChange: (v: number) => void; showBrl?: boolean;
 }) => {
   const totalBrl = data.totalUsd * brl;
   return (
@@ -253,17 +253,19 @@ const Header = ({ data, brl, onBrlChange }: {
       <div className="text-right">
         <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Portfolio Value</p>
         <p className="text-4xl font-bold text-white">{fmtUsd(data.totalUsd)}</p>
-        <p className="text-yellow-400 text-lg">{fmtBrl(totalBrl)}</p>
-        <div className="mt-2 flex items-center gap-2 justify-end print:hidden">
-          <label className="text-xs text-slate-400">R$/USD</label>
-          <input
-            type="number"
-            step="0.01"
-            value={brl}
-            onChange={(e) => onBrlChange(parseFloat(e.target.value) || 5.2)}
-            className="w-20 text-xs text-right bg-white/10 border border-white/20 rounded px-2 py-1 text-white"
-          />
-        </div>
+        {showBrl && <p className="text-yellow-400 text-lg">{fmtBrl(totalBrl)}</p>}
+        {showBrl && (
+          <div className="mt-2 flex items-center gap-2 justify-end print:hidden">
+            <label className="text-xs text-slate-400">R$/USD</label>
+            <input
+              type="number"
+              step="0.01"
+              value={brl}
+              onChange={(e) => onBrlChange(parseFloat(e.target.value) || 5.2)}
+              className="w-20 text-xs text-right bg-white/10 border border-white/20 rounded px-2 py-1 text-white"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -332,9 +334,9 @@ const AllocationDonut = ({ allocation }: { allocation: Allocation[] }) => (
 // ── 4. Stress scenarios ────────────────────────────────────────────────────
 
 const ScenarioCard = ({
-  s, totalUsd, brl, expanded, onToggle,
+  s, totalUsd, brl, expanded, onToggle, showBrl = true,
 }: {
-  s: ScenarioResult; totalUsd: number; brl: number; expanded: boolean; onToggle: () => void;
+  s: ScenarioResult; totalUsd: number; brl: number; expanded: boolean; onToggle: () => void; showBrl?: boolean;
 }) => {
   const stressed = totalUsd + s.impactUsd;
   const stressedBrl = stressed * brl;
@@ -360,6 +362,7 @@ const ScenarioCard = ({
                 {fmtPct(s.impactPct)} · {fmtUsd(s.impactUsd)}
               </p>
             </div>
+            {showBrl && (
             <div>
               <p className="text-xs text-slate-400">Impact BRL</p>
               <p className={`text-xl font-bold ${brlImpactPositive ? "text-green-400" : "text-red-400"}`}>
@@ -369,6 +372,7 @@ const ScenarioCard = ({
                 <p className="text-xs text-green-500 mt-0.5">↑ BRL depreciation offset</p>
               )}
             </div>
+            )}
             <div>
               <p className="text-xs text-slate-400">Recovery</p>
               <p className="text-xl font-bold text-slate-300">{s.recoveryMonths} months</p>
@@ -386,10 +390,12 @@ const ScenarioCard = ({
               <p className="text-xs text-slate-400 mb-1">Stressed Portfolio (USD)</p>
               <p className="font-bold text-white">{fmtUsd(stressed)}</p>
             </div>
+            {showBrl && (
             <div className="bg-white/5 rounded-lg p-3">
               <p className="text-xs text-slate-400 mb-1">Stressed Portfolio (BRL)</p>
               <p className="font-bold text-yellow-300">{fmtBrl(stressedBrl)}</p>
             </div>
+            )}
           </div>
           <p className="text-xs text-slate-500">{s.recoveryNote}</p>
         </div>
@@ -398,8 +404,8 @@ const ScenarioCard = ({
   );
 };
 
-const StressScenarios = ({ scenarios, totalUsd, brl }: {
-  scenarios: ScenarioResult[]; totalUsd: number; brl: number;
+const StressScenarios = ({ scenarios, totalUsd, brl, showBrl = true }: {
+  scenarios: ScenarioResult[]; totalUsd: number; brl: number; showBrl?: boolean;
 }) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   return (
@@ -410,6 +416,7 @@ const StressScenarios = ({ scenarios, totalUsd, brl }: {
             key={s.id} s={s} totalUsd={totalUsd} brl={brl}
             expanded={expandedId === s.id}
             onToggle={() => setExpandedId(expandedId === s.id ? null : s.id)}
+            showBrl={showBrl}
           />
         ))}
       </div>
@@ -504,8 +511,8 @@ const IcebergView = ({ totalUsd, brl, illiquidAssets, activeScenarioHaircut }: {
 
 // ── 6. Goal tracker ────────────────────────────────────────────────────────
 
-const GoalTracker = ({ goals, scenarios }: {
-  goals: Goal[]; scenarios: ScenarioResult[]; totalUsd: number;
+const GoalTracker = ({ goals, scenarios, brl = 5.2, showBrl = false }: {
+  goals: Goal[]; scenarios: ScenarioResult[]; totalUsd: number; brl?: number; showBrl?: boolean;
 }) => {
   const worstScenario = scenarios.reduce(
     (w, s) => s.impactPct < w.impactPct ? s : w,
@@ -550,18 +557,21 @@ const GoalTracker = ({ goals, scenarios }: {
                 <div>
                   <p className="text-xs text-slate-400">Today</p>
                   <p className="font-bold text-white">{fmtUsd(g.currentUsd)}</p>
+                  {showBrl && <p className="text-xs text-yellow-400 mt-0.5">{fmtBrl(g.currentUsd * brl)}</p>}
                 </div>
                 <div>
                   <p className="text-xs text-slate-400">Projected ({g.annualReturn}% p.a.)</p>
                   <p className={`font-bold ${onTrack ? "text-green-400" : "text-orange-400"}`}>
                     {fmtUsd(projected)}
                   </p>
+                  {showBrl && <p className="text-xs text-yellow-400 mt-0.5">{fmtBrl(projected * brl)}</p>}
                 </div>
                 <div>
                   <p className="text-xs text-slate-400">After Worst Scenario</p>
                   <p className={`font-bold ${stressedOnTrack ? "text-yellow-300" : "text-red-400"}`}>
                     {fmtUsd(stressedProjected)}
                   </p>
+                  {showBrl && <p className="text-xs text-yellow-400 mt-0.5">{fmtBrl(stressedProjected * brl)}</p>}
                 </div>
                 <div>
                   <p className="text-xs text-slate-400">Years to Goal</p>
@@ -585,9 +595,9 @@ const GoalTracker = ({ goals, scenarios }: {
 // ── 7. PDF summary panel ───────────────────────────────────────────────────
 
 const PdfSummary = ({
-  data, brl, recommendedAction,
+  data, brl, recommendedAction, showBrl = true,
 }: {
-  data: PortfolioData; brl: number; recommendedAction: string;
+  data: PortfolioData; brl: number; recommendedAction: string; showBrl?: boolean;
 }) => {
   const worstScenario = data.scenarios.reduce(
     (w, s) => s.impactPct < w.impactPct ? s : w,
@@ -618,7 +628,7 @@ const PdfSummary = ({
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold text-white print:text-black">{fmtUsd(data.totalUsd)}</p>
-            <p className="text-yellow-400 print:text-gray-600 text-sm">{fmtBrl(data.totalUsd * brl)}</p>
+            {showBrl && <p className="text-yellow-400 print:text-gray-600 text-sm">{fmtBrl(data.totalUsd * brl)}</p>}
           </div>
         </div>
 
@@ -757,12 +767,129 @@ export default function WealthPresentation({
   portfolioData = SAMPLE_DATA,
   advisorMode   = false,
 }: Props) {
-  const [brl, setBrl] = useState(portfolioData.brlPerUsd);
-  const [action, setAction] = useState(portfolioData.recommendedAction ?? "");
+  const [brl, setBrl]                   = useState(portfolioData.brlPerUsd);
+  const [action, setAction]             = useState(portfolioData.recommendedAction ?? "");
+  const [customerMode, setCustomerMode] = useState<'us' | 'br'>('us');
 
-  const worstScenario = portfolioData.scenarios.reduce(
+  const US_SCENARIOS: ScenarioResult[] = [
+    {
+      id: 'gfc_2008',
+      name: '2008 Global Financial Crisis',
+      year: 2008,
+      narrative: 'The worst financial crisis since the Great Depression. Global equity markets fell over 50% peak-to-trough. A diversified portfolio with bonds provided meaningful protection.',
+      severity: 5,
+      impactUsd: portfolioData.totalUsd * -0.32,
+      impactPct: -32.0,
+      impactBrl: 0,
+      recoveryMonths: 14,
+      recoveryNote: 'S&P 500 recovered to pre-crisis levels by early 2013',
+    },
+    {
+      id: 'rate_shock_2022',
+      name: '2022 Rate Shock',
+      year: 2022,
+      narrative: 'The fastest Fed rate hiking cycle in 40 years caused simultaneous losses in stocks and bonds — rare and painful for 60/40 investors. Bonds fell 20%, equities fell 18%.',
+      severity: 3,
+      impactUsd: portfolioData.totalUsd * -0.18,
+      impactPct: -18.0,
+      impactBrl: 0,
+      recoveryMonths: 18,
+      recoveryNote: 'Bonds -20%, equities -18%, recovery 18 months',
+    },
+    {
+      id: 'covid_2020',
+      name: 'COVID-19 2020',
+      year: 2020,
+      narrative: 'The fastest bear market in history — a 34% drawdown in 33 days — followed by the fastest recovery. Clients who stayed invested recovered in full within 6 months.',
+      severity: 4,
+      impactUsd: portfolioData.totalUsd * -0.26,
+      impactPct: -26.0,
+      impactBrl: 0,
+      recoveryMonths: 6,
+      recoveryNote: 'Global stimulus drove fastest equity market recovery in history',
+    },
+    {
+      id: 'hypothetical_recession',
+      name: 'Hypothetical Recession',
+      year: new Date().getFullYear(),
+      narrative: 'A hypothetical economic recession with equities falling 30% and bonds providing a partial buffer at -5%. Historically, recovery from a recession-driven bear market takes about 12 months from the trough.',
+      severity: 4,
+      impactUsd: portfolioData.totalUsd * -0.25,
+      impactPct: -25.0,
+      impactBrl: 0,
+      recoveryMonths: 12,
+      recoveryNote: 'Equities -30%, bonds -5%, recovery 12 months',
+    },
+  ];
+
+  const BR_SCENARIOS: ScenarioResult[] = [
+    {
+      id: '2002_lula_panic',
+      name: '2002 Lula Election Panic',
+      year: 2002,
+      narrative: 'Fear of a left-wing government defaulting on debt caused sharp BRL depreciation and an asset selloff. USD-denominated assets provided a natural hedge — offshore portfolios held their value while local Brazilian assets collapsed.',
+      severity: 4,
+      impactUsd:  portfolioData.totalUsd * -0.08,
+      impactPct:  -8.0,
+      impactBrl:  portfolioData.totalUsd * brl * 0.15,
+      recoveryMonths: 24,
+      recoveryNote: 'Brazilian assets recovered once Lula maintained fiscal discipline post-election',
+    },
+    {
+      id: '2008_gfc_br',
+      name: '2008 Global Financial Crisis',
+      year: 2008,
+      narrative: 'The 2008 crisis hit hard but briefly. Brazil recovered within 14 months, faster than the US or Europe. Clients who held through the panic came out whole.',
+      severity: 5,
+      impactUsd:  portfolioData.totalUsd * -0.32,
+      impactPct:  -32.0,
+      impactBrl:  portfolioData.totalUsd * brl * -0.41,
+      recoveryMonths: 14,
+      recoveryNote: 'Ibovespa recovered to pre-crisis levels by early 2010',
+    },
+    {
+      id: '2015_brazil_crisis',
+      name: '2015 Brazil Fiscal Crisis',
+      year: 2015,
+      narrative: "This is the scenario that shows why offshore USD diversification matters. While Brazilian assets collapsed, USD portfolios held their value — and in BRL terms, a flat USD portfolio looked like a 47% gain.",
+      severity: 4,
+      impactUsd:  portfolioData.totalUsd * -0.06,
+      impactPct:  -6.0,
+      impactBrl:  portfolioData.totalUsd * brl * 0.22,
+      recoveryMonths: 36,
+      recoveryNote: 'Ibovespa in USD terms took until 2019 to fully recover',
+    },
+    {
+      id: '2018_election_shock',
+      name: '2018 Election Shock',
+      year: 2018,
+      narrative: 'A sharp but brief shock. Well-diversified offshore portfolios barely noticed. This is a good example of political risk that looks scary but does not last.',
+      severity: 2,
+      impactUsd:  portfolioData.totalUsd * -0.04,
+      impactPct:  -4.0,
+      impactBrl:  portfolioData.totalUsd * brl * -0.10,
+      recoveryMonths: 6,
+      recoveryNote: 'Ibovespa rallied strongly post-election on reform optimism',
+    },
+    {
+      id: '2020_covid_br',
+      name: '2020 COVID-19',
+      year: 2020,
+      narrative: 'The fastest crash and recovery in history. Portfolios were back to pre-crisis levels within 6 months. Clients who panicked and sold locked in permanent losses.',
+      severity: 4,
+      impactUsd:  portfolioData.totalUsd * -0.26,
+      impactPct:  -26.0,
+      impactBrl:  portfolioData.totalUsd * brl * -0.29,
+      recoveryMonths: 6,
+      recoveryNote: 'Global stimulus drove fastest equity market recovery in history',
+    },
+  ];
+
+  const activeScenarios = customerMode === 'us' ? US_SCENARIOS : BR_SCENARIOS;
+
+  const worstScenario = activeScenarios.reduce(
     (w, s) => s.impactPct < w.impactPct ? s : w,
-    portfolioData.scenarios[0]
+    activeScenarios[0]
   );
 
   return (
@@ -778,29 +905,59 @@ export default function WealthPresentation({
       <div className="min-h-screen bg-[#0A1628] text-white font-sans">
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-10">
 
-          <Header data={portfolioData} brl={brl} onBrlChange={setBrl} />
+          <Header data={portfolioData} brl={brl} onBrlChange={setBrl} showBrl={customerMode === 'br'} />
+
+          <div className="flex gap-2 mb-8">
+            <button
+              onClick={() => setCustomerMode('us')}
+              style={{ transition: 'background-color 150ms, color 150ms, border-color 150ms' }}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm border
+                ${customerMode === 'us'
+                  ? 'bg-[#C9A84C] border-[#C9A84C] text-[#0A1628] font-bold'
+                  : 'bg-transparent border-[#C9A84C] text-[#C9A84C] font-medium'
+                }`}
+            >
+              🇺🇸 U.S. Customer
+            </button>
+            <button
+              onClick={() => setCustomerMode('br')}
+              style={{ transition: 'background-color 150ms, color 150ms, border-color 150ms' }}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm border
+                ${customerMode === 'br'
+                  ? 'bg-[#C9A84C] border-[#C9A84C] text-[#0A1628] font-bold'
+                  : 'bg-transparent border-[#C9A84C] text-[#C9A84C] font-medium'
+                }`}
+            >
+              🇧🇷 BR Customer
+            </button>
+          </div>
 
           <PerformanceBar perf={portfolioData.performance} />
 
           <AllocationDonut allocation={portfolioData.allocation} />
 
           <StressScenarios
-            scenarios={portfolioData.scenarios}
+            scenarios={activeScenarios}
             totalUsd={portfolioData.totalUsd}
             brl={brl}
+            showBrl={customerMode === 'br'}
           />
 
-          <IcebergView
-            totalUsd={portfolioData.totalUsd}
-            brl={brl}
-            illiquidAssets={portfolioData.illiquidAssets}
-            activeScenarioHaircut={Math.abs(worstScenario.impactPct) / 100 * 0.5}
-          />
+          {customerMode === 'br' && (
+            <IcebergView
+              totalUsd={portfolioData.totalUsd}
+              brl={brl}
+              illiquidAssets={portfolioData.illiquidAssets}
+              activeScenarioHaircut={Math.abs(worstScenario.impactPct) / 100 * 0.5}
+            />
+          )}
 
           <GoalTracker
             goals={portfolioData.goals}
-            scenarios={portfolioData.scenarios}
+            scenarios={activeScenarios}
             totalUsd={portfolioData.totalUsd}
+            brl={brl}
+            showBrl={customerMode === 'br'}
           />
 
           {advisorMode && (
@@ -818,6 +975,7 @@ export default function WealthPresentation({
             data={portfolioData}
             brl={brl}
             recommendedAction={action || portfolioData.recommendedAction || ""}
+            showBrl={customerMode === 'br'}
           />
 
           {advisorMode && <AuditTrail data={portfolioData} brl={brl} />}
