@@ -1,9 +1,9 @@
 ﻿'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useDropzone } from 'react-dropzone'
-import { runStressTest } from '@/lib/api'
+import { runStressTest, runBrazilStressFile, listBrazilScenarios, BrazilScenarioMeta } from '@/lib/api'
 import {
   Upload, AlertCircle, TrendingDown, Download,
   Shield, BarChart3, Brain, Activity, ChevronRight, Clock, ArrowLeft, Calendar
@@ -84,6 +84,16 @@ export default function UploadPage() {
   const [error, setError]       = useState('')
   const [activeHistorical, setActiveHistorical] = useState<string | null>(null)
 
+  // Brazil state
+  const [brazilScenarios, setBrazilScenarios]   = useState<BrazilScenarioMeta[]>([])
+  const [brazilScenarioId, setBrazilScenarioId] = useState<string | null>(null)
+  const [brlUsdRate, setBrlUsdRate]             = useState(5.20)
+  const [scenarioTab, setScenarioTab]           = useState<'global' | 'brazil'>('global')
+
+  useEffect(() => {
+    listBrazilScenarios().then(setBrazilScenarios).catch(() => {})
+  }, [])
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] },
     onDrop: (files) => setFile(files[0]),
@@ -91,20 +101,42 @@ export default function UploadPage() {
   })
 
   const handleSubmit = async () => {
-    if (!file || !scenario) {
-      setError('Please upload a portfolio file and describe a scenario.')
+    if (!file) {
+      setError('Please upload a portfolio file.')
       return
     }
-    setLoading(true)
-    setError('')
-    try {
-      const results = await runStressTest(file, scenario)
-      sessionStorage.setItem('stressResults', JSON.stringify(results))
-      router.push('/results')
-    } catch {
-      setError('Analysis failed. Please check your file format and try again.')
-    } finally {
-      setLoading(false)
+    if (scenarioTab === 'brazil') {
+      if (!brazilScenarioId) {
+        setError('Please select a Brazil scenario.')
+        return
+      }
+      setLoading(true)
+      setError('')
+      try {
+        const results = await runBrazilStressFile(file, brazilScenarioId, brlUsdRate)
+        sessionStorage.setItem('brazilStressResults', JSON.stringify(results))
+        router.push('/wealth-presentation')
+      } catch {
+        setError('Brazil stress analysis failed. Please check your file format and try again.')
+      } finally {
+        setLoading(false)
+      }
+    } else {
+      if (!scenario) {
+        setError('Please describe a stress scenario.')
+        return
+      }
+      setLoading(true)
+      setError('')
+      try {
+        const results = await runStressTest(file, scenario)
+        sessionStorage.setItem('stressResults', JSON.stringify(results))
+        router.push('/results')
+      } catch {
+        setError('Analysis failed. Please check your file format and try again.')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -241,66 +273,146 @@ export default function UploadPage() {
             )}
           </div>
 
-          <div className='mb-3'>
-            <div className='flex items-center justify-between mb-2'>
-              <label className='text-xs text-gray-400 font-medium'>
-                Describe the stress scenario
-              </label>
-              {activeHistorical && (
-                <span className='text-xs text-blue-400 flex items-center gap-1'>
-                  <Clock size={10} />
-                  {activeHistorical} loaded
-                </span>
-              )}
-            </div>
-            <textarea
-              value={scenario}
-              onChange={(e) => { setScenario(e.target.value); setActiveHistorical(null) }}
-              className='w-full bg-white/3 border border-white/10 rounded-xl p-4
-                text-white placeholder-gray-600 resize-none focus:outline-none
-                focus:border-blue-500/50 text-sm transition-all'
-              rows={3}
-              placeholder='e.g. Market crashes 30%, rates rise 2%, tech sector drops 50%'
-            />
-          </div>
+          {scenarioTab === 'global' && (
+            <>
+              <div className='mb-3'>
+                <div className='flex items-center justify-between mb-2'>
+                  <label className='text-xs text-gray-400 font-medium'>
+                    Describe the stress scenario
+                  </label>
+                  {activeHistorical && (
+                    <span className='text-xs text-blue-400 flex items-center gap-1'>
+                      <Clock size={10} />
+                      {activeHistorical} loaded
+                    </span>
+                  )}
+                </div>
+                <textarea
+                  value={scenario}
+                  onChange={(e) => { setScenario(e.target.value); setActiveHistorical(null) }}
+                  className='w-full bg-white/3 border border-white/10 rounded-xl p-4
+                    text-white placeholder-gray-600 resize-none focus:outline-none
+                    focus:border-blue-500/50 text-sm transition-all'
+                  rows={3}
+                  placeholder='e.g. Market crashes 30%, rates rise 2%, tech sector drops 50%'
+                />
+              </div>
 
-          <div className='flex flex-wrap gap-2 mb-4'>
-            {SAMPLE_SCENARIOS.map((s) => (
-              <button key={s} onClick={() => { setScenario(s); setActiveHistorical(null) }}
-                className='text-xs bg-white/3 hover:bg-white/8 border border-white/8
-                  hover:border-white/15 text-gray-400 hover:text-gray-200
-                  px-3 py-1.5 rounded-full transition-all'>
-                {s.split(':')[0].split(',')[0]}
+              <div className='flex flex-wrap gap-2 mb-4'>
+                {SAMPLE_SCENARIOS.map((s) => (
+                  <button key={s} onClick={() => { setScenario(s); setActiveHistorical(null) }}
+                    className='text-xs bg-white/3 hover:bg-white/8 border border-white/8
+                      hover:border-white/15 text-gray-400 hover:text-gray-200
+                      px-3 py-1.5 rounded-full transition-all'>
+                    {s.split(':')[0].split(',')[0]}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+
+          <div className='mb-5'>
+            {/* Tab toggle */}
+            <div className='flex items-center gap-1 mb-3'>
+              <button
+                onClick={() => { setScenarioTab('global'); setBrazilScenarioId(null) }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all
+                  ${scenarioTab === 'global'
+                    ? 'bg-white/10 text-white'
+                    : 'text-gray-500 hover:text-gray-300'}`}
+              >
+                <Clock size={11} />
+                Global scenarios
               </button>
-            ))}
+              <button
+                onClick={() => { setScenarioTab('brazil'); setActiveHistorical(null) }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all
+                  ${scenarioTab === 'brazil'
+                    ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                    : 'text-gray-500 hover:text-gray-300'}`}
+              >
+                🇧🇷 Brazil scenarios
+              </button>
+            </div>
+
+            {scenarioTab === 'global' && (
+              <div className='grid grid-cols-3 md:grid-cols-6 gap-2'>
+                {HISTORICAL_SCENARIOS.map((s) => (
+                  <button
+                    key={s.label}
+                    onClick={() => handleHistorical(s)}
+                    className={`p-2.5 rounded-xl border bg-gradient-to-br text-left
+                      transition-all ${s.color}
+                      ${activeHistorical === s.label ? 'ring-1 ring-white/20' : ''}`}>
+                    <div className='text-xs font-medium text-white mb-0.5'>{s.label}</div>
+                    <div className='text-xs text-gray-400 mb-1.5'>{s.year}</div>
+                    <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${s.badge}`}>
+                      {s.severity}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {scenarioTab === 'brazil' && (
+              <div className='space-y-3'>
+                <div className='grid grid-cols-2 md:grid-cols-3 gap-2'>
+                  {brazilScenarios.map((s) => {
+                    const severityColors = ['', 'text-green-400', 'text-yellow-300', 'text-orange-400', 'text-red-400', 'text-red-500']
+                    const severityBg    = ['', 'bg-green-900/40', 'bg-yellow-900/40', 'bg-orange-900/40', 'bg-red-900/40', 'bg-red-900/60']
+                    const severityLabel = ['', 'Mild', 'Moderate', 'Significant', 'Severe', 'Extreme']
+                    const isActive      = brazilScenarioId === s.id
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => setBrazilScenarioId(s.id)}
+                        className={`p-3 rounded-xl border text-left transition-all
+                          bg-gradient-to-br from-yellow-600/10 to-yellow-900/5
+                          ${isActive
+                            ? 'border-yellow-500/60 ring-1 ring-yellow-500/30'
+                            : 'border-yellow-700/20 hover:border-yellow-600/40'}`}
+                      >
+                        <div className='text-xs font-semibold text-white mb-0.5 leading-tight'>{s.name}</div>
+                        <div className='text-xs text-gray-400 mb-1.5'>{s.year}</div>
+                        <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${severityBg[s.severity]} ${severityColors[s.severity]}`}>
+                          {severityLabel[s.severity]}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {brazilScenarioId && (() => {
+                  const selected = brazilScenarios.find(s => s.id === brazilScenarioId)
+                  return selected ? (
+                    <div className='bg-yellow-500/5 border border-yellow-500/20 rounded-xl p-3 text-xs text-slate-300 leading-relaxed'>
+                      <p className='text-yellow-400 font-semibold mb-1'>{selected.name}</p>
+                      <p>{selected.narrative}</p>
+                      <p className='text-slate-500 mt-1'>Recovery: ~{selected.recovery_months} months</p>
+                    </div>
+                  ) : null
+                })()}
+
+                <div className='flex items-center gap-3'>
+                  <label className='text-xs text-gray-400'>BRL/USD rate</label>
+                  <input
+                    type='number'
+                    step='0.01'
+                    value={brlUsdRate}
+                    onChange={(e) => setBrlUsdRate(parseFloat(e.target.value) || 5.20)}
+                    className='w-24 text-xs text-right bg-white/5 border border-white/15 rounded-lg px-3 py-1.5 text-white'
+                  />
+                  <span className='text-xs text-gray-500'>Results show USD and BRL impact</span>
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className='mb-5'>
-            <div className='flex items-center gap-2 mb-3'>
-              <Clock size={13} className='text-gray-400' />
-              <span className='text-xs text-gray-400 font-medium'>Historical crisis scenarios</span>
+          {scenarioTab === 'global' && (
+            <div className='mb-5'>
+              <ShockBuilder onApply={(s) => { setScenario(s); setActiveHistorical(null) }} />
             </div>
-            <div className='grid grid-cols-3 md:grid-cols-6 gap-2'>
-              {HISTORICAL_SCENARIOS.map((s) => (
-                <button
-                  key={s.label}
-                  onClick={() => handleHistorical(s)}
-                  className={`p-2.5 rounded-xl border bg-gradient-to-br text-left
-                    transition-all ${s.color}
-                    ${activeHistorical === s.label ? 'ring-1 ring-white/20' : ''}`}>
-                  <div className='text-xs font-medium text-white mb-0.5'>{s.label}</div>
-                  <div className='text-xs text-gray-400 mb-1.5'>{s.year}</div>
-                  <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${s.badge}`}>
-                    {s.severity}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className='mb-5'>
-            <ShockBuilder onApply={(s) => { setScenario(s); setActiveHistorical(null) }} />
-          </div>
+          )}
 
           {error && (
             <div className='mb-4 flex items-center gap-2 text-red-400 text-sm
@@ -313,19 +425,21 @@ export default function UploadPage() {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className='w-full py-4 rounded-full font-medium text-sm
+            className={`w-full py-4 rounded-full font-medium text-sm
               transition-opacity duration-150 active:scale-[0.98]
               disabled:opacity-50 disabled:cursor-not-allowed
-              bg-blue-600 hover:opacity-85'>
+              ${scenarioTab === 'brazil'
+                ? 'bg-yellow-500 hover:opacity-85 text-black'
+                : 'bg-blue-600 hover:opacity-85 text-white'}`}>
             {loading ? (
               <span className='flex items-center justify-center gap-2'>
-                <span className='w-4 h-4 border-2 border-white/30 border-t-white
+                <span className='w-4 h-4 border-2 border-black/30 border-t-black
                   rounded-full animate-spin' />
                 Running analysis...
               </span>
             ) : (
               <span className='flex items-center justify-center gap-2'>
-                Run Stress Test
+                {scenarioTab === 'brazil' ? '🇧🇷 Run Brazil Stress Test' : 'Run Stress Test'}
                 <ChevronRight size={16} />
               </span>
             )}

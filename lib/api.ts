@@ -164,6 +164,69 @@ export async function getMemo(): Promise<MemoResult> {
   return response.data
 }
 
+export interface BrazilScenarioMeta {
+  id: string
+  name: string
+  year: number
+  severity: number
+  description: string
+  narrative: string
+  recovery_months: number
+}
+
+export interface BrazilStressResult {
+  scenario: {
+    id: string
+    name: string
+    year: number
+    description: string
+    narrative: string
+    severity: number
+    recovery_months: number
+    recovery_note: string
+    correlation_note: string | null
+  }
+  portfolio_summary: {
+    original_value_usd: number
+    stressed_value_usd: number
+    impact_usd: number
+    impact_pct: number
+    original_value_brl: number
+    stressed_value_brl: number
+    brl_usd_rate_original: number
+    brl_usd_rate_stressed: number
+  }
+  positions: any[]
+  shocks_applied: {
+    brl_usd: number
+    ibovespa: number
+    cdi_spread_pts: number
+    usd_equities: number
+  }
+}
+
+export async function listBrazilScenarios(): Promise<BrazilScenarioMeta[]> {
+  const response = await axios.get(`${API_BASE}/brazil/scenarios`)
+  return response.data
+}
+
+export async function runBrazilStressFile(
+  file: File,
+  scenarioId: string,
+  brlUsdRate = 5.20,
+): Promise<BrazilStressResult> {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('scenario_id', scenarioId)
+  formData.append('brl_usd_rate', brlUsdRate.toString())
+  const response = await axios.post(
+    `${API_BASE}/api/brazil-stress-file`,
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
+  )
+  return response.data
+}
+
 export async function comparePortfolios(
   file1: File,
   file2: File,
