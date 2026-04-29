@@ -183,7 +183,7 @@ export default function TaxImpact({
         {/* Card 3: Withdrawal tax drag */}
         <div className='bg-white/3 rounded-2xl border border-white/8 p-5'>
           <div className='flex items-center gap-2 mb-4'>
-            <Wallet size={16} className='text-blue-400' />
+            <Wallet size={16} className='text-[#C9A84C]' />
             <h3 className='font-semibold text-gray-200'>Withdrawal tax impact</h3>
           </div>
           <div className='space-y-2 mb-4'>

@@ -66,8 +66,8 @@ function ClientCard({ reviews, onDelete }: { reviews: SavedReview[]; onDelete: (
       <button
         onClick={() => setExpanded(e => !e)}
         className='w-full flex items-center gap-4 px-5 py-4 hover:bg-white/2 transition-colors text-left'>
-        <div className='w-10 h-10 bg-blue-600/20 rounded-xl flex items-center justify-center shrink-0'>
-          <Users size={18} className='text-blue-400' />
+        <div className='w-10 h-10 bg-[#C9A84C]/20 rounded-xl flex items-center justify-center shrink-0'>
+          <Users size={18} className='text-[#C9A84C]' />
         </div>
         <div className='flex-1 min-w-0'>
           <div className='flex items-center gap-2 mb-0.5'>
@@ -95,7 +95,7 @@ function ClientCard({ reviews, onDelete }: { reviews: SavedReview[]; onDelete: (
           {previous && (
             <div className='px-5 py-4 border-b border-white/6'>
               <div className='flex items-center gap-2 mb-3'>
-                <RefreshCw size={13} className='text-blue-400' />
+                <RefreshCw size={13} className='text-[#C9A84C]' />
                 <span className='text-xs font-medium text-gray-400 uppercase tracking-wider'>
                   Annual comparison
                 </span>
@@ -245,7 +245,7 @@ export default function ClientsPage() {
   })
 
   return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white'>
+    <main className='min-h-screen bg-[#0A1628] text-white'>
       <div className='max-w-3xl mx-auto px-6 py-12'>
 
         {/* Header */}
@@ -255,14 +255,14 @@ export default function ClientsPage() {
               hover:text-white transition-colors'>
               <ArrowLeft size={14} />
             </Link>
-            <div className='w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-white' />
+            <div className='w-9 h-9 bg-[#C9A84C] rounded-xl flex items-center justify-center'>
+              <TrendingDown size={18} className='text-[#0A1628]' />
             </div>
             <span className='font-medium'>PortfolioStress</span>
           </div>
           <Link href='/upload'
             className='flex items-center gap-2 px-4 py-2 rounded-full
-              bg-blue-600 hover:opacity-85 text-sm text-white font-medium transition-opacity'>
+              bg-[#C9A84C] hover:opacity-85 text-sm text-[#0A1628] font-semibold transition-opacity'>
             New analysis
             <ChevronRight size={14} />
           </Link>
@@ -271,7 +271,7 @@ export default function ClientsPage() {
         {/* Page title */}
         <div className='mb-10'>
           <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-            bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-5'>
+            bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#C9A84C] text-xs font-medium mb-5'>
             <Calendar size={11} />
             Annual Review
           </div>
@@ -287,13 +287,13 @@ export default function ClientsPage() {
 
         {!loaded ? (
           <div className='flex items-center justify-center py-20'>
-            <div className='w-5 h-5 border-2 border-blue-500/30 border-t-[#2563eb] rounded-full animate-spin' />
+            <div className='w-5 h-5 border-2 border-[#C9A84C]/30 border-t-[#C9A84C] rounded-full animate-spin' />
           </div>
         ) : clientNames.length === 0 ? (
           <div className='bg-white/3 border border-white/8 rounded-2xl p-12 text-center'>
-            <div className='w-14 h-14 bg-blue-600/20 rounded-2xl flex items-center
+            <div className='w-14 h-14 bg-[#C9A84C]/20 rounded-2xl flex items-center
               justify-center mx-auto mb-5'>
-              <Users size={24} className='text-blue-400' />
+              <Users size={24} className='text-[#C9A84C]' />
             </div>
             <h3 className='text-xl font-medium text-white mb-2'>No reviews saved yet</h3>
             <p className='text-gray-400 text-sm leading-relaxed max-w-xs mx-auto mb-6'>
@@ -302,7 +302,7 @@ export default function ClientsPage() {
             </p>
             <Link href='/upload'
               className='inline-flex items-center gap-2 px-5 py-2.5 rounded-full
-                bg-blue-600 hover:opacity-85 text-sm text-white font-medium transition-opacity'>
+                bg-[#C9A84C] hover:opacity-85 text-sm text-[#0A1628] font-semibold transition-opacity'>
               Run a stress test
               <ChevronRight size={14} />
             </Link>

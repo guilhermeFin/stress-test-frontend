@@ -47,8 +47,8 @@ const HISTORICAL_SCENARIOS = [
   {
     label: '2022 Rate Shock',
     year: '2022',
-    color: 'from-blue-600/20 to-blue-800/10 border-blue-500/30 hover:border-blue-500/50',
-    badge: 'bg-blue-600/20 text-blue-400',
+    color: 'from-[#C9A84C]/20 to-[#C9A84C]/5 border-[#C9A84C]/30 hover:border-[#C9A84C]/50',
+    badge: 'bg-[#C9A84C]/20 text-[#C9A84C]',
     severity: 'Severe',
     text: '2022 rate shock: Fed raises rates 425bps, bonds crash 15%, tech drops 35%, inflation hits 9%, growth stocks fall 50%',
   },
@@ -152,7 +152,7 @@ export default function UploadPage() {
   }
 
   return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white'>
+    <main className='min-h-screen bg-[#0A1628] text-white'>
       <div className='relative max-w-6xl mx-auto px-6 py-12'>
 
         {/* Header */}
@@ -162,8 +162,8 @@ export default function UploadPage() {
               hover:text-white transition-colors mr-1'>
               <ArrowLeft size={14} />
             </Link>
-            <div className='w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-white' />
+            <div className='w-9 h-9 bg-[#C9A84C] rounded-xl flex items-center justify-center'>
+              <TrendingDown size={18} className='text-[#0A1628]' />
             </div>
             <span className='font-medium text-lg'>PortfolioStress</span>
           </div>
@@ -186,7 +186,7 @@ export default function UploadPage() {
               className='flex items-center gap-2 px-4 py-2 rounded-full
                 bg-white/5 hover:opacity-85 border border-white/10
                 text-sm text-gray-300 transition-opacity'>
-              <Brain size={14} className='text-blue-400' />
+              <Brain size={14} className='text-[#C9A84C]' />
               Custom Portfolio
             </Link>
           </div>
@@ -195,9 +195,9 @@ export default function UploadPage() {
         {/* Hero */}
         <div className='text-center mb-16'>
           <div className='inline-flex items-center gap-2 px-5 py-2 rounded-full
-            bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs
+            bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#C9A84C] text-xs
             font-medium mb-6'>
-            <span className='w-1.5 h-1.5 bg-blue-600 rounded-full' />
+            <span className='w-1.5 h-1.5 bg-[#C9A84C] rounded-full' />
             Institutional-grade portfolio risk analysis
           </div>
           <h1 className='font-medium text-white mb-6'
@@ -217,9 +217,9 @@ export default function UploadPage() {
             <div key={label}
               className='bg-white/4 hover:bg-white/6 border border-white/10
                 rounded-2xl p-4 transition-all group'>
-              <div className='w-8 h-8 bg-blue-600/20 rounded-lg flex items-center
-                justify-center mb-3 group-hover:bg-blue-600/30 transition-all'>
-                <Icon size={16} className='text-blue-400' />
+              <div className='w-8 h-8 bg-[#C9A84C]/20 rounded-lg flex items-center
+                justify-center mb-3 group-hover:bg-[#C9A84C]/30 transition-all'>
+                <Icon size={16} className='text-[#C9A84C]' />
               </div>
               <p className='text-sm font-medium text-white mb-1'>{label}</p>
               <p className='text-xs text-gray-400 leading-relaxed'>{desc}</p>
@@ -250,7 +250,7 @@ export default function UploadPage() {
             className={`border-2 border-dashed rounded-2xl p-8 text-center
               cursor-pointer transition-all mb-5
               ${isDragActive
-                ? 'border-blue-500 bg-blue-500/10'
+                ? 'border-[#C9A84C] bg-[#C9A84C]/10'
                 : file
                 ? 'border-green-500/50 bg-green-600/5'
                 : 'border-white/10 hover:border-white/20 hover:bg-white/2'
@@ -281,7 +281,7 @@ export default function UploadPage() {
                     Describe the stress scenario
                   </label>
                   {activeHistorical && (
-                    <span className='text-xs text-blue-400 flex items-center gap-1'>
+                    <span className='text-xs text-[#C9A84C] flex items-center gap-1'>
                       <Clock size={10} />
                       {activeHistorical} loaded
                     </span>
@@ -292,7 +292,7 @@ export default function UploadPage() {
                   onChange={(e) => { setScenario(e.target.value); setActiveHistorical(null) }}
                   className='w-full bg-white/3 border border-white/10 rounded-xl p-4
                     text-white placeholder-gray-600 resize-none focus:outline-none
-                    focus:border-blue-500/50 text-sm transition-all'
+                    focus:border-[#C9A84C]/50 text-sm transition-all'
                   rows={3}
                   placeholder='e.g. Market crashes 30%, rates rise 2%, tech sector drops 50%'
                 />
@@ -430,7 +430,7 @@ export default function UploadPage() {
               disabled:opacity-50 disabled:cursor-not-allowed
               ${scenarioTab === 'brazil'
                 ? 'bg-yellow-500 hover:opacity-85 text-black'
-                : 'bg-blue-600 hover:opacity-85 text-white'}`}>
+                : 'bg-[#C9A84C] hover:opacity-85 text-[#0A1628] font-semibold'}`}>
             {loading ? (
               <span className='flex items-center justify-center gap-2'>
                 <span className='w-4 h-4 border-2 border-black/30 border-t-black

@@ -154,14 +154,14 @@ export default function IntelligencePage() {
   }
 
   return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white'>
+    <main className='min-h-screen bg-[#0A1628] text-white'>
       <div className='max-w-4xl mx-auto px-6 py-10'>
 
         {/* Header */}
         <div className='flex items-center justify-between mb-10'>
           <div className='flex items-center gap-3'>
-            <div className='w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-white' />
+            <div className='w-9 h-9 bg-[#C9A84C] rounded-xl flex items-center justify-center'>
+              <TrendingDown size={18} className='text-[#0A1628]' />
             </div>
             <span className='font-medium text-lg'>PortfolioStress</span>
           </div>
@@ -175,7 +175,7 @@ export default function IntelligencePage() {
         {/* Title */}
         <div className='mb-8'>
           <div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full
-            bg-blue-500/10 border border-blue-500/20 text-blue-400
+            bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#C9A84C]
             text-xs font-medium mb-4'>
             <Brain size={12} />
             Live Portfolio Analysis
@@ -223,7 +223,7 @@ export default function IntelligencePage() {
                 onChange={e => setTotalAum(e.target.value)}
                 className='w-full bg-white/3 border border-white/10 rounded-xl
                   pl-7 pr-4 py-2.5 text-white text-sm focus:outline-none
-                  focus:border-blue-500/50 transition-all'
+                  focus:border-[#C9A84C]/50 transition-all'
               />
             </div>
           </div>
@@ -242,8 +242,8 @@ export default function IntelligencePage() {
                   {totalWeight.toFixed(1)}% / 100%
                 </span>
                 <button onClick={equalizeWeights}
-                  className='text-xs text-blue-400 hover:opacity-80
-                    border border-blue-500/30 px-2 py-1 rounded-full
+                  className='text-xs text-[#C9A84C] hover:opacity-80
+                    border border-[#C9A84C]/30 px-2 py-1 rounded-full
                     transition-opacity'>
                   Equal weights
                 </button>
@@ -266,7 +266,7 @@ export default function IntelligencePage() {
                     className='col-span-5 bg-white/3 border border-white/10
                       rounded-xl px-3 py-2.5 text-white text-sm
                       placeholder-gray-600 focus:outline-none
-                      focus:border-blue-500/50 transition-all uppercase'
+                      focus:border-[#C9A84C]/50 transition-all uppercase'
                   />
                   <div className='col-span-5 relative'>
                     <input
@@ -277,7 +277,7 @@ export default function IntelligencePage() {
                       className='w-full bg-white/3 border border-white/10
                         rounded-xl px-3 py-2.5 text-white text-sm
                         placeholder-gray-600 focus:outline-none
-                        focus:border-blue-500/50 transition-all pr-7'
+                        focus:border-[#C9A84C]/50 transition-all pr-7'
                     />
                     <span className='absolute right-3 top-1/2 -translate-y-1/2
                       text-gray-500 text-sm'>%</span>
@@ -306,7 +306,7 @@ export default function IntelligencePage() {
                 Stress scenario
               </label>
               {activeScenario && (
-                <span className='text-xs text-blue-400'>{activeScenario} loaded</span>
+                <span className='text-xs text-[#C9A84C]'>{activeScenario} loaded</span>
               )}
             </div>
             <textarea
@@ -319,7 +319,7 @@ export default function IntelligencePage() {
               placeholder='e.g. Market crashes 30%, rates rise 2%, tech drops 50%'
               className='w-full bg-white/3 border border-white/10 rounded-xl
                 p-4 text-white placeholder-gray-600 resize-none
-                focus:outline-none focus:border-blue-500/50 text-sm
+                focus:outline-none focus:border-[#C9A84C]/50 text-sm
                 transition-all mb-3'
             />
             <div className='flex flex-wrap gap-2'>
@@ -332,7 +332,7 @@ export default function IntelligencePage() {
                   className={`text-xs px-3 py-1.5 rounded-full border
                     transition-all
                     ${activeScenario === s.label
-                      ? 'border-blue-500/50 bg-blue-500/10 text-blue-400'
+                      ? 'border-[#C9A84C]/50 bg-[#C9A84C]/10 text-[#C9A84C]'
                       : 'border-white/8 bg-white/3 text-gray-400 hover:text-gray-200 hover:border-white/15'
                     }`}>
                   {s.label}
@@ -355,11 +355,11 @@ export default function IntelligencePage() {
             className='w-full py-4 rounded-full font-medium text-sm
               transition-opacity duration-150 active:scale-[0.98]
               disabled:opacity-50 disabled:cursor-not-allowed
-              bg-blue-600 hover:opacity-85'>
+              bg-[#C9A84C] hover:opacity-85 text-[#0A1628] font-semibold'>
             {loading ? (
               <span className='flex items-center justify-center gap-2'>
-                <span className='w-4 h-4 border-2 border-white/30
-                  border-t-white rounded-full animate-spin' />
+                <span className='w-4 h-4 border-2 border-[#0A1628]/30
+                  border-t-[#0A1628] rounded-full animate-spin' />
                 Running analysis...
               </span>
             ) : (

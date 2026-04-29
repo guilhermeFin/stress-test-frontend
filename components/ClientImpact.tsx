@@ -340,7 +340,7 @@ const ClientImpact = memo(function ClientImpact({
           className='w-full flex items-center justify-between p-5
             hover:bg-white/5 transition-colors'>
           <div className='flex items-center gap-2'>
-            <User size={16} className='text-blue-400' />
+            <User size={16} className='text-[#C9A84C]' />
             <span className='font-semibold text-gray-200'>Client Profile</span>
             <span className='text-xs text-gray-500'>— adjust to personalize impact</span>
           </div>
@@ -453,7 +453,7 @@ const ClientImpact = memo(function ClientImpact({
 
         <div className='bg-white/3 rounded-2xl p-5 border border-white/8'>
           <div className='flex items-center gap-2 mb-4'>
-            <Target size={16} className='text-blue-400' />
+            <Target size={16} className='text-[#C9A84C]' />
             <h3 className='font-semibold text-gray-200'>Goal Achievement Probability</h3>
           </div>
           <div className='grid grid-cols-2 gap-6'>
@@ -484,7 +484,7 @@ const ClientImpact = memo(function ClientImpact({
 
         <div className='bg-white/3 rounded-2xl p-5 border border-white/8'>
           <div className='flex items-center gap-2 mb-4'>
-            <Calendar size={16} className='text-blue-400' />
+            <Calendar size={16} className='text-[#C9A84C]' />
             <h3 className='font-semibold text-gray-200'>Retirement Projection</h3>
           </div>
           <div className='space-y-3'>
@@ -539,7 +539,7 @@ const ClientImpact = memo(function ClientImpact({
 
         {/* 4th card: realistic retirement age */}
         <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
-          <Calendar size={20} className='text-blue-400 mx-auto mb-2' />
+          <Calendar size={20} className='text-[#C9A84C] mx-auto mb-2' />
           <p className='text-xs text-gray-400 mb-2'>Realistic retirement age</p>
           {impact.realisticRetirementAge === profile.retirementAge ? (
             <>
@@ -571,7 +571,7 @@ const ClientImpact = memo(function ClientImpact({
       {/* Recovery Path Chart */}
       <div className='bg-white/3 rounded-2xl p-5 border border-white/8'>
         <div className='flex items-center gap-2 mb-4'>
-          <Clock size={16} className='text-blue-400' />
+          <Clock size={16} className='text-[#C9A84C]' />
           <h3 className='font-semibold text-gray-200'>Recovery Path</h3>
         </div>
         <ResponsiveContainer width='100%' height={220}>

@@ -63,7 +63,7 @@ export default function ExplanationPanel({ explanation }: { explanation: any }) 
         {active === 'client_explanation' && (
           <button
             onClick={() => navigator.clipboard.writeText(explanation.client_explanation)}
-            className='mt-3 text-xs text-blue-400 hover:underline'>
+            className='mt-3 text-xs text-[#C9A84C] hover:underline'>
             Copy to clipboard
           </button>
         )}

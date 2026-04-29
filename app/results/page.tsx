@@ -338,8 +338,8 @@ const SmartSummary = memo(function SmartSummary({ results }: { results: StressTe
     <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
       <div className='bg-white/3 px-4 md:px-6 py-4 border-b border-white/8 flex items-center justify-between'>
         <div className='flex items-center gap-3'>
-          <div className='w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center'>
-            <Brain size={16} className='text-blue-400' />
+          <div className='w-8 h-8 bg-[#C9A84C]/20 rounded-lg flex items-center justify-center'>
+            <Brain size={16} className='text-[#C9A84C]' />
           </div>
           <div>
             <h2 className='font-semibold text-white tracking-tight'>Smart Risk Summary</h2>
@@ -536,7 +536,7 @@ const ClientView = memo(function ClientView({ results }: { results: StressTestRe
         flex flex-col sm:flex-row items-center gap-5 sm:gap-8'>
         <div className='shrink-0 w-28 h-28 rounded-full flex items-center justify-center'
           style={{ background: `conic-gradient(${healthColor} ${healthScore * 10}%, rgba(255,255,255,0.06) 0)` }}>
-          <div className='w-20 h-20 rounded-full bg-[#0A0F1E] flex flex-col items-center justify-center'>
+          <div className='w-20 h-20 rounded-full bg-[#0A1628] flex flex-col items-center justify-center'>
             <span className='text-2xl font-black text-white'>{healthScore.toFixed(1)}</span>
             <span className='text-xs text-gray-400'>/10</span>
           </div>
@@ -583,7 +583,7 @@ const ClientView = memo(function ClientView({ results }: { results: StressTestRe
         ) : (
           <>
             <div className='flex items-baseline gap-3 mb-3'>
-              <p className='text-4xl md:text-5xl font-black text-blue-400'>{recoveryYears}</p>
+              <p className='text-4xl md:text-5xl font-black text-[#C9A84C]'>{recoveryYears}</p>
               <p className='text-2xl text-gray-400 font-semibold'>{recoveryYears === 1 ? 'year' : 'years'}</p>
             </div>
             <p className='text-gray-300 text-lg leading-relaxed'>
@@ -595,19 +595,19 @@ const ClientView = memo(function ClientView({ results }: { results: StressTestRe
       </div>
 
       {explanation?.client_explanation && (
-        <div className='bg-blue-500/10 border border-blue-500/30 rounded-3xl p-5 md:p-8'>
+        <div className='bg-[#C9A84C]/10 border border-[#C9A84C]/30 rounded-3xl p-5 md:p-8'>
           <div className='flex items-center gap-3 mb-4'>
-            <div className='w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center'>
-              <Brain size={16} className='text-blue-400' />
+            <div className='w-8 h-8 bg-[#C9A84C]/20 rounded-lg flex items-center justify-center'>
+              <Brain size={16} className='text-[#C9A84C]' />
             </div>
-            <p className='text-blue-400 font-medium text-lg'>What this means for you</p>
+            <p className='text-[#C9A84C] font-medium text-lg'>What this means for you</p>
           </div>
           <p className='text-white/90 text-lg leading-relaxed whitespace-pre-line'>
             {explanation.client_explanation}
           </p>
           {explanation.suggestions && (
-            <div className='mt-6 pt-6 border-t border-blue-500/30'>
-              <p className='text-blue-400 font-medium mb-3'>Suggested next steps</p>
+            <div className='mt-6 pt-6 border-t border-[#C9A84C]/30'>
+              <p className='text-[#C9A84C] font-medium mb-3'>Suggested next steps</p>
               <p className='text-white/80 text-base leading-relaxed whitespace-pre-line'>
                 {explanation.suggestions}
               </p>
@@ -963,9 +963,9 @@ export default function ResultsPage() {
   }, [results])
 
   if (!results) return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white flex items-center justify-center'>
+    <main className='min-h-screen bg-[#0A1628] text-white flex items-center justify-center'>
       <p className='text-gray-400 text-sm'>No results found.{' '}
-        <Link href='/upload' className='text-blue-400 hover:underline'>Run a stress test</Link>
+        <Link href='/upload' className='text-[#C9A84C] hover:underline'>Run a stress test</Link>
       </p>
     </main>
   )
@@ -983,7 +983,7 @@ export default function ResultsPage() {
   const goalColor = goalOk ? 'text-green-400' : goalWarn ? 'text-yellow-400' : 'text-red-400'
 
   return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white'>
+    <main className='min-h-screen bg-[#0A1628] text-white'>
 
       {isPresenting && (
         <PresentationMode results={results} profile={profile} onClose={() => setPresenting(false)} />
@@ -996,7 +996,7 @@ export default function ResultsPage() {
             <h3 className='text-lg font-semibold text-white mb-1'>Save review</h3>
             <p className='text-xs text-gray-500 mb-5'>
               Saved reviews appear in{' '}
-              <Link href='/clients' className='text-blue-400 hover:underline'>Annual Review</Link>
+              <Link href='/clients' className='text-[#C9A84C] hover:underline'>Annual Review</Link>
               {' '}for year-over-year comparison.
             </p>
             <input
@@ -1007,7 +1007,7 @@ export default function ResultsPage() {
               placeholder='Client name (e.g. John Smith)'
               className='w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3
                 text-sm text-white placeholder-gray-600 focus:outline-none
-                focus:border-blue-500/50 mb-4'
+                focus:border-[#C9A84C]/50 mb-4'
             />
             <div className='flex gap-3'>
               <button
@@ -1019,8 +1019,8 @@ export default function ResultsPage() {
               <button
                 onClick={handleSaveReview}
                 disabled={!saveModal.clientName.trim() || saveModal.saving}
-                className='flex-1 py-2.5 rounded-full bg-blue-600 hover:opacity-85
-                  text-sm text-white font-medium transition-opacity
+                className='flex-1 py-2.5 rounded-full bg-[#C9A84C] hover:opacity-85
+                  text-sm text-[#0A1628] font-semibold transition-opacity
                   disabled:opacity-50 disabled:cursor-not-allowed'>
                 Save
               </button>
@@ -1032,7 +1032,7 @@ export default function ResultsPage() {
       {view === 'advisor' && <ResultsNav />}
 
       {/* Toggle bar + sticky summary */}
-      <div className={`sticky top-0 z-40 bg-[#0A0F1E]/95 backdrop-blur
+      <div className={`sticky top-0 z-40 bg-[#0A1628]/95 backdrop-blur
         ${view === 'advisor' ? 'border-b border-white/6' : 'border-b border-white/6 shadow-lg shadow-black/40'}`}>
         <div className='max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between'>
           <div className='flex items-center gap-1 bg-white/5 rounded-xl p-1 border border-white/8'>
@@ -1048,7 +1048,7 @@ export default function ResultsPage() {
               onClick={() => setView('client')}
               className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium
                 transition-all duration-200
-                ${view === 'client' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}>
+                ${view === 'client' ? 'bg-[#C9A84C] text-[#0A1628] font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}>
               <Users size={14} />
               <span className='hidden sm:inline'>Client view</span>
             </button>
@@ -1088,7 +1088,7 @@ export default function ResultsPage() {
               <span className='hidden sm:inline'>{exporting ? 'Generating...' : 'Export PDF'}</span>
             </button>
             <Link href='/upload'
-              className='text-sm text-blue-400 hover:text-blue-300 transition-colors hidden md:inline'>
+              className='text-sm text-[#C9A84C] hover:text-[#C9A84C]/80 transition-colors hidden md:inline'>
               Run new test
             </Link>
           </div>
@@ -1113,7 +1113,7 @@ export default function ResultsPage() {
               <div className='w-px h-3 bg-white/10 shrink-0' />
               <div className='flex items-center gap-2 shrink-0'>
                 <span className='text-xs text-gray-500'>Recovery</span>
-                <span className='text-xs font-semibold tabular-nums text-blue-400'>
+                <span className='text-xs font-semibold tabular-nums text-[#C9A84C]'>
                   {rv >= 30 ? '>30 yrs' : `${rv} yr${rv !== 1 ? 's' : ''}`}
                 </span>
               </div>

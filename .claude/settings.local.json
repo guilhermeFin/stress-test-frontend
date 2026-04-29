@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(npm run *)",
+      "Bash(python -c \"import config; import data_fetcher; import ai_explainer; import stress_engine; import main; print\\('All imports OK'\\)\")",
+      "Bash(pip install *)",
+      "Bash(python -c ' *)",
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(curl *)",
+      "Bash(uvicorn main:app --host 0.0.0.0 --port 8080)",
+      "Bash(python *)",
+      "PowerShell(Test-Path \"C:\\\\Users\\\\guilh\\\\code\\\\stress-test-backend\\\\.env\"; Get-Content \"C:\\\\Users\\\\guilh\\\\code\\\\stress-test-backend\\\\.env\" -Encoding Byte -TotalCount 6 | ForEach-Object { '{0:X2}' -f $_ })",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\guilh\\\\code\\\\stress-test-backend\\\\.env\" -Encoding Byte -TotalCount 10 | ForEach-Object { '{0:X2}' -f $_ })",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(gh run *)",
+      "Bash(git commit *)",
+      "Bash(git revert *)",
+      "Bash(grep -v \"//.*#\")"
+    ]
+  }
+}

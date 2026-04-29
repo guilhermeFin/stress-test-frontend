@@ -28,7 +28,7 @@ const HISTORICAL_SCENARIOS = [
   {
     key: 'rate',
     label: '2022 Rate Shock',
-    badge: 'bg-blue-600/20 text-blue-400',
+    badge: 'bg-[#C9A84C]/20 text-[#C9A84C]',
     severity: 'Severe',
     text: '2022 rate shock: Fed raises rates 425bps, bonds crash 15%, tech drops 35%, inflation hits 9%, growth stocks fall 50%',
   },
@@ -161,7 +161,7 @@ export default function HouseholdPage() {
   }
 
   return (
-    <main className='min-h-screen bg-[#0A0F1E] text-white'>
+    <main className='min-h-screen bg-[#0A1628] text-white'>
       <div className='max-w-3xl mx-auto px-6 py-12'>
 
         {/* Header */}
@@ -171,8 +171,8 @@ export default function HouseholdPage() {
               hover:text-white transition-colors'>
               <ArrowLeft size={14} />
             </Link>
-            <div className='w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-white' />
+            <div className='w-9 h-9 bg-[#C9A84C] rounded-xl flex items-center justify-center'>
+              <TrendingDown size={18} className='text-[#0A1628]' />
             </div>
             <span className='font-medium'>PortfolioStress</span>
           </div>
@@ -185,7 +185,7 @@ export default function HouseholdPage() {
         {/* Hero */}
         <div className='mb-8'>
           <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-            bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-5'>
+            bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#C9A84C] text-xs font-medium mb-5'>
             <Users size={11} />
             Household / Multi-Account View
           </div>
@@ -203,7 +203,7 @@ export default function HouseholdPage() {
         {totalAum > 0 && (
           <div className='flex items-center gap-3 bg-white/3 border border-white/8
             rounded-xl px-5 py-3 mb-5'>
-            <Briefcase size={15} className='text-blue-400 shrink-0' />
+            <Briefcase size={15} className='text-[#C9A84C] shrink-0' />
             <span className='text-sm text-gray-400'>Total household AUM</span>
             <span className='text-sm font-medium text-white ml-auto'>
               {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(totalAum)}
@@ -217,8 +217,8 @@ export default function HouseholdPage() {
             <div key={account.id}
               className='bg-white/3 border border-white/8 rounded-2xl overflow-hidden'>
               <div className='flex items-center gap-3 px-5 py-3.5 border-b border-white/8'>
-                <div className='w-6 h-6 bg-blue-600/20 rounded-lg flex items-center
-                  justify-center shrink-0 text-xs font-medium text-blue-400'>
+                <div className='w-6 h-6 bg-[#C9A84C]/20 rounded-lg flex items-center
+                  justify-center shrink-0 text-xs font-medium text-[#C9A84C]'>
                   {idx + 1}
                 </div>
                 <input
@@ -244,10 +244,10 @@ export default function HouseholdPage() {
                       value={account.type}
                       onChange={e => patchAccount(account.id, { type: e.target.value })}
                       className='w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2
-                        text-sm text-white focus:outline-none focus:border-blue-500/50
+                        text-sm text-white focus:outline-none focus:border-[#C9A84C]/50
                         appearance-none cursor-pointer'>
                       {ACCOUNT_TYPES.map(t => (
-                        <option key={t} value={t} className='bg-[#0A0F1E]'>{t}</option>
+                        <option key={t} value={t} className='bg-[#0A1628]'>{t}</option>
                       ))}
                     </select>
                   </div>
@@ -259,7 +259,7 @@ export default function HouseholdPage() {
                       placeholder='$250,000'
                       className='w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2
                         text-sm text-white placeholder-gray-600 focus:outline-none
-                        focus:border-blue-500/50'
+                        focus:border-[#C9A84C]/50'
                     />
                   </div>
                 </div>
@@ -276,7 +276,7 @@ export default function HouseholdPage() {
                     rows={4}
                     className='w-full bg-white/5 border border-white/10 rounded-xl px-3 py-3
                       text-sm text-white placeholder-gray-600 focus:outline-none
-                      focus:border-blue-500/50 resize-none font-mono'
+                      focus:border-[#C9A84C]/50 resize-none font-mono'
                   />
                   {account.positions.trim() && (() => {
                     const parsed = parsePositionsText(account.positions)
@@ -317,9 +317,9 @@ export default function HouseholdPage() {
                 <div className='flex items-start justify-between gap-2 mb-2'>
                   <span className='text-sm font-medium text-white'>{s.label}</span>
                   {activeScenarioKey === s.key && (
-                    <div className='w-4 h-4 bg-blue-600 rounded-full flex items-center
+                    <div className='w-4 h-4 bg-[#C9A84C] rounded-full flex items-center
                       justify-center shrink-0'>
-                      <div className='w-1.5 h-1.5 bg-white rounded-full' />
+                      <div className='w-1.5 h-1.5 bg-[#0A1628] rounded-full' />
                     </div>
                   )}
                 </div>
@@ -336,7 +336,7 @@ export default function HouseholdPage() {
             rows={2}
             className='w-full bg-white/3 border border-white/10 rounded-xl px-4 py-3
               text-sm text-white placeholder-gray-600 focus:outline-none
-              focus:border-blue-500/50 resize-none'
+              focus:border-[#C9A84C]/50 resize-none'
           />
         </div>
 
@@ -352,10 +352,10 @@ export default function HouseholdPage() {
           disabled={loading}
           className='w-full py-4 rounded-full font-medium text-sm transition-opacity
             duration-150 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed
-            bg-blue-600 hover:opacity-85'>
+            bg-[#C9A84C] hover:opacity-85 text-[#0A1628] font-semibold'>
           {loading ? (
             <span className='flex items-center justify-center gap-2'>
-              <span className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+              <span className='w-4 h-4 border-2 border-[#0A1628]/30 border-t-[#0A1628] rounded-full animate-spin' />
               Combining accounts and running analysis…
             </span>
           ) : (

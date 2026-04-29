@@ -123,12 +123,12 @@ export default function ShockBuilder({ onApply }: Props) {
       <button
         onClick={() => setOpen(o => !o)}
         className='w-full flex items-center justify-between px-4 py-3
-          bg-[#0A0F1E] hover:bg-white/5 transition-colors text-sm'>
+          bg-[#0A1628] hover:bg-white/5 transition-colors text-sm'>
         <div className='flex items-center gap-2 text-gray-300'>
-          <SlidersHorizontal size={16} className='text-blue-400' />
+          <SlidersHorizontal size={16} className='text-[#C9A84C]' />
           <span className='font-medium'>Custom Shock Builder</span>
           {hasShocks && (
-            <span className='bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full'>
+            <span className='bg-[#C9A84C] text-[#0A1628] text-xs px-2 py-0.5 rounded-full'>
               Active
             </span>
           )}
@@ -137,7 +137,7 @@ export default function ShockBuilder({ onApply }: Props) {
       </button>
 
       {open && (
-        <div className='bg-[#0A0F1E] border-t border-white/8 p-4 space-y-4'>
+        <div className='bg-[#0A1628] border-t border-white/8 p-4 space-y-4'>
 
           {/* Presets */}
           <div>
@@ -185,9 +185,9 @@ export default function ShockBuilder({ onApply }: Props) {
           <button
             onClick={() => onApply(buildScenario())}
             disabled={!hasShocks}
-            className='w-full bg-blue-600 hover:opacity-85
+            className='w-full bg-[#C9A84C] hover:opacity-85
               active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed
-              text-white font-medium py-2.5 rounded-full transition-opacity duration-150 text-sm'>
+              text-[#0A1628] font-semibold py-2.5 rounded-full transition-opacity duration-150 text-sm'>
             Apply to Stress Test
           </button>
         </div>
