@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { StressTestResult } from '@/lib/api'
 import { ClientProfile } from './ClientImpact'
+import { Button } from '@/components/ui/neon-button'
 import {
   X, ChevronLeft, ChevronRight, Brain,
   TrendingDown, CheckCircle, AlertTriangle, XCircle,
@@ -309,11 +310,11 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
           <span className='text-xs text-gray-600'>
             {slide + 1} / {TOTAL_SLIDES}
           </span>
-          <button onClick={onClose}
-            className='w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center
-              justify-center transition-colors'>
+          <Button onClick={onClose}
+            variant='ghost'
+            className='w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors mx-0 p-0'>
             <X size={16} className='text-gray-400' />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -330,44 +331,46 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
 
       {/* Bottom nav */}
       <div className='flex items-center justify-between px-8 py-5 border-t border-white/8 shrink-0'>
-        <button
+        <Button
           onClick={prev}
           disabled={slide === 0}
+          variant='ghost'
           className='flex items-center gap-2 px-5 py-2.5 rounded-xl
-            bg-white/5 hover:bg-white/8 border border-white/10
-            text-sm text-gray-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed'>
+            bg-white/5 hover:bg-white/8 text-sm text-gray-300 transition-all
+            disabled:opacity-30 disabled:cursor-not-allowed mx-0'>
           <ChevronLeft size={16} />
           Previous
-        </button>
+        </Button>
 
         {/* Dot indicators */}
         <div className='flex items-center gap-2'>
           {Array.from({ length: TOTAL_SLIDES }).map((_, i) => (
-            <button key={i} onClick={() => setSlide(i)}
-              className={`rounded-full transition-all ${
+            <Button key={i} onClick={() => setSlide(i)}
+              variant='ghost'
+              neon={false}
+              className={`rounded-full transition-all p-0 mx-0 border-0 ${
                 i === slide ? 'w-4 h-2 bg-[#C9A84C]' : 'w-2 h-2 bg-white/20 hover:bg-white/40'
               }`} />
           ))}
         </div>
 
         {slide < TOTAL_SLIDES - 1 ? (
-          <button
+          <Button
             onClick={next}
-            className='flex items-center gap-2 px-5 py-2.5 rounded-full
-              bg-[#C9A84C] hover:opacity-85
-              text-sm text-[#0A1628] font-semibold transition-opacity'>
+            variant='solid'
+            className='flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold mx-0'>
             Next
             <ChevronRight size={16} />
-          </button>
+          </Button>
         ) : (
-          <button
+          <Button
             onClick={onClose}
+            variant='ghost'
             className='flex items-center gap-2 px-5 py-2.5 rounded-xl
-              bg-white/5 hover:bg-white/10 border border-white/10
-              text-sm text-gray-300 transition-all'>
+              bg-white/5 hover:bg-white/10 text-sm text-gray-300 transition-all mx-0'>
             Close
             <X size={14} />
-          </button>
+          </Button>
         )}
       </div>
 

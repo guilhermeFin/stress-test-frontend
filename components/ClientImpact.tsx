@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useCallback, memo } from 'react'
+import { Button } from '@/components/ui/neon-button'
 import {
   User, Target, TrendingDown, Calendar, Clock, ArrowRight,
 } from 'lucide-react'
@@ -335,17 +336,17 @@ const ClientImpact = memo(function ClientImpact({
 
       {/* Client Profile */}
       <div className='bg-white/3 rounded-2xl border border-white/8 overflow-hidden'>
-        <button
+        <Button
           onClick={() => setExpanded(e => !e)}
-          className='w-full flex items-center justify-between p-5
-            hover:bg-white/5 transition-colors'>
+          variant='ghost'
+          className='w-full flex items-center justify-between p-5 hover:bg-white/5 transition-colors mx-0 rounded-2xl text-left'>
           <div className='flex items-center gap-2'>
             <User size={16} className='text-[#C9A84C]' />
             <span className='font-semibold text-gray-200'>Client Profile</span>
             <span className='text-xs text-gray-500'>— adjust to personalize impact</span>
           </div>
           <span className='text-gray-400 text-xs'>{expanded ? '▲ Hide' : '▼ Edit'}</span>
-        </button>
+        </Button>
 
         {expanded && (
           <div className='px-5 pb-5 border-t border-white/8'>

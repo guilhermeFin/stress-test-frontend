@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, TrendingDown } from 'lucide-react'
+import { Button } from '@/components/ui/neon-button'
 
 // Labels keyed by section ID. Order is derived from the DOM at runtime so it
 // automatically stays in sync when sections are reordered in page.tsx.
@@ -98,11 +99,13 @@ export default function ResultsNav() {
 
         <div className='flex items-center gap-0.5 overflow-x-auto scrollbar-hide flex-1'>
           {sections.map(id => (
-            <button
+            <Button
               key={id}
               onClick={() => scrollTo(id)}
+              variant='ghost'
+              neon={false}
               className={`relative px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap
-                transition-colors duration-150 flex-shrink-0
+                transition-colors duration-150 flex-shrink-0 mx-0
                 ${active === id
                   ? 'text-white'
                   : 'text-gray-500 hover:text-gray-200 hover:bg-white/5'
@@ -111,7 +114,7 @@ export default function ResultsNav() {
               {active === id && (
                 <span className='absolute bottom-0 left-2 right-2 h-0.5 bg-[#C9A84C] rounded-full' />
               )}
-            </button>
+            </Button>
           ))}
         </div>
 

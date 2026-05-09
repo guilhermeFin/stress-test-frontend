@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback, memo } from 'react'
 import Link from 'next/link'
+import { Button } from '@/components/ui/neon-button'
 import { StressTestResult, exportPdf } from '@/lib/api'
 import SummaryCards from '@/components/SummaryCards'
 import StressCharts from '@/components/StressCharts'
@@ -91,11 +92,13 @@ function TabPills<T extends string>({
   return (
     <div className='flex gap-1 bg-white/5 rounded-lg p-1 w-fit border border-white/8 overflow-x-auto'>
       {tabs.map(t => (
-        <button key={t.id} onClick={() => onChange(t.id)}
-          className={`px-3 py-1 rounded text-xs font-medium transition-all duration-150 whitespace-nowrap
+        <Button key={t.id} onClick={() => onChange(t.id)}
+          variant='ghost'
+          neon={false}
+          className={`px-3 py-1 rounded text-xs font-medium transition-all duration-150 whitespace-nowrap mx-0
             ${active === t.id ? 'bg-white/12 text-white' : 'text-gray-500 hover:text-gray-300'}`}>
           {t.label}
-        </button>
+        </Button>
       ))}
     </div>
   )
@@ -452,10 +455,12 @@ function CollapsibleSection({
 
   return (
     <div id={id} className='rounded-2xl border border-white/8 overflow-hidden'>
-      <button
+      <Button
         onClick={() => setOpen(o => !o)}
+        variant='ghost'
+        neon={false}
         className='w-full flex items-center justify-between px-4 md:px-6 py-4 bg-white/3
-          hover:bg-white/5 active:bg-white/6 transition-colors text-left'>
+          hover:bg-white/5 active:bg-white/6 transition-colors text-left mx-0 rounded-none'>
         <div className='flex items-center gap-2 md:gap-3 min-w-0'>
           <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${dot}`} />
           <span className='font-semibold text-sm md:text-[1.0625rem] tracking-tight text-gray-100 truncate'>
@@ -467,7 +472,7 @@ function CollapsibleSection({
         </div>
         <ChevronDown size={16} className={`text-gray-500 shrink-0 ml-2 transition-transform duration-200
           ${open ? 'rotate-180' : ''}`} />
-      </button>
+      </Button>
       <div className={`grid transition-all duration-300 ease-in-out
         ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
         <div className='overflow-hidden'>
@@ -1010,20 +1015,19 @@ export default function ResultsPage() {
                 focus:border-[#C9A84C]/50 mb-4'
             />
             <div className='flex gap-3'>
-              <button
+              <Button
                 onClick={() => setSaveModal({ open: false, clientName: '', saving: false })}
-                className='flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/8
-                  border border-white/10 text-sm text-gray-400 transition-all'>
+                variant='ghost'
+                className='flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/8 text-sm text-gray-400 transition-all mx-0'>
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleSaveReview}
                 disabled={!saveModal.clientName.trim() || saveModal.saving}
-                className='flex-1 py-2.5 rounded-full bg-[#C9A84C] hover:opacity-85
-                  text-sm text-[#0A1628] font-semibold transition-opacity
-                  disabled:opacity-50 disabled:cursor-not-allowed'>
+                variant='solid'
+                className='flex-1 py-2.5 rounded-full text-sm font-semibold transition-opacity disabled:opacity-50 disabled:cursor-not-allowed mx-0'>
                 Save
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -1036,46 +1040,51 @@ export default function ResultsPage() {
         ${view === 'advisor' ? 'border-b border-white/6' : 'border-b border-white/6 shadow-lg shadow-black/40'}`}>
         <div className='max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between'>
           <div className='flex items-center gap-1 bg-white/5 rounded-xl p-1 border border-white/8'>
-            <button
+            <Button
               onClick={() => setView('advisor')}
+              variant='ghost'
+              neon={false}
               className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium
-                transition-all duration-200
+                transition-all duration-200 mx-0
                 ${view === 'advisor' ? 'bg-white/10 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}>
               <Briefcase size={14} />
               <span className='hidden sm:inline'>Advisor view</span>
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setView('client')}
+              variant='ghost'
+              neon={false}
               className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-sm font-medium
-                transition-all duration-200
+                transition-all duration-200 mx-0
                 ${view === 'client' ? 'bg-[#C9A84C] text-[#0A1628] font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}>
               <Users size={14} />
               <span className='hidden sm:inline'>Client view</span>
-            </button>
+            </Button>
           </div>
           <div className='flex items-center gap-2'>
-            <button
+            <Button
               onClick={() => setSaveModal(m => ({ ...m, open: true }))}
+              variant='ghost'
               className='flex items-center gap-1.5 px-3 py-2 rounded-xl
-                bg-white/5 hover:bg-white/8 border border-white/10
-                text-sm text-gray-300 transition-all duration-150'>
+                bg-white/5 hover:bg-white/8 text-sm text-gray-300 transition-all duration-150 mx-0'>
               <BookmarkPlus size={14} />
               <span className='hidden sm:inline'>Save</span>
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setView('presentation')}
+              variant='ghost'
               className='flex items-center gap-1.5 px-3 py-2 rounded-xl
-                bg-white/5 hover:bg-white/8 border border-white/10
-                text-sm text-gray-300 transition-all duration-150'>
+                bg-white/5 hover:bg-white/8 text-sm text-gray-300 transition-all duration-150 mx-0'>
               <FileText size={14} />
               <span className='hidden sm:inline'>Client Presentation</span>
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleExportPdf}
               disabled={exporting}
+              variant='ghost'
               className='flex items-center gap-1.5 px-3 py-2 rounded-xl
-                bg-white/5 hover:bg-white/8 active:scale-[0.98] border border-white/10
-                text-sm text-gray-300 transition-all duration-150 disabled:opacity-50'>
+                bg-white/5 hover:bg-white/8 active:scale-[0.98]
+                text-sm text-gray-300 transition-all duration-150 disabled:opacity-50 mx-0'>
               {exporting ? (
                 <span className='w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin' />
               ) : (
@@ -1086,7 +1095,7 @@ export default function ResultsPage() {
                 </svg>
               )}
               <span className='hidden sm:inline'>{exporting ? 'Generating...' : 'Export PDF'}</span>
-            </button>
+            </Button>
             <Link href='/upload'
               className='text-sm text-[#C9A84C] hover:text-[#C9A84C]/80 transition-colors hidden md:inline'>
               Run new test

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { FileText, Users, ArrowRightLeft, Download } from 'lucide-react'
 import { exportPdf } from '@/lib/api'
+import { Button } from '@/components/ui/neon-button'
 
 const tabs = [
   { key: 'advisor_summary', label: 'Advisor Note', icon: FileText },
@@ -38,22 +39,23 @@ export default function ExplanationPanel({ explanation }: { explanation: any }) 
       <div className='flex items-center justify-between p-6 pb-0'>
         <div className='flex gap-1'>
           {tabs.map(({ key, label, icon: Icon }) => (
-            <button key={key} onClick={() => setActive(key)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm
+            <Button key={key} onClick={() => setActive(key)}
+              variant='ghost'
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm mx-0
                 transition-all duration-150 ${active === key
                   ? 'bg-white/10 text-white'
                   : 'text-gray-500 hover:text-gray-200 hover:bg-white/5'}`}>
               <Icon size={14} />
               {label}
-            </button>
+            </Button>
           ))}
         </div>
-        <button onClick={handleExport} disabled={exporting}
-          className='flex items-center gap-2 text-sm text-gray-400
-            hover:text-white transition-colors'>
+        <Button onClick={handleExport} disabled={exporting}
+          variant='ghost'
+          className='flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mx-0'>
           <Download size={14} />
           {exporting ? 'Generating...' : 'Export PDF'}
-        </button>
+        </Button>
       </div>
       <div className='p-6'>
         <div
@@ -61,11 +63,12 @@ export default function ExplanationPanel({ explanation }: { explanation: any }) 
           dangerouslySetInnerHTML={{ __html: renderMarkdown(explanation[active]) }}
         />
         {active === 'client_explanation' && (
-          <button
+          <Button
             onClick={() => navigator.clipboard.writeText(explanation.client_explanation)}
-            className='mt-3 text-xs text-[#C9A84C] hover:underline'>
+            variant='ghost'
+            className='mt-3 text-xs text-[#C9A84C] hover:underline mx-0'>
             Copy to clipboard
-          </button>
+          </Button>
         )}
       </div>
     </div>

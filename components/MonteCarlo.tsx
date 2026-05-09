@@ -1,6 +1,7 @@
 ﻿'use client'
 
 import { useState, useMemo } from 'react'
+import { Button } from '@/components/ui/neon-button'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Legend, ReferenceLine
@@ -200,14 +201,13 @@ export default function MonteCarlo({
         </div>
 
         <div className='flex items-center gap-4'>
-          <button
+          <Button
             onClick={handleRun}
             disabled={running}
-            className='bg-[#C9A84C] hover:opacity-85 active:scale-[0.98]
-              disabled:opacity-50 text-[#0A1628] font-semibold px-6 py-2.5 rounded-full
-              transition-opacity duration-150 text-sm'>
+            variant='solid'
+            className='active:scale-[0.98] disabled:opacity-50 px-6 py-2.5 rounded-full text-sm mx-0'>
             {running ? 'Running 1,000 simulations...' : ran ? 'Re-run Simulation' : 'Run Monte Carlo (1,000 paths)'}
-          </button>
+          </Button>
           {ran && (
             <label className='flex items-center gap-2 text-sm text-gray-400 cursor-pointer'>
               <input

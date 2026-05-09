@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { runStressTest } from '@/lib/api'
+import { Button } from '@/components/ui/neon-button'
 import {
   TrendingDown, Zap, ArrowLeft, Plus, X,
   BarChart2, Brain, AlertCircle
@@ -199,12 +200,11 @@ export default function IntelligencePage() {
             <p className='text-xs text-gray-400 font-medium mb-3'>Quick presets</p>
             <div className='flex gap-2 flex-wrap'>
               {PRESETS.map(p => (
-                <button key={p.label} onClick={() => applyPreset(p)}
-                  className='px-3 py-1.5 rounded-full text-xs border
-                    border-white/10 bg-white/3 hover:bg-white/8
-                    text-gray-300 transition-all'>
+                <Button key={p.label} onClick={() => applyPreset(p)}
+                  variant='ghost'
+                  className='px-3 py-1.5 rounded-full text-xs text-gray-300 mx-0'>
                   {p.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -241,12 +241,11 @@ export default function IntelligencePage() {
                 }`}>
                   {totalWeight.toFixed(1)}% / 100%
                 </span>
-                <button onClick={equalizeWeights}
-                  className='text-xs text-[#C9A84C] hover:opacity-80
-                    border border-[#C9A84C]/30 px-2 py-1 rounded-full
-                    transition-opacity'>
+                <Button onClick={equalizeWeights}
+                  variant='ghost'
+                  className='text-xs text-[#C9A84C] hover:opacity-80 border border-[#C9A84C]/30 px-2 py-1 rounded-full transition-opacity mx-0'>
                   Equal weights
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -282,21 +281,21 @@ export default function IntelligencePage() {
                     <span className='absolute right-3 top-1/2 -translate-y-1/2
                       text-gray-500 text-sm'>%</span>
                   </div>
-                  <button onClick={() => removeRow(i)}
-                    className='col-span-2 flex items-center justify-center
-                      text-gray-600 hover:text-red-400 transition-colors'>
+                  <Button onClick={() => removeRow(i)}
+                    variant='ghost'
+                    className='col-span-2 flex items-center justify-center text-gray-600 hover:text-red-400 transition-colors mx-0 p-0'>
                     <X size={14} />
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
 
-            <button onClick={addRow}
-              className='mt-3 flex items-center gap-1.5 text-xs text-gray-400
-                hover:text-gray-200 transition-colors'>
+            <Button onClick={addRow}
+              variant='ghost'
+              className='mt-3 flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-200 transition-colors mx-0'>
               <Plus size={13} />
               Add position
-            </button>
+            </Button>
           </div>
 
           {/* Scenario */}
@@ -324,19 +323,19 @@ export default function IntelligencePage() {
             />
             <div className='flex flex-wrap gap-2'>
               {HISTORICAL_SCENARIOS.map(s => (
-                <button key={s.label}
+                <Button key={s.label}
                   onClick={() => {
                     setScenario(s.text)
                     setActiveScenario(s.label)
                   }}
-                  className={`text-xs px-3 py-1.5 rounded-full border
-                    transition-all
+                  variant='ghost'
+                  className={`text-xs px-3 py-1.5 rounded-full mx-0 transition-all
                     ${activeScenario === s.label
                       ? 'border-[#C9A84C]/50 bg-[#C9A84C]/10 text-[#C9A84C]'
-                      : 'border-white/8 bg-white/3 text-gray-400 hover:text-gray-200 hover:border-white/15'
+                      : 'text-gray-400 hover:text-gray-200 hover:border-white/15'
                     }`}>
                   {s.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -349,17 +348,15 @@ export default function IntelligencePage() {
             </div>
           )}
 
-          <button
+          <Button
             onClick={handleRun}
             disabled={loading}
-            className='w-full py-4 rounded-full font-medium text-sm
-              transition-opacity duration-150 active:scale-[0.98]
-              disabled:opacity-50 disabled:cursor-not-allowed
-              bg-[#C9A84C] hover:opacity-85 text-[#0A1628] font-semibold'>
+            variant='solid'
+            className='w-full py-4 rounded-full font-medium text-sm transition-opacity duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mx-0'>
             {loading ? (
               <span className='flex items-center justify-center gap-2'>
-                <span className='w-4 h-4 border-2 border-[#0A1628]/30
-                  border-t-[#0A1628] rounded-full animate-spin' />
+                <span className='w-4 h-4 border-2 border-white/30
+                  border-t-white rounded-full animate-spin' />
                 Running analysis...
               </span>
             ) : (
@@ -368,7 +365,7 @@ export default function IntelligencePage() {
                 Run Live Stress Test
               </span>
             )}
-          </button>
+          </Button>
 
           <p className='text-center text-xs text-gray-600'>
             Results include factor model, correlation breakdown, liquidity

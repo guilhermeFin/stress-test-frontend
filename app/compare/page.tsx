@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { comparePortfolios, StressTestResult } from '@/lib/api'
+import { Button } from '@/components/ui/neon-button'
 import {
   Upload, TrendingDown, ChevronRight, AlertCircle,
   ArrowLeft, Trophy, Shield, Zap
@@ -267,12 +268,11 @@ export default function ComparePage() {
 
           <div className='flex flex-wrap gap-2 mb-5'>
             {SAMPLE_SCENARIOS.map(s => (
-              <button key={s} onClick={() => setScenario(s)}
-                className='text-xs bg-white/3 hover:bg-white/8 border border-white/8
-                  hover:border-white/15 text-gray-400 hover:text-gray-200
-                  px-3 py-1.5 rounded-full transition-all'>
+              <Button key={s} onClick={() => setScenario(s)}
+                variant='ghost'
+                className='text-xs text-gray-400 hover:text-gray-200 px-3 py-1.5 rounded-full mx-0'>
                 {s.split(':')[0].split(',')[0]}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -284,13 +284,11 @@ export default function ComparePage() {
             </div>
           )}
 
-          <button
+          <Button
             onClick={handleCompare}
             disabled={loading}
-            className='w-full py-4 rounded-full font-medium text-sm
-              transition-opacity duration-150 active:scale-[0.98]
-              disabled:opacity-50 disabled:cursor-not-allowed
-              bg-[#C9A84C] hover:opacity-85 text-[#0A1628] font-semibold'>
+            variant='solid'
+            className='w-full py-4 rounded-full font-medium text-sm transition-opacity duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mx-0'>
             {loading ? (
               <span className='flex items-center justify-center gap-2'>
                 <span className='w-4 h-4 border-2 border-white/30 border-t-white
@@ -303,7 +301,7 @@ export default function ComparePage() {
                 Compare Portfolios
               </span>
             )}
-          </button>
+          </Button>
         </div>
 
         {/* Results */}

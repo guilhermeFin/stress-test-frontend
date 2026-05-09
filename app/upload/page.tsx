@@ -9,6 +9,7 @@ import {
   Shield, BarChart3, Brain, Activity, ChevronRight, Clock, ArrowLeft, Calendar
 } from 'lucide-react'
 import ShockBuilder from '@/components/ShockBuilder'
+import { Button } from '@/components/ui/neon-button'
 import Link from 'next/link'
 
 const HISTORICAL_SCENARIOS = [
@@ -236,14 +237,13 @@ export default function UploadPage() {
             <div className='flex-1 h-px bg-white/8' />
           </div>
 
-          <button
+          <Button
             onClick={handleDownloadTemplate}
-            className='w-full mb-5 flex items-center justify-center gap-2
-              py-2.5 rounded-full border border-white/10 hover:border-white/20
-              text-gray-400 hover:text-gray-200 text-sm transition-all'>
+            variant='default'
+            className='w-full mb-5 flex items-center justify-center gap-2 py-2.5 rounded-full text-gray-400 hover:text-gray-200 text-sm transition-all mx-0'>
             <Download size={15} />
             Download Portfolio Template (.xlsx)
-          </button>
+          </Button>
 
           <div
             {...getRootProps()}
@@ -300,12 +300,11 @@ export default function UploadPage() {
 
               <div className='flex flex-wrap gap-2 mb-4'>
                 {SAMPLE_SCENARIOS.map((s) => (
-                  <button key={s} onClick={() => { setScenario(s); setActiveHistorical(null) }}
-                    className='text-xs bg-white/3 hover:bg-white/8 border border-white/8
-                      hover:border-white/15 text-gray-400 hover:text-gray-200
-                      px-3 py-1.5 rounded-full transition-all'>
+                  <Button key={s} onClick={() => { setScenario(s); setActiveHistorical(null) }}
+                    variant='ghost'
+                    className='text-xs text-gray-400 hover:text-gray-200 px-3 py-1.5 rounded-full mx-0'>
                     {s.split(':')[0].split(',')[0]}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </>
@@ -314,42 +313,46 @@ export default function UploadPage() {
           <div className='mb-5'>
             {/* Tab toggle */}
             <div className='flex items-center gap-1 mb-3'>
-              <button
+              <Button
                 onClick={() => { setScenarioTab('global'); setBrazilScenarioId(null) }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all
+                variant='ghost'
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all mx-0
                   ${scenarioTab === 'global'
                     ? 'bg-white/10 text-white'
                     : 'text-gray-500 hover:text-gray-300'}`}
               >
                 <Clock size={11} />
                 Global scenarios
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => { setScenarioTab('brazil'); setActiveHistorical(null) }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all
+                variant='ghost'
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all mx-0
                   ${scenarioTab === 'brazil'
                     ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
                     : 'text-gray-500 hover:text-gray-300'}`}
               >
                 🇧🇷 Brazil scenarios
-              </button>
+              </Button>
             </div>
 
             {scenarioTab === 'global' && (
               <div className='grid grid-cols-3 md:grid-cols-6 gap-2'>
                 {HISTORICAL_SCENARIOS.map((s) => (
-                  <button
+                  <Button
                     key={s.label}
                     onClick={() => handleHistorical(s)}
+                    variant='ghost'
+                    neon={false}
                     className={`p-2.5 rounded-xl border bg-gradient-to-br text-left
-                      transition-all ${s.color}
+                      transition-all mx-0 ${s.color}
                       ${activeHistorical === s.label ? 'ring-1 ring-white/20' : ''}`}>
                     <div className='text-xs font-medium text-white mb-0.5'>{s.label}</div>
                     <div className='text-xs text-gray-400 mb-1.5'>{s.year}</div>
                     <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${s.badge}`}>
                       {s.severity}
                     </span>
-                  </button>
+                  </Button>
                 ))}
               </div>
             )}
@@ -363,10 +366,12 @@ export default function UploadPage() {
                     const severityLabel = ['', 'Mild', 'Moderate', 'Significant', 'Severe', 'Extreme']
                     const isActive      = brazilScenarioId === s.id
                     return (
-                      <button
+                      <Button
                         key={s.id}
                         onClick={() => setBrazilScenarioId(s.id)}
-                        className={`p-3 rounded-xl border text-left transition-all
+                        variant='ghost'
+                        neon={false}
+                        className={`p-3 rounded-xl border text-left transition-all mx-0
                           bg-gradient-to-br from-yellow-600/10 to-yellow-900/5
                           ${isActive
                             ? 'border-yellow-500/60 ring-1 ring-yellow-500/30'
@@ -377,7 +382,7 @@ export default function UploadPage() {
                         <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${severityBg[s.severity]} ${severityColors[s.severity]}`}>
                           {severityLabel[s.severity]}
                         </span>
-                      </button>
+                      </Button>
                     )
                   })}
                 </div>
@@ -422,18 +427,14 @@ export default function UploadPage() {
             </div>
           )}
 
-          <button
+          <Button
             onClick={handleSubmit}
             disabled={loading}
-            className={`w-full py-4 rounded-full font-medium text-sm
-              transition-opacity duration-150 active:scale-[0.98]
-              disabled:opacity-50 disabled:cursor-not-allowed
-              ${scenarioTab === 'brazil'
-                ? 'bg-yellow-500 hover:opacity-85 text-black'
-                : 'bg-[#C9A84C] hover:opacity-85 text-[#0A1628] font-semibold'}`}>
+            variant='solid'
+            className='w-full py-4 rounded-full font-medium text-sm transition-opacity duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mx-0'>
             {loading ? (
               <span className='flex items-center justify-center gap-2'>
-                <span className='w-4 h-4 border-2 border-black/30 border-t-black
+                <span className='w-4 h-4 border-2 border-white/30 border-t-white
                   rounded-full animate-spin' />
                 Running analysis...
               </span>
@@ -443,7 +444,7 @@ export default function UploadPage() {
                 <ChevronRight size={16} />
               </span>
             )}
-          </button>
+          </Button>
         </div>
 
         <div className='mt-8 text-center text-xs text-gray-600'

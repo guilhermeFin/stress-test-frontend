@@ -1,6 +1,7 @@
 ﻿'use client'
 
 import { useState } from 'react'
+import { Button } from '@/components/ui/neon-button'
 import { SlidersHorizontal, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react'
 
 interface ShockValues {
@@ -120,10 +121,11 @@ export default function ShockBuilder({ onApply }: Props) {
     <div className='border border-white/10 rounded-xl overflow-hidden mb-4'>
 
       {/* Header toggle */}
-      <button
+      <Button
         onClick={() => setOpen(o => !o)}
+        variant='ghost'
         className='w-full flex items-center justify-between px-4 py-3
-          bg-[#0A1628] hover:bg-white/5 transition-colors text-sm'>
+          bg-[#0A1628] hover:bg-white/5 transition-colors text-sm mx-0 rounded-none text-left'>
         <div className='flex items-center gap-2 text-gray-300'>
           <SlidersHorizontal size={16} className='text-[#C9A84C]' />
           <span className='font-medium'>Custom Shock Builder</span>
@@ -134,7 +136,7 @@ export default function ShockBuilder({ onApply }: Props) {
           )}
         </div>
         {open ? <ChevronUp size={16} className='text-gray-400' /> : <ChevronDown size={16} className='text-gray-400' />}
-      </button>
+      </Button>
 
       {open && (
         <div className='bg-[#0A1628] border-t border-white/8 p-4 space-y-4'>
@@ -144,18 +146,18 @@ export default function ShockBuilder({ onApply }: Props) {
             <p className='text-xs text-gray-500 mb-2'>Quick presets</p>
             <div className='flex flex-wrap gap-2'>
               {PRESETS.map((p) => (
-                <button key={p.label}
+                <Button key={p.label}
                   onClick={() => setShocks(p.values as ShockValues)}
-                  className='text-xs bg-white/5 hover:bg-white/10 border border-white/10
-                    text-gray-300 px-3 py-1.5 rounded-lg transition-colors'>
+                  variant='ghost'
+                  className='text-xs text-gray-300 px-3 py-1.5 rounded-lg mx-0'>
                   {p.label}
-                </button>
+                </Button>
               ))}
-              <button onClick={reset}
-                className='text-xs flex items-center gap-1 text-gray-500
-                  hover:text-gray-300 px-3 py-1.5 rounded-lg transition-colors'>
+              <Button onClick={reset}
+                variant='ghost'
+                className='text-xs flex items-center gap-1 text-gray-500 hover:text-gray-300 px-3 py-1.5 rounded-lg mx-0'>
                 <RotateCcw size={12} /> Reset
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -182,14 +184,13 @@ export default function ShockBuilder({ onApply }: Props) {
           </div>
 
           {/* Apply button */}
-          <button
+          <Button
             onClick={() => onApply(buildScenario())}
             disabled={!hasShocks}
-            className='w-full bg-[#C9A84C] hover:opacity-85
-              active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed
-              text-[#0A1628] font-semibold py-2.5 rounded-full transition-opacity duration-150 text-sm'>
+            variant='solid'
+            className='w-full active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed py-2.5 rounded-full text-sm mx-0'>
             Apply to Stress Test
-          </button>
+          </Button>
         </div>
       )}
     </div>
