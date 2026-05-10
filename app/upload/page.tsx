@@ -164,7 +164,7 @@ export default function UploadPage() {
               hover:text-white transition-colors mr-1'>
               <ArrowLeft size={14} />
             </Link>
-            <Logo height={22} />
+            <Logo size={22} />
           </div>
           <div className='flex items-center gap-2'>
             <Link href='/clients'

@@ -261,7 +261,7 @@ export default function ClientsPage() {
               hover:text-white transition-colors'>
               <ArrowLeft size={14} />
             </Link>
-            <Logo height={22} />
+            <Logo size={22} />
           </div>
           <Link href='/upload'
             className='flex items-center gap-2 px-4 py-2 rounded-full

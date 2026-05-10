@@ -88,7 +88,7 @@ export default function ResultsNav() {
         <Link href='/' className='flex items-center gap-1.5 shrink-0 mr-1
           text-gray-400 hover:text-white transition-colors group'>
           <ArrowLeft size={13} className='group-hover:-translate-x-0.5 transition-transform' />
-          <Logo height={18} className='hidden sm:block' />
+          <Logo size={18} className='hidden sm:block' />
         </Link>
 
         <div className='w-px h-4 bg-white/10 hidden sm:block shrink-0' />

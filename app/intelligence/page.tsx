@@ -162,7 +162,7 @@ export default function IntelligencePage() {
         {/* Header */}
         <div className='flex items-center justify-between mb-10'>
           <div className='flex items-center gap-3'>
-            <Logo height={22} />
+            <Logo size={22} />
           </div>
           <Link href='/' className='flex items-center gap-2 text-sm
             text-gray-400 hover:text-white transition-colors'>

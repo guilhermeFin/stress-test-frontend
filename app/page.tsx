@@ -184,7 +184,7 @@ export default function HomePage() {
               ring-1 ring-white/10 rounded-full px-5 py-2.5'>
 
               <div className='flex items-center gap-3'>
-                <Logo height={22} />
+                <Logo size={22} />
               </div>
 
               <div className='hidden md:flex items-center gap-8'>
@@ -268,7 +268,7 @@ export default function HomePage() {
 
                 <div className='border-b border-white/8 px-4 py-2 flex items-center
                   gap-2 bg-[#0d1117]'>
-                  <Logo height={14} />
+                  <Logo size={14} />
                   <span className='w-px h-3 bg-white/10 shrink-0 mr-1' />
                   <div className='w-px h-3 bg-white/10 shrink-0' />
                   <div className='flex items-center gap-0.5 overflow-hidden'>
@@ -589,7 +589,7 @@ export default function HomePage() {
           <div className='max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row
             items-center justify-between gap-4'>
 
-            <Logo height={20} />
+            <Logo size={20} />
 
             <p className='text-xs text-gray-600 text-center'>
               © 2026 Vantage · Built for independent wealth managers &amp; RIAs

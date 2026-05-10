@@ -173,7 +173,7 @@ export default function HouseholdPage() {
               hover:text-white transition-colors'>
               <ArrowLeft size={14} />
             </Link>
-            <Logo height={22} />
+            <Logo size={22} />
           </div>
           <Link href='/upload'
             className='text-sm text-gray-400 hover:text-white transition-colors'>
