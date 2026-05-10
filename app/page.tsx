@@ -8,6 +8,7 @@ import {
 import { Outfit } from 'next/font/google'
 import ScrollReveal from '@/components/ScrollReveal'
 import { Button } from '@/components/ui/neon-button'
+import { ElegantShape } from '@/components/ui/shape-landing-hero'
 
 const outfit = Outfit({ subsets: ['latin'], weight: ['400', '500'] })
 
@@ -209,7 +210,27 @@ export default function HomePage() {
         </header>
 
         {/* ── 2. Hero ─────────────────────────────────────────────────────── */}
-        <section className='max-w-6xl mx-auto px-6 pt-40 pb-6 text-center'>
+        <div className='relative'>
+          {/* Floating shape decorations */}
+          <div className='absolute inset-0 overflow-hidden pointer-events-none' aria-hidden>
+            <ElegantShape delay={0.3} width={600} height={140} rotate={12}
+              gradient='from-blue-500/[0.15]'
+              className='left-[-10%] md:left-[-5%] top-[15%] md:top-[20%]' />
+            <ElegantShape delay={0.5} width={500} height={120} rotate={-15}
+              gradient='from-indigo-500/[0.15]'
+              className='right-[-5%] md:right-[0%] top-[70%] md:top-[75%]' />
+            <ElegantShape delay={0.4} width={300} height={80} rotate={-8}
+              gradient='from-cyan-500/[0.15]'
+              className='left-[5%] md:left-[10%] bottom-[5%] md:bottom-[10%]' />
+            <ElegantShape delay={0.6} width={200} height={60} rotate={20}
+              gradient='from-blue-400/[0.15]'
+              className='right-[15%] md:right-[20%] top-[10%] md:top-[15%]' />
+            <ElegantShape delay={0.7} width={150} height={40} rotate={-25}
+              gradient='from-violet-500/[0.15]'
+              className='left-[20%] md:left-[25%] top-[5%] md:top-[10%]' />
+          </div>
+
+        <section className='relative max-w-6xl mx-auto px-6 pt-40 pb-6 text-center'>
 
           <div data-reveal
             className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
@@ -372,6 +393,7 @@ export default function HomePage() {
               pointer-events-none' />
           </div>
         </section>
+        </div>{/* end hero wrapper */}
 
         {/* ── 3. How It Works ─────────────────────────────────────────────── */}
         <section id='how-it-works' className='max-w-6xl mx-auto px-6 py-32'>
@@ -622,10 +644,11 @@ function PricingCardContent({ tier }: { tier: typeof TIERS[number] }) {
         ))}
       </ul>
 
-      <Link href={tier.href}>
+      <Link href={tier.href} className='block'>
         <Button
-          variant={tier.cta === 'Contact Sales' ? 'ghost' : 'solid'}
-          className='w-full text-sm font-semibold'
+          variant='solid'
+          size='lg'
+          className='w-full text-sm font-semibold tracking-wide'
         >
           {tier.cta}
         </Button>
