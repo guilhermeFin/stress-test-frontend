@@ -134,7 +134,7 @@ export default function LiquidityPanel({ positions }: { positions: any[] }) {
             style={{
               width: `${weightedScore * 10}%`,
               background: weightedScore >= 8 ? '#10B981'
-                : weightedScore >= 6 ? '#F59E0B'
+                : weightedScore >= 6 ? '#F59E08'
                 : weightedScore >= 4 ? '#F97316'
                 : '#EF4444'
             }}

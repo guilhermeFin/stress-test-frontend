@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation'
 import { useDropzone } from 'react-dropzone'
 import { runStressTest, runBrazilStressFile, listBrazilScenarios, BrazilScenarioMeta } from '@/lib/api'
 import {
-  Upload, AlertCircle, TrendingDown, Download,
+  Upload, AlertCircle, Download,
   Shield, BarChart3, Brain, Activity, ChevronRight, Clock, ArrowLeft, Calendar
 } from 'lucide-react'
 import ShockBuilder from '@/components/ShockBuilder'
 import { Button } from '@/components/ui/neon-button'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 
 const HISTORICAL_SCENARIOS = [
   {
@@ -163,10 +164,7 @@ export default function UploadPage() {
               hover:text-white transition-colors mr-1'>
               <ArrowLeft size={14} />
             </Link>
-            <div className='w-9 h-9 bg-[#3B82F6] rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-white' />
-            </div>
-            <span className='font-medium text-lg'>PortfolioStress</span>
+            <Logo height={22} />
           </div>
           <div className='flex items-center gap-2'>
             <Link href='/clients'
@@ -216,8 +214,9 @@ export default function UploadPage() {
         <div className='grid grid-cols-2 md:grid-cols-4 gap-3 mb-12'>
           {FEATURES.map(({ icon: Icon, label, desc }) => (
             <div key={label}
-              className='bg-white/4 hover:bg-white/6 border border-white/10
-                rounded-2xl p-4 transition-all group'>
+              className='bg-[#0A0F1E]/80 backdrop-blur-md border border-white/10
+                rounded-2xl p-4 transition-all duration-500 group
+                hover:shadow-[0_0_40px_rgba(59,130,246,0.12)] hover:border-white/15'>
               <div className='w-8 h-8 bg-[#3B82F6]/20 rounded-lg flex items-center
                 justify-center mb-3 group-hover:bg-[#3B82F6]/30 transition-all'>
                 <Icon size={16} className='text-[#3B82F6]' />
@@ -229,7 +228,9 @@ export default function UploadPage() {
         </div>
 
         {/* Main card */}
-        <div className='bg-white/4 border border-white/10 rounded-3xl p-8'>
+        <div className='bg-[#0A0F1E]/80 backdrop-blur-md border border-white/10 rounded-3xl p-8
+          shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]
+          hover:shadow-[0_0_40px_rgba(59,130,246,0.15)] transition-shadow duration-500'>
 
           <div className='flex items-center gap-3 mb-6'>
             <div className='flex-1 h-px bg-white/8' />
@@ -247,13 +248,13 @@ export default function UploadPage() {
 
           <div
             {...getRootProps()}
-            className={`border-2 border-dashed rounded-2xl p-8 text-center
-              cursor-pointer transition-all mb-5
+            className={`border-2 border-dashed rounded-2xl py-12 px-8 text-center
+              cursor-pointer transition-all duration-300 mb-5
               ${isDragActive
-                ? 'border-[#3B82F6] bg-[#3B82F6]/10'
+                ? 'border-blue-500/60 bg-blue-500/5'
                 : file
                 ? 'border-green-500/50 bg-green-600/5'
-                : 'border-white/10 hover:border-white/20 hover:bg-white/2'
+                : 'border-white/15 hover:border-blue-500/60 hover:bg-blue-500/5'
               }`}>
             <input {...getInputProps()} />
             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center
@@ -290,9 +291,9 @@ export default function UploadPage() {
                 <textarea
                   value={scenario}
                   onChange={(e) => { setScenario(e.target.value); setActiveHistorical(null) }}
-                  className='w-full bg-white/3 border border-white/10 rounded-xl p-4
+                  className='w-full bg-[#0A0F1E]/60 backdrop-blur-sm border border-white/10 rounded-xl p-4
                     text-white placeholder-gray-600 resize-none focus:outline-none
-                    focus:border-[#3B82F6]/50 text-sm transition-all'
+                    focus:border-blue-500 text-base leading-relaxed transition-all'
                   rows={3}
                   placeholder='e.g. Market crashes 30%, rates rise 2%, tech sector drops 50%'
                 />
@@ -344,8 +345,12 @@ export default function UploadPage() {
                     onClick={() => handleHistorical(s)}
                     variant='ghost'
                     neon={false}
-                    className={`p-2.5 rounded-xl border bg-gradient-to-br text-left
-                      transition-all mx-0 ${s.color}
+                    className={`relative overflow-hidden p-2.5 rounded-xl border bg-gradient-to-br
+                      backdrop-blur-md text-left transition-all duration-300 mx-0
+                      after:absolute after:bottom-0 after:left-1/4 after:right-1/4 after:h-px
+                      after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100
+                      after:transition-transform after:duration-300
+                      ${s.color}
                       ${activeHistorical === s.label ? 'ring-1 ring-white/20' : ''}`}>
                     <div className='text-xs font-medium text-white mb-0.5'>{s.label}</div>
                     <div className='text-xs text-gray-400 mb-1.5'>{s.year}</div>

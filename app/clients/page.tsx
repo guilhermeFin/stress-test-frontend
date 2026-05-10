@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
-  TrendingDown, ArrowLeft, Trash2, ChevronRight,
+  ArrowLeft, Trash2, ChevronRight,
   Users, Calendar, BarChart3, AlertTriangle, CheckCircle,
   XCircle, RefreshCw, Clock,
 } from 'lucide-react'
 import { Button } from '@/components/ui/neon-button'
 import { StressTestResult } from '@/lib/api'
+import Logo from '@/components/Logo'
 
 interface SavedReview {
   id: string
@@ -260,10 +261,7 @@ export default function ClientsPage() {
               hover:text-white transition-colors'>
               <ArrowLeft size={14} />
             </Link>
-            <div className='w-9 h-9 bg-[#3B82F6] rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-white' />
-            </div>
-            <span className='font-medium'>PortfolioStress</span>
+            <Logo height={22} />
           </div>
           <Link href='/upload'
             className='flex items-center gap-2 px-4 py-2 rounded-full

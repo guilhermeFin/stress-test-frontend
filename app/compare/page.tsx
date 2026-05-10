@@ -5,10 +5,11 @@ import { useDropzone } from 'react-dropzone'
 import { comparePortfolios, StressTestResult } from '@/lib/api'
 import { Button } from '@/components/ui/neon-button'
 import {
-  Upload, TrendingDown, ChevronRight, AlertCircle,
+  Upload, ChevronRight, AlertCircle,
   ArrowLeft, Trophy, Shield, Zap
 } from 'lucide-react'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
@@ -213,10 +214,7 @@ export default function ComparePage() {
         {/* Header */}
         <div className='flex items-center justify-between mb-10'>
           <div className='flex items-center gap-3'>
-            <div className='w-9 h-9 bg-[#3B82F6] rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-white' />
-            </div>
-            <span className='font-medium text-lg'>PortfolioStress</span>
+            <Logo height={22} />
           </div>
           <Link href='/' className='flex items-center gap-2 text-sm text-gray-400
             hover:text-white transition-colors'>

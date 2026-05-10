@@ -4,11 +4,12 @@ import { useState } from 'react'
 import { runStressTest } from '@/lib/api'
 import { Button } from '@/components/ui/neon-button'
 import {
-  TrendingDown, Zap, ArrowLeft, Plus, X,
+  Zap, ArrowLeft, Plus, X,
   BarChart2, Brain, AlertCircle
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import Logo from '@/components/Logo'
 
 interface TickerRow {
   ticker: string
@@ -161,10 +162,7 @@ export default function IntelligencePage() {
         {/* Header */}
         <div className='flex items-center justify-between mb-10'>
           <div className='flex items-center gap-3'>
-            <div className='w-9 h-9 bg-[#3B82F6] rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-white' />
-            </div>
-            <span className='font-medium text-lg'>PortfolioStress</span>
+            <Logo height={22} />
           </div>
           <Link href='/' className='flex items-center gap-2 text-sm
             text-gray-400 hover:text-white transition-colors'>

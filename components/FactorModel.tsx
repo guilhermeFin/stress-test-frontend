@@ -50,7 +50,7 @@ const FACTOR_DESCRIPTIONS: Record<string, string> = {
 
 const FACTOR_COLORS: Record<string, string> = {
   market:    '#3B82F6',
-  rates:     '#F59E0B',
+  rates:     '#F59E08',
   inflation: '#F97316',
   credit:    '#EF4444',
   growth:    '#8B5CF6',
@@ -231,7 +231,7 @@ export default function FactorModel({
                 {factorContributions.map((entry, i) => (
                   <Cell key={i}
                     fill={entry.contribution < -5 ? '#EF4444'
-                      : entry.contribution < -2 ? '#F59E0B'
+                      : entry.contribution < -2 ? '#F59E08'
                       : entry.contribution < 0  ? '#6B7280'
                       : '#10B981'} />
                 ))}

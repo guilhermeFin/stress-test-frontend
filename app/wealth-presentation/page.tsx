@@ -18,7 +18,7 @@ function toPortfolioData(r: BrazilStressResult) {
   }
   const totalForPct = Object.values(buckets).reduce((a, b) => a + b, 0) || 1
   const COLORS: Record<string, string> = {
-    'Brazil (BRL)':       '#C9A84C',
+    'Brazil (BRL)':       '#3B82F6',
     'International (USD)':'#4A7FC1',
   }
   const allocation = Object.entries(buckets).map(([name, v]) => ({
@@ -31,7 +31,7 @@ function toPortfolioData(r: BrazilStressResult) {
 
   return {
     clientName:  'Your Portfolio',
-    advisorName: 'PortfolioStress',
+    advisorName: 'Vantage',
     date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
     totalUsd:   ps.original_value_usd,
     brlPerUsd:  ps.brl_usd_rate_original,
@@ -78,9 +78,9 @@ export default function WealthPresentationPage() {
   }, [])
 
   return (
-    <main className='min-h-screen bg-[#0A1628]'>
+    <main className='min-h-screen'>
       {/* Thin control bar — hidden when printing */}
-      <div className='print:hidden sticky top-0 z-50 bg-[#0A1628]/95 backdrop-blur border-b border-white/8'>
+      <div className='print:hidden sticky top-0 z-50 bg-[#0A0F1E]/95 backdrop-blur border-b border-white/8 text-white'>
         <div className='max-w-4xl mx-auto px-4 md:px-8 py-2 flex items-center justify-between'>
           <Link
             href='/upload'

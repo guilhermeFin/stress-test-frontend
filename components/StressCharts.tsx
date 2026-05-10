@@ -6,7 +6,7 @@ import {
 } from 'recharts'
 import { Position } from '@/lib/api'
 
-const SECTOR_COLORS = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6',
+const SECTOR_COLORS = ['#3B82F6','#10B981','#F59E08','#EF4444','#8B5CF6',
                        '#06B6D4','#F97316','#84CC16','#EC4899','#6B7280']
 
 const TOOLTIP_STYLE = {
@@ -37,7 +37,7 @@ const StressCharts = memo(function StressCharts({ charts, positions }: any) {
       const lossData = (charts.loss_by_position ?? []).slice(0, 10).map((p: any) => ({
         ticker: p.ticker,
         loss: Math.abs(p.loss_pct),
-        fill: p.loss_pct < -25 ? '#EF4444' : p.loss_pct < -10 ? '#F59E0B' : '#10B981',
+        fill: p.loss_pct < -25 ? '#EF4444' : p.loss_pct < -10 ? '#F59E08' : '#10B981',
       }))
 
       const compareData = positions.slice(0, 8).map((p: Position) => ({
@@ -123,7 +123,7 @@ const StressCharts = memo(function StressCharts({ charts, positions }: any) {
                 style={{
                   width: `${Math.min(100, Math.abs(totalLossPct) * 3)}%`,
                   background: Math.abs(totalLossPct) > 20 ? '#EF4444'
-                    : Math.abs(totalLossPct) > 10 ? '#F59E0B' : '#10B981'
+                    : Math.abs(totalLossPct) > 10 ? '#F59E08' : '#10B981'
                 }} />
             </div>
           </div>
@@ -181,7 +181,7 @@ const StressCharts = memo(function StressCharts({ charts, positions }: any) {
                 {sectorContrib.map((entry, i) => (
                   <Cell key={i}
                     fill={entry.contribution < -3 ? '#EF4444'
-                      : entry.contribution < -1 ? '#F59E0B'
+                      : entry.contribution < -1 ? '#F59E08'
                       : entry.contribution < 0  ? '#6B7280'
                       : '#10B981'} />
                 ))}

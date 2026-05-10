@@ -26,7 +26,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
   const { summary, positions, explanation } = results
 
   const healthScore = Math.max(1, Math.min(10, 10 + summary.total_loss_pct / 5))
-  const healthColor = healthScore >= 7 ? '#10B981' : healthScore >= 5 ? '#F59E0B' : healthScore >= 3 ? '#F97316' : '#EF4444'
+  const healthColor = healthScore >= 7 ? '#10B981' : healthScore >= 5 ? '#F59E08' : healthScore >= 3 ? '#F97316' : '#EF4444'
   const healthLabel = healthScore >= 7 ? 'Healthy' : healthScore >= 5 ? 'At Risk' : healthScore >= 3 ? 'Vulnerable' : 'Critical'
 
   const onTrack  = summary.total_loss_pct > -15
@@ -74,11 +74,11 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
   const slides = [
     // 0 — Cover
     <div key='cover' className='flex flex-col items-center justify-center h-full text-center px-12'>
-      <div className='w-16 h-16 bg-[#C9A84C]/20 rounded-2xl flex items-center justify-center mb-8'>
-        <BarChart3 size={32} className='text-[#C9A84C]' />
+      <div className='w-16 h-16 bg-[#3B82F6]/20 rounded-2xl flex items-center justify-center mb-8'>
+        <BarChart3 size={32} className='text-[#3B82F6]' />
       </div>
-      <p className='text-sm font-semibold text-[#C9A84C] uppercase tracking-widest mb-4'>
-        Portfolio Stress Test
+      <p className='text-sm font-semibold text-[#3B82F6] uppercase tracking-widest mb-4'>
+        Vantage Risk Analysis
       </p>
       <h1 className='text-5xl md:text-6xl font-black text-white mb-6 leading-tight'>
         Your Portfolio
@@ -99,7 +99,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
         Under this scenario
       </p>
       <div className='text-8xl md:text-9xl font-black mb-4' style={{
-        color: summary.total_loss_pct < -25 ? '#EF4444' : summary.total_loss_pct < -10 ? '#F97316' : '#F59E0B'
+        color: summary.total_loss_pct < -25 ? '#EF4444' : summary.total_loss_pct < -10 ? '#F97316' : '#F59E08'
       }}>
         {summary.total_loss_pct.toFixed(1)}%
       </div>
@@ -213,13 +213,13 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
       ) : (
         <>
           <div className='flex items-baseline gap-4 mb-4'>
-            <span className='text-8xl font-black text-[#C9A84C]'>{rv}</span>
+            <span className='text-8xl font-black text-[#3B82F6]'>{rv}</span>
             <span className='text-3xl text-gray-400 font-semibold'>
               {rv === 1 ? 'year' : 'years'}
             </span>
           </div>
           <p className='text-2xl text-white font-semibold mb-4'>
-            Recovery by <span className='text-[#C9A84C]'>{recoveryYear}</span>
+            Recovery by <span className='text-[#3B82F6]'>{recoveryYear}</span>
           </p>
           <p className='text-lg text-gray-300 max-w-lg leading-relaxed'>
             Continuing regular contributions at historical average returns,
@@ -265,8 +265,8 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
       </p>
       <div className='bg-blue-950/40 border border-blue-800/60 rounded-2xl p-7 mb-6'>
         <div className='flex items-start gap-4'>
-          <div className='w-10 h-10 rounded-xl bg-[#C9A84C]/20 flex items-center justify-center shrink-0'>
-            <Lightbulb size={20} className='text-[#C9A84C]' />
+          <div className='w-10 h-10 rounded-xl bg-[#3B82F6]/20 flex items-center justify-center shrink-0'>
+            <Lightbulb size={20} className='text-[#3B82F6]' />
           </div>
           <div>
             <p className='text-blue-300 font-semibold text-lg mb-2'>Key action</p>
@@ -277,7 +277,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
       {explanation?.client_explanation && (
         <div className='bg-white/3 border border-white/8 rounded-2xl p-6 mb-6'>
           <div className='flex items-center gap-3 mb-3'>
-            <Brain size={18} className='text-[#C9A84C]' />
+            <Brain size={18} className='text-[#3B82F6]' />
             <p className='text-white font-semibold'>What this means for you</p>
           </div>
           <p className='text-gray-300 leading-relaxed line-clamp-4'>
@@ -291,7 +291,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
           <p className='text-gray-300 text-sm'>Review asset allocation</p>
         </div>
         <div className='bg-white/3 border border-white/8 rounded-xl p-4 flex items-center gap-3'>
-          <Activity size={18} className='text-[#C9A84C] shrink-0' />
+          <Activity size={18} className='text-[#3B82F6] shrink-0' />
           <p className='text-gray-300 text-sm'>Consider rebalancing options</p>
         </div>
       </div>
@@ -303,7 +303,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
       {/* Top bar */}
       <div className='flex items-center justify-between px-8 py-4 border-b border-white/8 shrink-0'>
         <div className='flex items-center gap-3'>
-          <div className='w-2 h-2 rounded-full bg-[#C9A84C] animate-pulse' />
+          <div className='w-2 h-2 rounded-full bg-[#3B82F6] animate-pulse' />
           <span className='text-sm font-semibold text-gray-300'>Client Presentation</span>
         </div>
         <div className='flex items-center gap-6'>
@@ -320,7 +320,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
 
       {/* Slide progress bar */}
       <div className='h-0.5 bg-white/5 shrink-0'>
-        <div className='h-full bg-[#C9A84C] transition-all duration-300'
+        <div className='h-full bg-[#3B82F6] transition-all duration-300'
           style={{ width: `${((slide + 1) / TOTAL_SLIDES) * 100}%` }} />
       </div>
 
@@ -349,7 +349,7 @@ export default function PresentationMode({ results, profile, onClose }: Props) {
               variant='ghost'
               neon={false}
               className={`rounded-full transition-all p-0 mx-0 border-0 ${
-                i === slide ? 'w-4 h-2 bg-[#C9A84C]' : 'w-2 h-2 bg-white/20 hover:bg-white/40'
+                i === slide ? 'w-4 h-2 bg-[#3B82F6]' : 'w-2 h-2 bg-white/20 hover:bg-white/40'
               }`} />
           ))}
         </div>

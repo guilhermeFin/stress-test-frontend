@@ -1,13 +1,21 @@
-# PortfolioStress — Frontend
+# Vantage — Frontend
 
 ## Claude's Role
-You are helping build and improve the PortfolioStress frontend.
+You are helping build and improve the Vantage frontend.
 Target user: independent wealth managers and RIAs.
 Always prioritize simplicity, speed, and clean institutional UI over technical complexity.
 The "wrapper" — the UX, the AI memo, the plain-English output — IS the product.
 
+## Brand Identity
+- Name: Vantage (wordmark: VANTAGE)
+- Tagline: 'Stress test. Build confidence.'
+- Essence: 'Clarity in uncertainty. Confidence in every decision.'
+- Primary color: Electric Blue #3B82F6
+- Background: Deep Navy #0A0F1E
+- Warning orange: #F59E08 (NOT #F59E0B)
+
 ## What This Product Does
-PortfolioStress is a portfolio stress testing tool for wealth managers.
+Vantage is a portfolio stress testing tool for wealth managers.
 The user uploads an Excel file with their positions, picks a crisis scenario or describes one,
 and gets a full institutional-grade risk analysis in 60 seconds.
 

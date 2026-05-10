@@ -1,15 +1,15 @@
 import Link from 'next/link'
 import { Fragment } from 'react'
 import {
-  TrendingDown, ArrowRight, CheckCircle2,
+  ArrowRight, CheckCircle2,
   Upload, Shield, Brain, Activity,
   BarChart3, Target, Scissors, RefreshCw, FileText,
+  Search, Zap,
 } from 'lucide-react'
-import { Outfit } from 'next/font/google'
 import ScrollReveal from '@/components/ScrollReveal'
 import { Button } from '@/components/ui/neon-button'
-
-const outfit = Outfit({ subsets: ['latin'], weight: ['400', '500'] })
+import Logo from '@/components/Logo'
+import GlobalBackground from '@/components/GlobalBackground'
 
 const NAV_LINKS = [
   { label: 'How it works', href: '#how-it-works' },
@@ -160,7 +160,8 @@ const BENTO_DELAYS = ['', '100', '150', '200', '250', '300'] as const
 
 export default function HomePage() {
   return (
-    <main className={`${outfit.className} min-h-screen text-white`}>
+    <main className='relative min-h-screen text-white'>
+      <GlobalBackground />
       <ScrollReveal />
 
       {/* ── Ambient mesh orbs ─────────────────────────────────────────── */}
@@ -179,14 +180,11 @@ export default function HomePage() {
         <header className='fixed top-0 left-0 right-0 z-50 pointer-events-none'>
           <div className='px-4 pt-4'>
             <div className='max-w-6xl mx-auto flex items-center justify-between
-              pointer-events-auto bg-[#0A1628]/90 backdrop-blur-xl
+              pointer-events-auto bg-[#0A0F1E]/90 backdrop-blur-xl
               ring-1 ring-white/10 rounded-full px-5 py-2.5'>
 
               <div className='flex items-center gap-3'>
-                <div className='w-7 h-7 bg-[#3B82F6] rounded-lg flex items-center justify-center shrink-0'>
-                  <TrendingDown size={14} className='text-white' />
-                </div>
-                <span className='font-bold text-sm text-white'>PortfolioStress</span>
+                <Logo height={22} />
               </div>
 
               <div className='hidden md:flex items-center gap-8'>
@@ -222,19 +220,24 @@ export default function HomePage() {
           </div>
 
           <h1 data-reveal data-delay='100'
-            className='font-bold tracking-tight mb-8
+            className='font-black tracking-tight mb-6
               bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent'
             style={{
               fontSize: 'clamp(52px, 7vw, 88px)',
               lineHeight: '1.0',
             }}>
-            Run a full portfolio<br />stress test in 60 seconds
+            Stress test.<br />Build confidence.
           </h1>
 
+          <p data-reveal data-delay='150'
+            className='text-lg font-medium text-gray-300 max-w-xl mx-auto mb-4'>
+            Institutional-grade portfolio risk analysis in 60 seconds.
+          </p>
+
           <p data-reveal data-delay='200'
-            className='text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed mb-12'>
-            Upload any portfolio, pick a crisis scenario, and get an institutional-grade
-            risk analysis your clients can actually understand.
+            className='text-gray-400 max-w-2xl mx-auto leading-relaxed mb-12'>
+            Vantage transforms complex market data into clear, actionable insights
+            so you can lead with confidence when your clients need it most.
           </p>
 
           <div data-reveal data-delay='300'
@@ -242,7 +245,7 @@ export default function HomePage() {
 
             <Link href='/upload'>
               <Button variant='solid' size='lg' className='flex items-center gap-3 text-sm font-semibold'>
-                Upload Your Portfolio <ArrowRight size={14} />
+                Start Stress Test <ArrowRight size={14} />
               </Button>
             </Link>
 
@@ -265,10 +268,8 @@ export default function HomePage() {
 
                 <div className='border-b border-white/8 px-4 py-2 flex items-center
                   gap-2 bg-[#0d1117]'>
-                  <div className='w-4 h-4 bg-[#3B82F6] rounded flex items-center justify-center'>
-                    <TrendingDown size={8} className='text-white' />
-                  </div>
-                  <span className='text-xs font-bold text-white mr-2'>PortfolioStress</span>
+                  <Logo height={14} />
+                  <span className='w-px h-3 bg-white/10 shrink-0 mr-1' />
                   <div className='w-px h-3 bg-white/10 shrink-0' />
                   <div className='flex items-center gap-0.5 overflow-hidden'>
                     {['Summary', 'Charts', 'Factors', 'Liquidity', 'Monte Carlo', 'Tax impact', 'AI Analysis'].map((s, i) => (
@@ -370,7 +371,7 @@ export default function HomePage() {
             </div>
 
             <div className='absolute bottom-0 left-0 right-0 h-28
-              bg-gradient-to-t from-[#0A1628] to-transparent rounded-b-[2.5rem]
+              bg-gradient-to-t from-[#0A0F1E] to-transparent rounded-b-[2.5rem]
               pointer-events-none' />
           </div>
         </section>
@@ -400,7 +401,7 @@ export default function HomePage() {
                   className='flex-1 p-1.5 rounded-[1.75rem] bg-white/4 ring-1 ring-white/8
                     hover:ring-white/[0.16] group
                     transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                  <div className='h-full rounded-[1.25rem] bg-[#0A1628] p-7
+                  <div className='h-full rounded-[1.25rem] bg-[#0A0F1E] p-7
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'>
                     <div className='flex items-center gap-4 mb-5'>
                       <div className='w-10 h-10 bg-[#3B82F6]/20 rounded-xl flex items-center
@@ -458,7 +459,7 @@ export default function HomePage() {
                 <div className='h-full p-1.5 rounded-[1.75rem] bg-white/4 ring-1 ring-white/8
                   hover:ring-white/[0.16]
                   transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                  <div className={`h-full rounded-[1.25rem] bg-[#0A1628] p-7
+                  <div className={`h-full rounded-[1.25rem] bg-[#0A0F1E] p-7
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]
                     ${i === 5 ? 'flex flex-col md:flex-row items-start md:items-center gap-8' : ''}`}>
                     <div className={i === 5 ? 'shrink-0' : 'mb-5'}>
@@ -505,7 +506,7 @@ export default function HomePage() {
                 {tier.popular ? (
                   <div className='p-[2px] rounded-[1.75rem] bg-gradient-to-b
                     from-[#3B82F6]/60 to-[#3B82F6]/20'>
-                    <div className='rounded-[calc(1.75rem-2px)] bg-[#0A1628] p-7 flex flex-col
+                    <div className='rounded-[calc(1.75rem-2px)] bg-[#0A0F1E] p-7 flex flex-col
                       shadow-[inset_0_1px_0_rgba(59,130,246,0.2)]'>
                       <PricingCardContent tier={tier} />
                     </div>
@@ -514,7 +515,7 @@ export default function HomePage() {
                   <div className='p-1.5 rounded-[1.75rem] bg-white/4 ring-1 ring-white/8
                     hover:ring-white/[0.14]
                     transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                    <div className='rounded-[1.25rem] bg-[#0A1628] p-7 flex flex-col
+                    <div className='rounded-[1.25rem] bg-[#0A0F1E] p-7 flex flex-col
                       shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'>
                       <PricingCardContent tier={tier} />
                     </div>
@@ -537,7 +538,7 @@ export default function HomePage() {
         {/* ── 6. Final CTA ────────────────────────────────────────────────── */}
         <section data-reveal className='max-w-6xl mx-auto px-6 py-16 pb-32'>
           <div className='p-1.5 rounded-[2rem] bg-white/4 ring-1 ring-white/8'>
-            <div className='rounded-[1.6rem] bg-[#0A1628] p-16 text-center
+            <div className='rounded-[1.6rem] bg-[#0A0F1E] p-16 text-center
               shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'>
               <h2 className='font-bold tracking-tight text-white mb-5'
                 style={{ fontSize: '48px', lineHeight: '1.21' }}>
@@ -559,20 +560,39 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── 7. Footer ───────────────────────────────────────────────────── */}
+        {/* ── 7. Brand Pillars ────────────────────────────────────────────── */}
+        <section data-reveal className='max-w-6xl mx-auto px-6 pb-20'>
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+            {[
+              { icon: Search, label: 'Clarity' },
+              { icon: Zap,    label: 'Speed'   },
+              { icon: Shield, label: 'Trust'   },
+              { icon: Target, label: 'Precision'},
+            ].map(({ icon: Icon, label }) => (
+              <div key={label}
+                className='flex flex-col items-center gap-3 p-6 rounded-2xl
+                  bg-white/[0.03] border border-white/8'>
+                <div className='w-10 h-10 bg-[#3B82F6]/10 rounded-xl
+                  flex items-center justify-center'>
+                  <Icon size={18} className='text-[#3B82F6]' />
+                </div>
+                <span className='text-xs font-medium uppercase tracking-widest text-gray-400'>
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── 8. Footer ───────────────────────────────────────────────────── */}
         <footer className='border-t border-white/8'>
           <div className='max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row
             items-center justify-between gap-4'>
 
-            <div className='flex items-center gap-3'>
-              <div className='w-6 h-6 bg-[#3B82F6] rounded-md flex items-center justify-center'>
-                <TrendingDown size={12} className='text-white' />
-              </div>
-              <span className='text-sm font-bold text-white'>PortfolioStress</span>
-            </div>
+            <Logo height={20} />
 
             <p className='text-xs text-gray-600 text-center'>
-              © 2025 PortfolioStress · Built for independent wealth managers &amp; RIAs
+              © 2026 Vantage · Built for independent wealth managers &amp; RIAs
             </p>
 
             <div className='flex items-center gap-6'>

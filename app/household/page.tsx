@@ -4,10 +4,11 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
-  TrendingDown, ArrowLeft, Plus, Trash2,
+  ArrowLeft, Plus, Trash2,
   ChevronRight, Users, Briefcase,
 } from 'lucide-react'
 import { Button } from '@/components/ui/neon-button'
+import Logo from '@/components/Logo'
 
 const ACCOUNT_TYPES = ['Brokerage', 'IRA', 'Roth IRA', '401(k)', '403(b)', 'Pension', 'Trust', 'Other']
 
@@ -172,10 +173,7 @@ export default function HouseholdPage() {
               hover:text-white transition-colors'>
               <ArrowLeft size={14} />
             </Link>
-            <div className='w-9 h-9 bg-[#3B82F6] rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-white' />
-            </div>
-            <span className='font-medium'>PortfolioStress</span>
+            <Logo height={22} />
           </div>
           <Link href='/upload'
             className='text-sm text-gray-400 hover:text-white transition-colors'>
@@ -250,7 +248,7 @@ export default function HouseholdPage() {
                         text-sm text-white focus:outline-none focus:border-[#3B82F6]/50
                         appearance-none cursor-pointer'>
                       {ACCOUNT_TYPES.map(t => (
-                        <option key={t} value={t} className='bg-[#0A1628]'>{t}</option>
+                        <option key={t} value={t} className='bg-[#0A0F1E]'>{t}</option>
                       ))}
                     </select>
                   </div>
@@ -326,7 +324,7 @@ export default function HouseholdPage() {
                   {activeScenarioKey === s.key && (
                     <div className='w-4 h-4 bg-[#3B82F6] rounded-full flex items-center
                       justify-center shrink-0'>
-                      <div className='w-1.5 h-1.5 bg-[#0A1628] rounded-full' />
+                      <div className='w-1.5 h-1.5 bg-white rounded-full' />
                     </div>
                   )}
                 </div>

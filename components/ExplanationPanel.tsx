@@ -66,7 +66,7 @@ export default function ExplanationPanel({ explanation }: { explanation: any }) 
           <Button
             onClick={() => navigator.clipboard.writeText(explanation.client_explanation)}
             variant='ghost'
-            className='mt-3 text-xs text-[#C9A84C] hover:underline mx-0'>
+            className='mt-3 text-xs text-[#3B82F6] hover:underline mx-0'>
             Copy to clipboard
           </Button>
         )}

@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { TrendingDown, ArrowLeft, ArrowRight, ChevronRight, Play } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ChevronRight, Play } from 'lucide-react'
 import { Button } from '@/components/ui/neon-button'
+import Logo from '@/components/Logo'
 
 const DEMO_PORTFOLIO = [
   { ticker: 'AAPL', name: 'Apple Inc',        sector: 'Technology',       weight: 18, value: 90000  },
@@ -113,10 +114,7 @@ export default function DemoPage() {
               hover:text-white transition-colors'>
               <ArrowLeft size={14} />
             </Link>
-            <div className='w-9 h-9 bg-[#3B82F6] rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-white' />
-            </div>
-            <span className='font-medium'>PortfolioStress</span>
+            <Logo height={22} />
           </div>
           <Link href='/upload'
             className='text-sm text-gray-400 hover:text-white transition-colors'>

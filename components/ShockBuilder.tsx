@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/neon-button'
-import { SlidersHorizontal, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react'
+import { SlidersHorizontal, ChevronDown, RotateCcw } from 'lucide-react'
 
 interface ShockValues {
   market:    number
@@ -118,28 +118,32 @@ export default function ShockBuilder({ onApply }: Props) {
   const hasShocks = Object.values(shocks).some(v => v !== 0)
 
   return (
-    <div className='border border-white/10 rounded-xl overflow-hidden mb-4'>
+    <div className='bg-[#0A0F1E]/80 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden mb-4
+      shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]'>
 
       {/* Header toggle */}
       <Button
         onClick={() => setOpen(o => !o)}
         variant='ghost'
         className='w-full flex items-center justify-between px-4 py-3
-          bg-[#0A1628] hover:bg-white/5 transition-colors text-sm mx-0 rounded-none text-left'>
+          hover:bg-white/5 transition-colors text-sm mx-0 rounded-none text-left'>
         <div className='flex items-center gap-2 text-gray-300'>
-          <SlidersHorizontal size={16} className='text-[#C9A84C]' />
+          <SlidersHorizontal size={16} className='text-[#3B82F6]' />
           <span className='font-medium'>Custom Shock Builder</span>
           {hasShocks && (
-            <span className='bg-[#C9A84C] text-[#0A1628] text-xs px-2 py-0.5 rounded-full'>
+            <span className='bg-[#3B82F6] text-[#0A0F1E] text-xs px-2 py-0.5 rounded-full'>
               Active
             </span>
           )}
         </div>
-        {open ? <ChevronUp size={16} className='text-gray-400' /> : <ChevronDown size={16} className='text-gray-400' />}
+        <ChevronDown
+          size={16}
+          className={`text-gray-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+        />
       </Button>
 
       {open && (
-        <div className='bg-[#0A1628] border-t border-white/8 p-4 space-y-4'>
+        <div className='border-t border-white/8 p-4 space-y-4'>
 
           {/* Presets */}
           <div>
@@ -166,7 +170,7 @@ export default function ShockBuilder({ onApply }: Props) {
             <Slider label='S&P 500 / Market'    value={shocks.market} min={-60} max={20}
               unit='%' color='#EF4444' onChange={set('market')} />
             <Slider label='Interest Rates'       value={shocks.rates}  min={-3}  max={5}  step={0.25}
-              unit='%' color='#F59E0B' onChange={set('rates')} />
+              unit='%' color='#F59E08' onChange={set('rates')} />
             <Slider label='Oil Price'            value={shocks.oil}    min={-60} max={80}
               unit='%' color='#F97316' onChange={set('oil')} />
             <Slider label='USD Strength'         value={shocks.usd}    min={-20} max={20}

@@ -2,14 +2,14 @@
 /**
  * WealthPresentation.tsx
  * ----------------------
- * Client presentation component for PortfolioStress.
+ * Client presentation component for Vantage.
  * Drop into: stress-test-frontend/src/components/results/
  *
  * Usage:
  *   <WealthPresentation portfolioData={data} advisorMode={false} />
  *
  * Stack: Next.js · TypeScript · Tailwind CSS · Recharts
- * Theme: deep navy (#0A1628) + gold (#C9A84C) — private banking
+ * Theme: deep navy (#0A0F1E) + electric blue (#3B82F6)
  */
 
 import React, { useState } from "react";
@@ -96,7 +96,7 @@ export const SAMPLE_DATA: PortfolioData = {
   totalUsd:    3_050_000,
   brlPerUsd:   5.18,
   allocation: [
-    { name: "US Equities",      pct: 38, color: "#C9A84C" },
+    { name: "US Equities",      pct: 38, color: "#3B82F6" },
     { name: "Fixed Income",     pct: 28, color: "#4A7FC1" },
     { name: "International EQ", pct: 18, color: "#6DB87A" },
     { name: "Cash & Equiv.",    pct: 10, color: "#8888AA" },
@@ -314,7 +314,7 @@ const AllocationDonut = ({ allocation }: { allocation: Allocation[] }) => (
             </Pie>
             <Tooltip
               formatter={(v) => [`${v}%`, ""]}
-              contentStyle={{ background: "#0A1628", border: "1px solid #C9A84C33", color: "#fff", fontSize: 12 }}
+              contentStyle={{ background: "#0A0F1E", border: "1px solid #3B82F633", color: "#fff", fontSize: 12 }}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -494,10 +494,10 @@ const IcebergView = ({ totalUsd, brl, illiquidAssets, activeScenarioHaircut }: {
           <XAxis type="number" tick={{ fill: "#94a3b8", fontSize: 10 }} tickFormatter={(v) => `R$${v}M`} />
           <YAxis type="category" dataKey="name" tick={{ fill: "#94a3b8", fontSize: 10 }} width={140} />
           <Tooltip
-            contentStyle={{ background: "#0A1628", border: "1px solid #C9A84C33", color: "#fff", fontSize: 11 }}
+            contentStyle={{ background: "#0A0F1E", border: "1px solid #3B82F633", color: "#fff", fontSize: 11 }}
             formatter={(v) => [`R$ ${Number(v).toFixed(2)}M`, ""]}
           />
-          <Bar dataKey="original" name="Current" fill="#C9A84C" radius={[0, 4, 4, 0]} />
+          <Bar dataKey="original" name="Current" fill="#3B82F6" radius={[0, 4, 4, 0]} />
           {showStressed && <Bar dataKey="stressed" name="Stressed" fill="#4A7FC1" radius={[0, 4, 4, 0]} />}
         </BarChart>
       </ResponsiveContainer>
@@ -906,7 +906,7 @@ export default function WealthPresentation({
         }
       `}</style>
 
-      <div className="min-h-screen bg-[#0A1628] text-white font-sans">
+      <div className="min-h-screen bg-[#0A0F1E] text-white font-sans">
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-10">
 
           <Header data={portfolioData} brl={brl} onBrlChange={setBrl} showBrl={customerMode === 'br'} />
@@ -919,8 +919,8 @@ export default function WealthPresentation({
               style={{ transition: 'background-color 150ms, color 150ms, border-color 150ms' }}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm mx-0
                 ${customerMode === 'us'
-                  ? 'bg-[#C9A84C] border-[#C9A84C] text-[#0A1628] font-bold'
-                  : 'border-[#C9A84C] text-[#C9A84C] font-medium'
+                  ? 'bg-[#3B82F6] border-[#3B82F6] text-[#0A0F1E] font-bold'
+                  : 'border-[#3B82F6] text-[#3B82F6] font-medium'
                 }`}
             >
               🇺🇸 U.S. Customer
@@ -932,8 +932,8 @@ export default function WealthPresentation({
               style={{ transition: 'background-color 150ms, color 150ms, border-color 150ms' }}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm mx-0
                 ${customerMode === 'br'
-                  ? 'bg-[#C9A84C] border-[#C9A84C] text-[#0A1628] font-bold'
-                  : 'border-[#C9A84C] text-[#C9A84C] font-medium'
+                  ? 'bg-[#3B82F6] border-[#3B82F6] text-[#0A0F1E] font-bold'
+                  : 'border-[#3B82F6] text-[#3B82F6] font-medium'
                 }`}
             >
               🇧🇷 BR Customer
