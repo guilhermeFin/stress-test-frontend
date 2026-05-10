@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { Outfit } from 'next/font/google'
 import ScrollReveal from '@/components/ScrollReveal'
+import { Button } from '@/components/ui/neon-button'
 
 const outfit = Outfit({ subsets: ['latin'], weight: ['400', '500'] })
 
@@ -42,8 +43,8 @@ const FEATURES = [
     icon: BarChart3,
     title: 'Factor Risk Model',
     desc: '5-factor attribution across beta, rates, inflation, credit, and growth. See exactly where your risk is concentrated.',
-    color: 'text-[#C9A84C]',
-    bg: 'bg-[#C9A84C]/20',
+    color: 'text-[#3B82F6]',
+    bg: 'bg-[#3B82F6]/20',
     wide: true,
   },
   {
@@ -165,11 +166,11 @@ export default function HomePage() {
       {/* ── Ambient mesh orbs ─────────────────────────────────────────── */}
       <div className='fixed inset-0 z-0 pointer-events-none overflow-hidden' aria-hidden>
         <div className='absolute top-[-18%] left-[-8%] w-[55vw] h-[55vw] rounded-full opacity-[0.06]'
-          style={{ background: 'radial-gradient(circle at center, #C9A84C 0%, transparent 68%)' }} />
+          style={{ background: 'radial-gradient(circle at center, #3B82F6 0%, transparent 68%)' }} />
         <div className='absolute bottom-[5%] right-[-6%] w-[38vw] h-[38vw] rounded-full opacity-[0.04]'
-          style={{ background: 'radial-gradient(circle at center, #C9A84C 0%, transparent 68%)' }} />
+          style={{ background: 'radial-gradient(circle at center, #3B82F6 0%, transparent 68%)' }} />
         <div className='absolute top-[55%] left-[40%] w-[28vw] h-[28vw] rounded-full opacity-[0.03]'
-          style={{ background: 'radial-gradient(circle at center, #C9A84C 0%, transparent 68%)' }} />
+          style={{ background: 'radial-gradient(circle at center, #3B82F6 0%, transparent 68%)' }} />
       </div>
 
       <div className='relative z-10'>
@@ -182,8 +183,8 @@ export default function HomePage() {
               ring-1 ring-white/10 rounded-full px-5 py-2.5'>
 
               <div className='flex items-center gap-3'>
-                <div className='w-7 h-7 bg-[#C9A84C] rounded-lg flex items-center justify-center shrink-0'>
-                  <TrendingDown size={14} className='text-[#0A1628]' />
+                <div className='w-7 h-7 bg-[#3B82F6] rounded-lg flex items-center justify-center shrink-0'>
+                  <TrendingDown size={14} className='text-white' />
                 </div>
                 <span className='font-bold text-sm text-white'>PortfolioStress</span>
               </div>
@@ -198,18 +199,10 @@ export default function HomePage() {
                 ))}
               </div>
 
-              <Link href='/demo'
-                className='group inline-flex items-center bg-[#C9A84C] rounded-full
-                  pl-5 pr-1.5 py-1.5 text-sm font-semibold text-[#0A1628]
-                  hover:opacity-85 active:scale-[0.98]
-                  transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                Try Free
-                <span className='ml-2 w-6 h-6 rounded-full bg-white/15
-                  flex items-center justify-center shrink-0
-                  group-hover:translate-x-[2px] group-hover:-translate-y-[1px]
-                  transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                  <ArrowRight size={12} />
-                </span>
+              <Link href='/demo'>
+                <Button variant='solid' className='flex items-center gap-2 text-sm font-semibold'>
+                  Try Free <ArrowRight size={12} />
+                </Button>
               </Link>
             </div>
           </div>
@@ -220,9 +213,9 @@ export default function HomePage() {
 
           <div data-reveal
             className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-              bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#C9A84C] text-xs
+              bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs
               font-medium mb-10'>
-            <span className='w-1.5 h-1.5 bg-[#C9A84C] rounded-full animate-pulse' />
+            <span className='w-1.5 h-1.5 bg-[#3B82F6] rounded-full animate-pulse' />
             Built for Wealth Managers &amp; RIAs
           </div>
 
@@ -245,18 +238,10 @@ export default function HomePage() {
           <div data-reveal data-delay='300'
             className='flex flex-wrap items-center justify-center gap-4 mb-24'>
 
-            <Link href='/upload'
-              className='group inline-flex items-center bg-[#C9A84C] rounded-full
-                pl-7 pr-2 py-2 text-sm font-semibold text-[#0A1628]
-                hover:opacity-85 active:scale-[0.98]
-                transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-              Upload Your Portfolio
-              <span className='ml-3 w-8 h-8 rounded-full bg-white/15
-                flex items-center justify-center shrink-0
-                group-hover:translate-x-[2px] group-hover:-translate-y-[1px]
-                transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                <ArrowRight size={14} />
-              </span>
+            <Link href='/upload'>
+              <Button variant='solid' size='lg' className='flex items-center gap-3 text-sm font-semibold'>
+                Upload Your Portfolio <ArrowRight size={14} />
+              </Button>
             </Link>
 
             <a href='#how-it-works'
@@ -278,8 +263,8 @@ export default function HomePage() {
 
                 <div className='border-b border-white/8 px-4 py-2 flex items-center
                   gap-2 bg-[#0d1117]'>
-                  <div className='w-4 h-4 bg-[#C9A84C] rounded flex items-center justify-center'>
-                    <TrendingDown size={8} className='text-[#0A1628]' />
+                  <div className='w-4 h-4 bg-[#3B82F6] rounded flex items-center justify-center'>
+                    <TrendingDown size={8} className='text-white' />
                   </div>
                   <span className='text-xs font-bold text-white mr-2'>PortfolioStress</span>
                   <div className='w-px h-3 bg-white/10 shrink-0' />
@@ -291,7 +276,7 @@ export default function HomePage() {
                         {s}
                         {i === 0 && (
                           <span className='absolute bottom-0 left-1.5 right-1.5 h-0.5
-                            bg-[#C9A84C] rounded-full' />
+                            bg-[#3B82F6] rounded-full' />
                         )}
                       </span>
                     ))}
@@ -309,7 +294,7 @@ export default function HomePage() {
                     {[
                       { l: 'Health',      v: '6.2/10',  c: 'text-yellow-400' },
                       { l: 'Stress loss', v: '−23.4%',  c: 'text-red-400'    },
-                      { l: 'Recovery',    v: '3.1 yrs', c: 'text-[#C9A84C]'  },
+                      { l: 'Recovery',    v: '3.1 yrs', c: 'text-[#3B82F6]'  },
                       { l: 'Goals',       v: 'At risk',  c: 'text-yellow-400' },
                     ].map(m => (
                       <span key={m.l} className='text-gray-500 shrink-0'>
@@ -364,10 +349,10 @@ export default function HomePage() {
                         ))}
                       </div>
                     </div>
-                    <div className='bg-[#C9A84C]/10 border border-[#C9A84C]/20 rounded-2xl p-3'>
+                    <div className='bg-[#3B82F6]/10 border border-[#3B82F6]/20 rounded-2xl p-3'>
                       <div className='flex items-center gap-1.5 mb-2'>
-                        <Brain size={11} className='text-[#C9A84C]' />
-                        <span className='text-xs text-[#C9A84C] font-medium'>AI Analyst Memo</span>
+                        <Brain size={11} className='text-[#3B82F6]' />
+                        <span className='text-xs text-[#3B82F6] font-medium'>AI Analyst Memo</span>
                       </div>
                       <p className='text-xs text-gray-400 leading-relaxed'>
                         Under a 2008-style scenario, this portfolio faces a{' '}
@@ -392,7 +377,7 @@ export default function HomePage() {
         <section id='how-it-works' className='max-w-6xl mx-auto px-6 py-32'>
           <div data-reveal className='text-center mb-20'>
             <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-              bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#C9A84C] text-xs
+              bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs
               font-medium mb-5'>
               Simple by design
             </div>
@@ -415,10 +400,10 @@ export default function HomePage() {
                   <div className='h-full rounded-[1.25rem] bg-[#0A1628] p-7
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'>
                     <div className='flex items-center gap-4 mb-5'>
-                      <div className='w-10 h-10 bg-[#C9A84C]/20 rounded-xl flex items-center
-                        justify-center group-hover:bg-[#C9A84C]/30 shrink-0
+                      <div className='w-10 h-10 bg-[#3B82F6]/20 rounded-xl flex items-center
+                        justify-center group-hover:bg-[#3B82F6]/30 shrink-0
                         transition-colors duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                        <step.icon size={18} className='text-[#C9A84C]' />
+                        <step.icon size={18} className='text-[#3B82F6]' />
                       </div>
                       <span className='text-4xl font-bold text-white/8 tabular-nums leading-none'>
                         {step.num}
@@ -443,7 +428,7 @@ export default function HomePage() {
         <section id='features' className='max-w-6xl mx-auto px-6 py-32'>
           <div data-reveal className='text-center mb-20'>
             <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-              bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#C9A84C] text-xs
+              bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs
               font-medium mb-5'>
               Full institutional stack
             </div>
@@ -495,7 +480,7 @@ export default function HomePage() {
         <section id='pricing' className='max-w-6xl mx-auto px-6 py-32'>
           <div data-reveal className='text-center mb-20'>
             <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-              bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#C9A84C] text-xs
+              bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs
               font-medium mb-5'>
               Transparent pricing
             </div>
@@ -516,9 +501,9 @@ export default function HomePage() {
                 className='relative'>
                 {tier.popular ? (
                   <div className='p-[2px] rounded-[1.75rem] bg-gradient-to-b
-                    from-[#C9A84C]/60 to-[#C9A84C]/20'>
+                    from-[#3B82F6]/60 to-[#3B82F6]/20'>
                     <div className='rounded-[calc(1.75rem-2px)] bg-[#0A1628] p-7 flex flex-col
-                      shadow-[inset_0_1px_0_rgba(201,168,76,0.2)]'>
+                      shadow-[inset_0_1px_0_rgba(59,130,246,0.2)]'>
                       <PricingCardContent tier={tier} />
                     </div>
                   </div>
@@ -535,8 +520,8 @@ export default function HomePage() {
 
                 {tier.popular && (
                   <div className='absolute -top-4 left-1/2 -translate-x-1/2'>
-                    <span className='px-4 py-1.5 bg-[#C9A84C] text-[#0A1628] text-xs
-                      font-semibold rounded-full shadow-lg shadow-[#C9A84C]/20'>
+                    <span className='px-4 py-1.5 bg-[#3B82F6] text-white text-xs
+                      font-semibold rounded-full shadow-lg shadow-[#3B82F6]/20'>
                       Most Popular
                     </span>
                   </div>
@@ -559,19 +544,10 @@ export default function HomePage() {
                 Upload a portfolio and see your risk in 60 seconds.
                 No setup required. No contract.
               </p>
-              <Link href='/demo'
-                className='group inline-flex items-center bg-[#C9A84C] rounded-full
-                  pl-7 pr-2 py-2 text-sm font-semibold text-[#0A1628] mb-6
-                  hover:opacity-85 active:scale-[0.98]
-                  transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
-                  shadow-lg shadow-[#C9A84C]/20'>
-                Try It Free — No Upload Needed
-                <span className='ml-3 w-8 h-8 rounded-full bg-white/15
-                  flex items-center justify-center shrink-0
-                  group-hover:translate-x-[2px] group-hover:-translate-y-[1px]
-                  transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                  <ArrowRight size={14} />
-                </span>
+              <Link href='/demo' className='inline-block mb-6'>
+                <Button variant='solid' size='lg' className='flex items-center gap-3 text-sm font-semibold'>
+                  Try It Free — No Upload Needed <ArrowRight size={14} />
+                </Button>
               </Link>
               <p className='text-xs text-gray-600 block'>
                 No credit card required · Takes 60 seconds · Cancel anytime
@@ -586,8 +562,8 @@ export default function HomePage() {
             items-center justify-between gap-4'>
 
             <div className='flex items-center gap-3'>
-              <div className='w-6 h-6 bg-[#C9A84C] rounded-md flex items-center justify-center'>
-                <TrendingDown size={12} className='text-[#0A1628]' />
+              <div className='w-6 h-6 bg-[#3B82F6] rounded-md flex items-center justify-center'>
+                <TrendingDown size={12} className='text-white' />
               </div>
               <span className='text-sm font-bold text-white'>PortfolioStress</span>
             </div>
@@ -640,21 +616,19 @@ function PricingCardContent({ tier }: { tier: typeof TIERS[number] }) {
         {tier.features.map(feat => (
           <li key={feat} className='flex items-start gap-2.5'>
             <CheckCircle2 size={14}
-              className={`shrink-0 mt-0.5 ${tier.popular ? 'text-[#C9A84C]' : 'text-green-400'}`} />
+              className={`shrink-0 mt-0.5 ${tier.popular ? 'text-[#3B82F6]' : 'text-green-400'}`} />
             <span className='text-sm text-gray-400'>{feat}</span>
           </li>
         ))}
       </ul>
 
-      <Link href={tier.href}
-        className={`w-full py-3.5 rounded-full text-sm font-semibold text-center
-          transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] block
-          active:scale-[0.98]
-          ${tier.popular
-            ? 'bg-[#C9A84C] hover:opacity-85 text-[#0A1628] shadow-lg shadow-[#C9A84C]/20'
-            : 'bg-white/8 hover:bg-white/12 border border-white/15 text-white'
-          }`}>
-        {tier.cta}
+      <Link href={tier.href}>
+        <Button
+          variant={tier.cta === 'Contact Sales' ? 'ghost' : 'solid'}
+          className='w-full text-sm font-semibold'
+        >
+          {tier.cta}
+        </Button>
       </Link>
     </>
   )
