@@ -40,7 +40,7 @@ const HISTORICAL_SCENARIOS = [
   {
     label: '1987 Black Monday',
     year: '1987',
-    color: 'from-yellow-600/20 to-yellow-800/10 border-yellow-700/30 hover:border-yellow-600/50',
+    color: 'from-blue-600/20 to-blue-800/10 border-blue-700/30 hover:border-blue-600/50',
     badge: 'bg-yellow-900/50 text-yellow-400',
     severity: 'Extreme',
     text: 'Black Monday 1987: market crashes 22% in a single day, volatility spikes 300%, liquidity evaporates, portfolio insurance fails',
@@ -329,7 +329,7 @@ export default function UploadPage() {
                 variant='ghost'
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all mx-0
                   ${scenarioTab === 'brazil'
-                    ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
                     : 'text-gray-500 hover:text-gray-300'}`}
               >
                 🇧🇷 Brazil scenarios
@@ -372,10 +372,10 @@ export default function UploadPage() {
                         variant='ghost'
                         neon={false}
                         className={`p-3 rounded-xl border text-left transition-all mx-0
-                          bg-gradient-to-br from-yellow-600/10 to-yellow-900/5
+                          bg-gradient-to-br from-blue-600/10 to-blue-900/5
                           ${isActive
-                            ? 'border-yellow-500/60 ring-1 ring-yellow-500/30'
-                            : 'border-yellow-700/20 hover:border-yellow-600/40'}`}
+                            ? 'border-blue-500/60 ring-1 ring-blue-500/30'
+                            : 'border-blue-700/20 hover:border-blue-600/40'}`}
                       >
                         <div className='text-xs font-semibold text-white mb-0.5 leading-tight'>{s.name}</div>
                         <div className='text-xs text-gray-400 mb-1.5'>{s.year}</div>

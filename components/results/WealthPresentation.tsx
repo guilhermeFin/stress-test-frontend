@@ -13,6 +13,7 @@
  */
 
 import React, { useState } from "react";
+import { Button } from "@/components/ui/neon-button";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
@@ -344,7 +345,7 @@ const ScenarioCard = ({
 
   return (
     <div
-      className="bg-white/5 rounded-xl p-5 cursor-pointer hover:bg-white/[0.08] transition-colors border border-white/10 hover:border-yellow-500/30"
+      className="bg-white/5 rounded-xl p-5 cursor-pointer hover:bg-white/[0.08] transition-colors border border-white/10 hover:border-blue-500/30"
       onClick={onToggle}
     >
       <div className="flex items-start justify-between gap-4">
@@ -481,7 +482,7 @@ const IcebergView = ({ totalUsd, brl, illiquidAssets, activeScenarioHaircut }: {
         <span className="text-xs text-slate-400">Show stressed values</span>
         <button
           onClick={() => setShowStressed(!showStressed)}
-          className={`w-10 h-5 rounded-full transition-colors ${showStressed ? "bg-yellow-500" : "bg-white/20"}`}
+          className={`w-10 h-5 rounded-full transition-colors ${showStressed ? "bg-blue-500" : "bg-white/20"}`}
         >
           <span className={`block w-4 h-4 bg-white rounded-full ml-0.5 transition-transform ${showStressed ? "translate-x-5" : ""}`} />
         </button>
@@ -607,16 +608,17 @@ const PdfSummary = ({
   return (
     <Section title="One-Page Summary">
       <div className="flex justify-end mb-4 print:hidden">
-        <button
+        <Button
           onClick={() => window.print()}
-          className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black text-sm font-bold px-4 py-2 rounded-lg transition-colors"
+          variant="solid"
+          className="flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-lg mx-0"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
           </svg>
           Export PDF
-        </button>
+        </Button>
       </div>
 
       <div id="pdf-summary" className="bg-white/5 rounded-2xl p-6 border border-white/10 print:bg-white print:text-black print:border-0 print:p-8">
@@ -744,12 +746,14 @@ Generated: ${new Date().toISOString()}
           </pre>
         </div>
 
-        <button
+        <Button
           onClick={handleCopy}
-          className="flex items-center gap-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-yellow-500/30"
+          variant="ghost"
+          neon={false}
+          className="flex items-center gap-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 text-sm font-semibold px-4 py-2 rounded-lg border border-blue-500/30 mx-0"
         >
           {copied ? "✓ Copied!" : "Copy to Clipboard"}
-        </button>
+        </Button>
 
         <p className="text-xs text-slate-500">
           Timestamp: {new Date().toISOString()} · All fields are saved in-session only.
@@ -908,28 +912,32 @@ export default function WealthPresentation({
           <Header data={portfolioData} brl={brl} onBrlChange={setBrl} showBrl={customerMode === 'br'} />
 
           <div className="flex gap-2 mb-8">
-            <button
+            <Button
               onClick={() => setCustomerMode('us')}
+              variant="ghost"
+              neon={false}
               style={{ transition: 'background-color 150ms, color 150ms, border-color 150ms' }}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm border
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm mx-0
                 ${customerMode === 'us'
                   ? 'bg-[#C9A84C] border-[#C9A84C] text-[#0A1628] font-bold'
-                  : 'bg-transparent border-[#C9A84C] text-[#C9A84C] font-medium'
+                  : 'border-[#C9A84C] text-[#C9A84C] font-medium'
                 }`}
             >
               🇺🇸 U.S. Customer
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setCustomerMode('br')}
+              variant="ghost"
+              neon={false}
               style={{ transition: 'background-color 150ms, color 150ms, border-color 150ms' }}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm border
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm mx-0
                 ${customerMode === 'br'
                   ? 'bg-[#C9A84C] border-[#C9A84C] text-[#0A1628] font-bold'
-                  : 'bg-transparent border-[#C9A84C] text-[#C9A84C] font-medium'
+                  : 'border-[#C9A84C] text-[#C9A84C] font-medium'
                 }`}
             >
               🇧🇷 BR Customer
-            </button>
+            </Button>
           </div>
 
           <PerformanceBar perf={portfolioData.performance} />

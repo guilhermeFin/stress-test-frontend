@@ -7,6 +7,7 @@ import {
   Users, Calendar, BarChart3, AlertTriangle, CheckCircle,
   XCircle, RefreshCw, Clock,
 } from 'lucide-react'
+import { Button } from '@/components/ui/neon-button'
 import { StressTestResult } from '@/lib/api'
 
 interface SavedReview {
@@ -63,9 +64,11 @@ function ClientCard({ reviews, onDelete }: { reviews: SavedReview[]; onDelete: (
 
   return (
     <div className='bg-white/3 border border-white/8 rounded-2xl overflow-hidden'>
-      <button
+      <Button
         onClick={() => setExpanded(e => !e)}
-        className='w-full flex items-center gap-4 px-5 py-4 hover:bg-white/2 transition-colors text-left'>
+        variant='ghost'
+        neon={false}
+        className='w-full flex items-center gap-4 px-5 py-4 hover:bg-white/2 transition-colors text-left rounded-none mx-0'>
         <div className='w-10 h-10 bg-[#C9A84C]/20 rounded-xl flex items-center justify-center shrink-0'>
           <Users size={18} className='text-[#C9A84C]' />
         </div>
@@ -88,7 +91,7 @@ function ClientCard({ reviews, onDelete }: { reviews: SavedReview[]; onDelete: (
         </div>
         <ChevronRight size={16} className={`text-gray-600 shrink-0 transition-transform
           ${expanded ? 'rotate-90' : ''}`} />
-      </button>
+      </Button>
 
       {expanded && (
         <div className='border-t border-white/8'>
@@ -193,12 +196,14 @@ function ClientCard({ reviews, onDelete }: { reviews: SavedReview[]; onDelete: (
                       Latest
                     </span>
                   )}
-                  <button
+                  <Button
                     onClick={e => { e.stopPropagation(); onDelete(review.id) }}
+                    variant='ghost'
+                    neon={false}
                     className='text-gray-600 hover:text-red-400 transition-colors
-                      opacity-0 group-hover:opacity-100 shrink-0'>
+                      opacity-0 group-hover:opacity-100 shrink-0 p-0 mx-0 border-0'>
                     <Trash2 size={12} />
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>

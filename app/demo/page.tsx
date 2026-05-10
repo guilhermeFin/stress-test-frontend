@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TrendingDown, ArrowLeft, ArrowRight, ChevronRight, Play } from 'lucide-react'
+import { Button } from '@/components/ui/neon-button'
 
 const DEMO_PORTFOLIO = [
   { ticker: 'AAPL', name: 'Apple Inc',        sector: 'Technology',       weight: 18, value: 90000  },
@@ -187,10 +188,12 @@ export default function DemoPage() {
           </p>
           <div className='grid grid-cols-3 gap-3'>
             {SCENARIOS.map(s => (
-              <button
+              <Button
                 key={s.key}
                 onClick={() => setActiveScenario(s)}
-                className={`p-4 rounded-xl border text-left transition-all
+                variant='ghost'
+                neon={false}
+                className={`p-4 rounded-xl border text-left transition-all mx-0
                   ${activeScenario.key === s.key
                     ? 'bg-white/8 border-white/20 ring-1 ring-white/15'
                     : 'bg-white/3 border-white/8 hover:bg-white/5 hover:border-white/12'
@@ -210,7 +213,7 @@ export default function DemoPage() {
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${s.badge}`}>
                   {s.severity}
                 </span>
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -222,15 +225,15 @@ export default function DemoPage() {
           </div>
         )}
 
-        <button
+        <Button
           onClick={handleRun}
           disabled={loading}
+          variant='solid'
           className='w-full py-4 rounded-full font-medium text-sm transition-opacity
-            duration-150 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed
-            bg-[#C9A84C] hover:opacity-85 text-[#0A1628] font-semibold'>
+            duration-150 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed mx-0'>
           {loading ? (
             <span className='flex items-center justify-center gap-2'>
-              <span className='w-4 h-4 border-2 border-[#0A1628]/30 border-t-[#0A1628]
+              <span className='w-4 h-4 border-2 border-white/30 border-t-white
                 rounded-full animate-spin' />
               Running analysis on {activeScenario.label}…
             </span>
@@ -240,7 +243,7 @@ export default function DemoPage() {
               <ChevronRight size={16} />
             </span>
           )}
-        </button>
+        </Button>
 
         <p className='text-center text-xs text-gray-600 mt-4'>
           No account needed · Sample data only · Takes ~10 seconds

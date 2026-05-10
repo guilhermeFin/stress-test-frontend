@@ -99,7 +99,7 @@ export default function WealthPresentationPage() {
               <span className='text-xs text-slate-400'>Advisor mode</span>
               <button
                 onClick={() => setAdvisorMode(v => !v)}
-                className={`w-9 h-5 rounded-full transition-colors ${advisorMode ? 'bg-yellow-500' : 'bg-white/20'}`}
+                className={`w-9 h-5 rounded-full transition-colors ${advisorMode ? 'bg-blue-500' : 'bg-white/20'}`}
               >
                 <span className={`block w-4 h-4 bg-white rounded-full ml-0.5 transition-transform ${advisorMode ? 'translate-x-4' : ''}`} />
               </button>

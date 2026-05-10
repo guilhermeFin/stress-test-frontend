@@ -7,6 +7,7 @@ import {
   TrendingDown, ArrowLeft, Plus, Trash2,
   ChevronRight, Users, Briefcase,
 } from 'lucide-react'
+import { Button } from '@/components/ui/neon-button'
 
 const ACCOUNT_TYPES = ['Brokerage', 'IRA', 'Roth IRA', '401(k)', '403(b)', 'Pension', 'Trust', 'Other']
 
@@ -229,10 +230,12 @@ export default function HouseholdPage() {
                     focus:outline-none'
                 />
                 {accounts.length > 1 && (
-                  <button onClick={() => removeAccount(account.id)}
-                    className='text-gray-600 hover:text-red-400 transition-colors ml-2'>
+                  <Button onClick={() => removeAccount(account.id)}
+                    variant='ghost'
+                    neon={false}
+                    className='text-gray-600 hover:text-red-400 transition-colors ml-2 p-0 mx-0 border-0'>
                     <Trash2 size={14} />
-                  </button>
+                  </Button>
                 )}
               </div>
 
@@ -292,24 +295,28 @@ export default function HouseholdPage() {
           ))}
         </div>
 
-        <button
+        <Button
           onClick={addAccount}
+          variant='ghost'
+          neon={false}
           className='w-full py-3 rounded-2xl border border-dashed border-white/10
             hover:border-white/20 text-sm text-gray-600 hover:text-gray-300
-            transition-all flex items-center justify-center gap-2 mb-8'>
+            transition-all flex items-center justify-center gap-2 mb-8 mx-0'>
           <Plus size={14} />
           Add another account
-        </button>
+        </Button>
 
         {/* Scenario */}
         <div className='mb-6'>
           <p className='text-xs text-gray-400 font-medium mb-3 px-1'>Choose a crisis scenario</p>
           <div className='grid grid-cols-3 gap-3 mb-4'>
             {HISTORICAL_SCENARIOS.map(s => (
-              <button
+              <Button
                 key={s.key}
                 onClick={() => { setScenario(s.text); setActiveScenarioKey(s.key) }}
-                className={`p-4 rounded-xl border text-left transition-all
+                variant='ghost'
+                neon={false}
+                className={`p-4 rounded-xl border text-left transition-all mx-0
                   ${activeScenarioKey === s.key
                     ? 'bg-white/8 border-white/20 ring-1 ring-white/15'
                     : 'bg-white/3 border-white/8 hover:bg-white/5'
@@ -326,7 +333,7 @@ export default function HouseholdPage() {
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${s.badge}`}>
                   {s.severity}
                 </span>
-              </button>
+              </Button>
             ))}
           </div>
           <textarea
@@ -347,15 +354,15 @@ export default function HouseholdPage() {
           </div>
         )}
 
-        <button
+        <Button
           onClick={handleRun}
           disabled={loading}
+          variant='solid'
           className='w-full py-4 rounded-full font-medium text-sm transition-opacity
-            duration-150 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed
-            bg-[#C9A84C] hover:opacity-85 text-[#0A1628] font-semibold'>
+            duration-150 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed mx-0'>
           {loading ? (
             <span className='flex items-center justify-center gap-2'>
-              <span className='w-4 h-4 border-2 border-[#0A1628]/30 border-t-[#0A1628] rounded-full animate-spin' />
+              <span className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
               Combining accounts and running analysis…
             </span>
           ) : (
@@ -364,7 +371,7 @@ export default function HouseholdPage() {
               <ChevronRight size={16} />
             </span>
           )}
-        </button>
+        </Button>
 
         <p className='text-center text-xs text-gray-600 mt-4'>
           All accounts are combined into a single stress test
