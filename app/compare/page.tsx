@@ -37,7 +37,7 @@ function DropZone({ label, file, onDrop }: {
       {...getRootProps()}
       className={`border-2 border-dashed rounded-2xl p-6 text-center
         cursor-pointer transition-all
-        ${isDragActive ? 'border-[#C9A84C] bg-[#C9A84C]/10'
+        ${isDragActive ? 'border-[#3B82F6] bg-[#3B82F6]/10'
           : file ? 'border-green-500/50 bg-green-600/5'
           : 'border-white/10 hover:border-white/20'}`}>
       <input {...getInputProps()} />
@@ -207,14 +207,14 @@ export default function ComparePage() {
   ] : []
 
   return (
-    <main className='min-h-screen bg-[#0A1628] text-white'>
+    <main className='min-h-screen text-white'>
       <div className='max-w-6xl mx-auto px-6 py-10'>
 
         {/* Header */}
         <div className='flex items-center justify-between mb-10'>
           <div className='flex items-center gap-3'>
-            <div className='w-9 h-9 bg-[#C9A84C] rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-[#0A1628]' />
+            <div className='w-9 h-9 bg-[#3B82F6] rounded-xl flex items-center justify-center'>
+              <TrendingDown size={18} className='text-white' />
             </div>
             <span className='font-medium text-lg'>PortfolioStress</span>
           </div>
@@ -228,7 +228,7 @@ export default function ComparePage() {
         {/* Title */}
         <div className='mb-10'>
           <div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full
-            bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#C9A84C]
+            bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6]
             text-xs font-medium mb-4'>
             <Shield size={12} />
             Portfolio Comparison
@@ -260,7 +260,7 @@ export default function ComparePage() {
               onChange={e => setScenario(e.target.value)}
               className='w-full bg-white/3 border border-white/10 rounded-xl p-4
                 text-white placeholder-gray-600 resize-none focus:outline-none
-                focus:border-[#C9A84C]/50 text-sm transition-all'
+                focus:border-[#3B82F6]/50 text-sm transition-all'
               rows={2}
               placeholder='e.g. Market crashes 30%, rates rise 2%, tech sector drops 50%'
             />
@@ -461,7 +461,7 @@ export default function ComparePage() {
                                 ? <span className='text-xs text-gray-600'>Tied</span>
                                 : <span className={`text-xs font-medium px-2 py-0.5 rounded-full
                                     ${aWins
-                                      ? 'bg-[#C9A84C]/20 text-[#C9A84C]'
+                                      ? 'bg-[#3B82F6]/20 text-[#3B82F6]'
                                       : 'bg-purple-900/50 text-purple-400'
                                     }`}>
                                     {aWins ? 'A' : 'B'}
@@ -476,18 +476,18 @@ export default function ComparePage() {
               </div>
             </div>
 
-            <div className='bg-[#C9A84C]/10 border border-[#C9A84C]/30 rounded-2xl
+            <div className='bg-[#3B82F6]/10 border border-[#3B82F6]/30 rounded-2xl
               p-5 flex items-center justify-between'>
               <div>
-                <p className='text-[#C9A84C] font-medium text-sm'>Want the full analysis?</p>
-                <p className='text-[#C9A84C]/70 text-xs mt-0.5'>
+                <p className='text-[#3B82F6] font-medium text-sm'>Want the full analysis?</p>
+                <p className='text-[#3B82F6]/70 text-xs mt-0.5'>
                   Run a complete stress test with factor model, correlation
                   breakdown, and AI memo on the winning portfolio.
                 </p>
               </div>
               <Link href='/upload'
                 className='flex items-center gap-2 px-5 py-2.5 rounded-full
-                  bg-[#C9A84C] hover:opacity-85 text-[#0A1628] text-sm
+                  bg-[#3B82F6] hover:opacity-85 text-white text-sm
                   font-semibold transition-opacity whitespace-nowrap ml-4'>
                 Full Analysis
                 <ChevronRight size={14} />

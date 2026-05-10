@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
+import GlobalBackground from "@/components/GlobalBackground";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,7 +39,12 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#191c1f]" style={{ fontFamily: 'var(--font-outfit), var(--font-geist-sans), sans-serif' }}>{children}</body>
+      <body className="min-h-full flex flex-col bg-[#0A1628]" style={{ fontFamily: 'var(--font-outfit), var(--font-geist-sans), sans-serif' }}>
+        <GlobalBackground />
+        <div className="relative z-10 flex flex-col min-h-full">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

@@ -968,7 +968,7 @@ export default function ResultsPage() {
   }, [results])
 
   if (!results) return (
-    <main className='min-h-screen bg-[#0A1628] text-white flex items-center justify-center'>
+    <main className='min-h-screen text-white flex items-center justify-center'>
       <p className='text-gray-400 text-sm'>No results found.{' '}
         <Link href='/upload' className='text-[#C9A84C] hover:underline'>Run a stress test</Link>
       </p>

@@ -38,7 +38,7 @@ const SCENARIOS = [
     key: 'rate',
     label: '2022 Rate Shock',
     desc: 'Fed hikes 425bps',
-    badge: 'bg-[#C9A84C]/20 text-[#C9A84C]',
+    badge: 'bg-[#3B82F6]/20 text-[#3B82F6]',
     severity: 'Severe',
     text: '2022 rate shock: Fed raises rates 425bps, bonds crash 15%, tech drops 35%, inflation hits 9%, growth stocks fall 50%',
   },
@@ -103,7 +103,7 @@ export default function DemoPage() {
   }
 
   return (
-    <main className='min-h-screen bg-[#0A1628] text-white'>
+    <main className='min-h-screen text-white'>
       <div className='max-w-3xl mx-auto px-6 py-12'>
 
         {/* Header */}
@@ -113,8 +113,8 @@ export default function DemoPage() {
               hover:text-white transition-colors'>
               <ArrowLeft size={14} />
             </Link>
-            <div className='w-9 h-9 bg-[#C9A84C] rounded-xl flex items-center justify-center'>
-              <TrendingDown size={18} className='text-[#0A1628]' />
+            <div className='w-9 h-9 bg-[#3B82F6] rounded-xl flex items-center justify-center'>
+              <TrendingDown size={18} className='text-white' />
             </div>
             <span className='font-medium'>PortfolioStress</span>
           </div>
@@ -127,9 +127,9 @@ export default function DemoPage() {
         {/* Hero text */}
         <div className='text-center mb-10'>
           <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-            bg-[#C9A84C]/10 border border-[#C9A84C]/20 text-[#C9A84C] text-xs
+            bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs
             font-medium mb-6'>
-            <Play size={11} className='fill-[#C9A84C] text-[#C9A84C]' />
+            <Play size={11} className='fill-[#3B82F6] text-[#3B82F6]' />
             Live demo — no account needed
           </div>
           <h1 className='font-medium text-white mb-4'
@@ -150,7 +150,7 @@ export default function DemoPage() {
               <span className='text-sm font-medium text-white'>Sample portfolio</span>
               <span className='ml-2 text-xs text-gray-400'>8 positions · $500,000 AUM</span>
             </div>
-            <span className='text-xs text-[#C9A84C] bg-[#C9A84C]/10 border border-[#C9A84C]/20
+            <span className='text-xs text-[#3B82F6] bg-[#3B82F6]/10 border border-[#3B82F6]/20
               px-2.5 py-1 rounded-full'>Pre-loaded</span>
           </div>
           <div className='divide-y divide-white/5'>
@@ -169,7 +169,7 @@ export default function DemoPage() {
                     <span className='text-xs text-gray-400 tabular-nums'>{p.weight}%</span>
                   </div>
                   <div className='h-1 bg-white/10 rounded-full'>
-                    <div className='h-full bg-[#C9A84C]/60 rounded-full'
+                    <div className='h-full bg-[#3B82F6]/60 rounded-full'
                       style={{ width: `${(p.weight / 18) * 100}%` }} />
                   </div>
                 </div>
@@ -203,9 +203,9 @@ export default function DemoPage() {
                     {s.label}
                   </span>
                   {activeScenario.key === s.key && (
-                    <div className='w-4 h-4 bg-[#C9A84C] rounded-full flex items-center
+                    <div className='w-4 h-4 bg-[#3B82F6] rounded-full flex items-center
                       justify-center shrink-0 mt-0.5'>
-                      <div className='w-1.5 h-1.5 bg-[#0A1628] rounded-full' />
+                      <div className='w-1.5 h-1.5 bg-white rounded-full' />
                     </div>
                   )}
                 </div>
@@ -270,7 +270,7 @@ export default function DemoPage() {
                   'PDF export',
                 ].map(label => (
                   <div key={label} className='flex items-center gap-2'>
-                    <div className='w-1.5 h-1.5 rounded-full shrink-0 bg-[#C9A84C]/60' />
+                    <div className='w-1.5 h-1.5 rounded-full shrink-0 bg-[#3B82F6]/60' />
                     <span className='text-xs text-gray-600'>{label}</span>
                   </div>
                 ))}
@@ -303,7 +303,7 @@ export default function DemoPage() {
               Start with Starter from $99/mo
             </p>
             <Link href='/#pricing'
-              className='flex items-center gap-1.5 text-xs text-[#C9A84C]
+              className='flex items-center gap-1.5 text-xs text-[#3B82F6]
                 hover:opacity-80 transition-opacity shrink-0 font-medium'>
               See pricing
               <ArrowRight size={11} />
