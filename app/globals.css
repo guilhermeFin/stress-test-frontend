@@ -216,3 +216,10 @@ tr:hover td { background: rgba(255, 255, 255, 0.02) !important; }
 }
 @utility animate-spin-slow { animation: spin-slow 3s linear infinite; }
 
+/* ── Pop-in (floating chat window) ───────────────────────────── */
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@utility animate-pop-in { animation: popIn 0.18s cubic-bezier(0.32, 0.72, 0, 1) forwards; }
+
