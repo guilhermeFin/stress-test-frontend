@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/neon-button'
 import Logo from '@/components/Logo'
 import GlobalBackground from '@/components/GlobalBackground'
 import FeaturesSection from '@/components/marketing/features-section'
+import ToolsSection from '@/components/marketing/tools-section'
 
 const STEPS = [
   {
@@ -351,7 +352,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── 4. Features ─────────────────────────────────────────────────── */}
+        {/* ── 4. Tools ────────────────────────────────────────────────────── */}
+        <ToolsSection />
+
+        {/* ── 5. Features ─────────────────────────────────────────────────── */}
         <FeaturesSection />
 
         {/* ── 5. Pricing ──────────────────────────────────────────────────── */}
