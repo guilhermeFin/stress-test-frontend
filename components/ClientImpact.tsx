@@ -165,7 +165,7 @@ function Gauge({ value, max = 100, color }: { value: number; max?: number; color
           strokeLinecap='round' />
       </svg>
       <div className='absolute inset-0 flex items-center justify-center'>
-        <span className='text-lg font-bold text-white'>{value}%</span>
+        <span className='text-lg font-bold text-white font-mono tabular-nums'>{value}%</span>
       </div>
     </div>
   )
@@ -477,7 +477,7 @@ const ClientImpact = memo(function ClientImpact({
           </div>
           <div className='mt-4 bg-white/5 rounded-xl p-3 text-center'>
             <p className='text-xs text-gray-400'>Probability drop</p>
-            <p className='text-xl font-bold text-red-400 mt-1'>
+            <p className='text-xl font-bold text-red-400 mt-1 font-mono tabular-nums'>
               -{impact.probNormal - impact.probStressed}%
             </p>
           </div>
@@ -498,7 +498,7 @@ const ClientImpact = memo(function ClientImpact({
               <div key={label} className='flex justify-between items-center
                 bg-white/5 rounded-lg px-3 py-2'>
                 <span className='text-xs text-gray-400'>{label}</span>
-                <span className={`text-sm font-bold ${color}`}>{value}</span>
+                <span className={`text-sm font-bold font-mono tabular-nums ${color}`}>{value}</span>
               </div>
             ))}
           </div>
@@ -510,7 +510,7 @@ const ClientImpact = memo(function ClientImpact({
         <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
           <TrendingDown size={20} className='text-red-400 mx-auto mb-2' />
           <p className='text-xs text-gray-400 mb-1'>Withdrawal years lost</p>
-          <p className='text-3xl font-bold text-red-400'>
+          <p className='text-3xl font-bold text-red-400 font-mono tabular-nums'>
             -{Math.max(0, impact.yearsNormal - impact.yearsStressed)}
           </p>
           <p className='text-xs text-gray-500 mt-1'>
@@ -521,7 +521,7 @@ const ClientImpact = memo(function ClientImpact({
         <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
           <Calendar size={20} className='text-orange-400 mx-auto mb-2' />
           <p className='text-xs text-gray-400 mb-1'>Estimated recovery time</p>
-          <p className='text-3xl font-bold text-orange-400'>
+          <p className='text-3xl font-bold text-orange-400 font-mono tabular-nums'>
             {impact.retirementDelay === 0 ? '<1' : impact.retirementDelay}
           </p>
           <p className='text-xs text-gray-500 mt-1'>
@@ -532,7 +532,7 @@ const ClientImpact = memo(function ClientImpact({
         <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
           <Target size={20} className='text-yellow-400 mx-auto mb-2' />
           <p className='text-xs text-gray-400 mb-1'>Income shortfall (stressed)</p>
-          <p className='text-3xl font-bold text-yellow-400'>
+          <p className='text-3xl font-bold text-yellow-400 font-mono tabular-nums'>
             {fmt(Math.max(0, profile.annualWithdrawal - impact.sustainableStressed))}
           </p>
           <p className='text-xs text-gray-500 mt-1'>annual gap vs withdrawal goal</p>

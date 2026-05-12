@@ -8,7 +8,7 @@ function Card({ label, value, sub, color, icon: Icon }: any) {
         <span className='text-sm text-gray-400'>{label}</span>
         <Icon size={18} className={color} />
       </div>
-      <div className={`text-3xl font-bold mt-2 ${color}`}>{value}</div>
+      <div className={`text-3xl font-bold mt-2 font-mono tabular-nums ${color}`}>{value}</div>
       {sub && <div className='text-xs text-gray-500 mt-1'>{sub}</div>}
     </div>
   )

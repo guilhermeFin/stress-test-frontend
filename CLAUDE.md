@@ -82,3 +82,32 @@ When a client panics during a downturn, they need a clear, credible analysis in 
 - Weekly intelligence reports by email
 - Compliance audit trail
 - Mobile app
+
+<frontend_aesthetics>
+You tend to converge toward generic, "on distribution" outputs. In frontend design, this creates what users call the "AI slop" aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight. Focus on:
+
+Typography: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics.
+
+Color & Theme: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes. Draw from IDE themes and cultural aesthetics for inspiration.
+
+Motion: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions.
+
+Backgrounds: Create atmosphere and depth rather than defaulting to solid colors. Layer CSS gradients, use geometric patterns, or add contextual effects that match the overall aesthetic.
+
+Avoid generic AI-generated aesthetics:
+- Overused font families (Inter, Roboto, Arial, system fonts)
+- Clichéd color schemes (particularly purple gradients on white backgrounds)
+- Predictable layouts and component patterns
+- Cookie-cutter design that lacks context-specific character
+
+Interpret creatively and make unexpected choices that feel genuinely designed for the context. Vary between light and dark themes, different fonts, different aesthetics. You still tend to converge on common choices (Space Grotesk, for example) across generations. Avoid this: it is critical that you think outside the box!
+
+VANTAGE-SPECIFIC CONSTRAINTS (this overrides general aesthetic freedom):
+- Stay dark — Deep Navy #0A0F1E base. We are a financial institutional tool, not a playful consumer app. No light themes for the main product.
+- Stay blue — Electric Blue #3B82F6 is the dominant accent. No purple, no rose, no orange/yellow gradients as primary accents (those are reserved for status colors only: success green, warning orange, danger red).
+- Geist for body, Audiowide for the VANTAGE wordmark only. Push for stronger typographic CONTRAST: use Geist Black at 64-96px against Geist Regular at 14-16px. Avoid the safe middle-weight middle-size paragraph block look.
+- Reference: Bloomberg Terminal × Linear × Stripe. Institutional weight + modern speed + financial trust. Never IBM-corporate-stiff and never tech-startup-toy.
+- Layered atmosphere: subtle dark navy mesh gradients, thin animated grid lines, faint floating shapes (already in components/ui/shape-landing-hero.tsx). Glass surfaces with bg-[#0A0F1E]/80 backdrop-blur-md, not flat #1a1a1a cards.
+- One orchestrated entrance per page: staggered fadeUp with 0.5s + i*0.15s delays, not scattered hover bounces everywhere.
+- Numbers are sacred: tabular-nums + Geist Mono for any monetary figure, percentage, or basis-point value. Never let financial numbers shift width on update.
+</frontend_aesthetics>

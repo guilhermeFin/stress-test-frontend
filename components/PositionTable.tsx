@@ -70,11 +70,11 @@ export default function PositionTable({ positions }: { positions: Position[] }) 
                   <div className='text-xs text-gray-500'>{p.name.substring(0, 20)}</div>
                 </td>
                 <td className='px-4 py-3 text-gray-400 text-xs'>{p.sector}</td>
-                <td className='px-4 py-3 text-right text-gray-300'>{p.weight}%</td>
-                <td className='px-4 py-3 text-right font-medium text-red-400'>
+                <td className='px-4 py-3 text-right text-gray-300 font-mono tabular-nums'>{p.weight}%</td>
+                <td className='px-4 py-3 text-right font-medium text-red-400 font-mono tabular-nums'>
                   {p.loss_pct.toFixed(1)}%</td>
-                <td className='px-4 py-3 text-right text-gray-400'>{p.var_95}%</td>
-                <td className='px-4 py-3 text-right text-gray-300'>{p.beta}</td>
+                <td className='px-4 py-3 text-right text-gray-400 font-mono tabular-nums'>{p.var_95}%</td>
+                <td className='px-4 py-3 text-right text-gray-300 font-mono tabular-nums'>{p.beta}</td>
                 <td className='px-4 py-3 text-center'>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium
                     ${RISK_COLORS[p.risk_level]}`}>{p.risk_level}</span>

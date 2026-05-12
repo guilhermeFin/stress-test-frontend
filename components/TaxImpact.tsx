@@ -94,7 +94,7 @@ export default function TaxImpact({
           <h3 className='font-semibold text-gray-200'>Tax-loss harvesting opportunities</h3>
         </div>
         <div className='flex items-baseline gap-3 mb-1'>
-          <span className='text-3xl font-bold text-green-400'>{fmt(tax.totalTaxSavings)}</span>
+          <span className='text-3xl font-bold text-green-400 font-mono tabular-nums'>{fmt(tax.totalTaxSavings)}</span>
           <span className='text-sm text-gray-500'>estimated tax savings</span>
         </div>
         <p className='text-xs text-gray-500 mb-4'>
@@ -118,9 +118,9 @@ export default function TaxImpact({
                 {tax.top5.map(p => (
                   <tr key={p.ticker} className='text-gray-300'>
                     <td className='py-2 font-medium text-white'>{p.ticker}</td>
-                    <td className='py-2 text-right text-gray-300'>{fmt(p.value)}</td>
-                    <td className='py-2 text-right text-red-400'>{fmt(p.stressedValue)}</td>
-                    <td className='py-2 text-right text-red-400'>{fmt(p.harvestableLoss)}</td>
+                    <td className='py-2 text-right text-gray-300 font-mono tabular-nums'>{fmt(p.value)}</td>
+                    <td className='py-2 text-right text-red-400 font-mono tabular-nums'>{fmt(p.stressedValue)}</td>
+                    <td className='py-2 text-right text-red-400 font-mono tabular-nums'>{fmt(p.harvestableLoss)}</td>
                     <td className='py-2 text-right'>
                       <span className='bg-green-900/40 text-green-300 text-xs px-2 py-0.5 rounded-full'>
                         {fmt(p.taxSavings)}
@@ -169,7 +169,7 @@ export default function TaxImpact({
                 <span className={`text-xs ${i === 2 ? 'text-gray-300 font-medium' : 'text-gray-400'}`}>
                   {label}
                 </span>
-                <span className={`text-sm font-bold ${color}`}>{value}</span>
+                <span className={`text-sm font-bold font-mono tabular-nums ${color}`}>{value}</span>
               </div>
             ))}
           </div>
@@ -195,7 +195,7 @@ export default function TaxImpact({
             ].map(({ label, value, color }) => (
               <div key={label} className='flex justify-between items-center bg-white/5 rounded-lg px-3 py-2'>
                 <span className='text-xs text-gray-400'>{label}</span>
-                <span className={`text-sm font-bold ${color}`}>{value}</span>
+                <span className={`text-sm font-bold font-mono tabular-nums ${color}`}>{value}</span>
               </div>
             ))}
           </div>
@@ -231,16 +231,16 @@ export default function TaxImpact({
         <div className='flex items-center justify-center gap-6'>
           <div className='text-center'>
             <p className='text-xs text-gray-500 mb-2'>Pre-tax stressed value</p>
-            <p className='text-3xl font-bold text-red-400'>{fmt(tax.preTaxStressed)}</p>
+            <p className='text-3xl font-bold text-red-400 font-mono tabular-nums'>{fmt(tax.preTaxStressed)}</p>
           </div>
           <ArrowRight size={24} className='text-gray-600 shrink-0' />
           <div className='text-center'>
             <p className='text-xs text-gray-500 mb-2'>After-tax value (with harvesting)</p>
-            <p className='text-3xl font-bold text-orange-400'>{fmt(tax.afterTaxStressed)}</p>
+            <p className='text-3xl font-bold text-orange-400 font-mono tabular-nums'>{fmt(tax.afterTaxStressed)}</p>
           </div>
         </div>
         <div className='mt-4 text-center'>
-          <span className='text-sm font-semibold text-green-400'>
+          <span className='text-sm font-semibold text-green-400 font-mono tabular-nums'>
             +{fmt(tax.totalTaxSavings)} from tax savings
           </span>
         </div>

@@ -248,7 +248,7 @@ export default function FactorModel({
           </ResponsiveContainer>
           <div className='mt-3 bg-white/5 rounded-xl p-3 flex justify-between'>
             <span className='text-xs text-gray-400'>Total factor-explained loss</span>
-            <span className='text-sm font-bold text-red-400'>
+            <span className='text-sm font-bold text-red-400 font-mono tabular-nums'>
               {totalFactorLoss.toFixed(2)}%
             </span>
           </div>
@@ -292,16 +292,16 @@ export default function FactorModel({
               <div className='w-2 h-2 rounded-full' style={{ background: color }} />
               <span className='text-xs font-medium text-gray-300'>{label}</span>
             </div>
-            <div className='text-lg font-bold text-white mb-0.5'>
+            <div className='text-lg font-bold text-white font-mono tabular-nums mb-0.5'>
               {exposure > 0 ? '+' : ''}{(exposure * 100).toFixed(0)}
             </div>
             <div className='text-xs text-gray-600 mb-1'>
-              Shock: <span className={shock < 0 ? 'text-red-400' : 'text-green-400'}>
+              Shock: <span className={`font-mono tabular-nums ${shock < 0 ? 'text-red-400' : 'text-green-400'}`}>
                 {shock > 0 ? '+' : ''}{(shock * 100).toFixed(1)}%
               </span>
             </div>
             <div className='text-xs text-gray-500 mb-2'>{description}</div>
-            <div className={`text-sm font-bold ${
+            <div className={`text-sm font-bold font-mono tabular-nums ${
               contribution < -2 ? 'text-red-400'
               : contribution < 0 ? 'text-orange-400'
               : 'text-green-400'
@@ -330,7 +330,7 @@ export default function FactorModel({
                 <th className='px-4 py-3 text-right text-yellow-400'>Rates</th>
                 <th className='px-4 py-3 text-right text-orange-400'>Inflation</th>
                 <th className='px-4 py-3 text-right text-red-400'>Credit</th>
-                <th className='px-4 py-3 text-right text-purple-400'>Growth</th>
+                <th className='px-4 py-3 text-right text-blue-300/70'>Growth</th>
                 <th className='px-4 py-3 text-right'>Factor Loss</th>
               </tr>
             </thead>
@@ -340,18 +340,18 @@ export default function FactorModel({
                   className={`border-t border-white/6 hover:bg-white/4
                     ${i % 2 === 0 ? '' : 'bg-white/2'}`}>
                   <td className='px-4 py-3 font-medium text-white'>{p.ticker}</td>
-                  <td className='px-4 py-3 text-right text-gray-300'>{p.weight}%</td>
-                  <td className='px-4 py-3 text-right text-blue-400'>
+                  <td className='px-4 py-3 text-right text-gray-300 font-mono tabular-nums'>{p.weight}%</td>
+                  <td className='px-4 py-3 text-right text-blue-400 font-mono tabular-nums'>
                     {p.market > 0 ? '+' : ''}{p.market.toFixed(2)}</td>
-                  <td className='px-4 py-3 text-right text-yellow-400'>
+                  <td className='px-4 py-3 text-right text-yellow-400 font-mono tabular-nums'>
                     {p.rates > 0 ? '+' : ''}{p.rates.toFixed(2)}</td>
-                  <td className='px-4 py-3 text-right text-orange-400'>
+                  <td className='px-4 py-3 text-right text-orange-400 font-mono tabular-nums'>
                     {p.inflation > 0 ? '+' : ''}{p.inflation.toFixed(2)}</td>
-                  <td className='px-4 py-3 text-right text-red-400'>
+                  <td className='px-4 py-3 text-right text-red-400 font-mono tabular-nums'>
                     {p.credit > 0 ? '+' : ''}{p.credit.toFixed(2)}</td>
-                  <td className='px-4 py-3 text-right text-purple-400'>
+                  <td className='px-4 py-3 text-right text-blue-300/70 font-mono tabular-nums'>
                     {p.growth > 0 ? '+' : ''}{p.growth.toFixed(2)}</td>
-                  <td className={`px-4 py-3 text-right font-medium ${
+                  <td className={`px-4 py-3 text-right font-medium font-mono tabular-nums ${
                     p.factorLoss < -2 ? 'text-red-400'
                     : p.factorLoss < 0 ? 'text-orange-400'
                     : 'text-green-400'
@@ -364,7 +364,7 @@ export default function FactorModel({
                 <td colSpan={7} className='px-4 py-3 text-xs text-gray-400 font-medium'>
                   Total factor-explained loss
                 </td>
-                <td className='px-4 py-3 text-right font-bold text-red-400'>
+                <td className='px-4 py-3 text-right font-bold text-red-400 font-mono tabular-nums'>
                   {totalFactorLoss.toFixed(2)}%
                 </td>
               </tr>

@@ -98,7 +98,7 @@ function StatCard({ label, value, sub, color }: any) {
   return (
     <div className='bg-white/5 rounded-xl p-4'>
       <div className='text-xs text-gray-400 mb-1'>{label}</div>
-      <div className={`text-xl font-bold ${color}`}>{value}</div>
+      <div className={`text-xl font-bold font-mono tabular-nums ${color}`}>{value}</div>
       {sub && <div className='text-xs text-gray-500 mt-0.5'>{sub}</div>}
     </div>
   )
@@ -256,19 +256,19 @@ export default function MonteCarlo({
           <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
             <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
               <p className='text-xs text-gray-400 mb-1'>Prob. below starting value (stressed)</p>
-              <p className='text-3xl font-bold text-red-400'>{probBelowGoal}%</p>
-              <p className='text-xs text-gray-500 mt-1'>of paths end below {fmtFull(portfolioValue)}</p>
+              <p className='text-3xl font-bold text-red-400 font-mono tabular-nums'>{probBelowGoal}%</p>
+              <p className='text-xs text-gray-500 mt-1'>of paths end below <span className='font-mono tabular-nums'>{fmtFull(portfolioValue)}</span></p>
             </div>
             <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
               <p className='text-xs text-gray-400 mb-1'>Median gap (normal vs stressed)</p>
-              <p className='text-3xl font-bold text-orange-400'>
+              <p className='text-3xl font-bold text-orange-400 font-mono tabular-nums'>
                 {fmt(normalFinal.p50 - stressFinal.p50)}
               </p>
               <p className='text-xs text-gray-500 mt-1'>lost at median over {config.years} years</p>
             </div>
             <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
               <p className='text-xs text-gray-400 mb-1'>Upside preserved (stressed p75)</p>
-              <p className='text-3xl font-bold text-green-400'>
+              <p className='text-3xl font-bold text-green-400 font-mono tabular-nums'>
                 {Math.round(stressFinal.p75 / normalFinal.p75 * 100)}%
               </p>
               <p className='text-xs text-gray-500 mt-1'>of normal upside retained</p>

@@ -176,19 +176,19 @@ const BenchmarkComparison = memo(function BenchmarkComparison({ summary }: { sum
           <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
             <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
               <p className='text-xs text-gray-500 mb-1'>Benchmark rank</p>
-              <p className='text-3xl font-bold text-white'>
+              <p className='text-3xl font-bold text-white font-mono tabular-nums'>
                 #{portfolioRank}<span className='text-gray-500 text-lg'>/{totalItems}</span>
               </p>
               <p className={`text-sm font-medium mt-1 ${rankColor}`}>{rankLabel}</p>
             </div>
             <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
               <p className='text-xs text-gray-500 mb-1'>Better than</p>
-              <p className='text-3xl font-bold text-green-400'>{betterThan}</p>
+              <p className='text-3xl font-bold text-green-400 font-mono tabular-nums'>{betterThan}</p>
               <p className='text-sm text-gray-500 mt-1'>benchmark{betterThan !== 1 ? 's' : ''}</p>
             </div>
             <div className='bg-white/3 rounded-2xl p-5 border border-white/8 text-center'>
               <p className='text-xs text-gray-500 mb-1'>Worse than</p>
-              <p className='text-3xl font-bold text-red-400'>{worseThan}</p>
+              <p className='text-3xl font-bold text-red-400 font-mono tabular-nums'>{worseThan}</p>
               <p className='text-sm text-gray-500 mt-1'>benchmark{worseThan !== 1 ? 's' : ''}</p>
             </div>
           </div>
@@ -227,8 +227,8 @@ const BenchmarkComparison = memo(function BenchmarkComparison({ summary }: { sum
               return (
                 <div key={name} className='bg-white/3 rounded-xl p-4 border border-white/8'>
                   <p className='text-xs text-gray-500 mb-2'>{name}</p>
-                  <p className='text-xl font-bold' style={{ color }}>{loss.toFixed(1)}%</p>
-                  <div className={`mt-2 text-xs font-medium ${better ? 'text-green-400' : 'text-red-400'}`}>
+                  <p className='text-xl font-bold font-mono tabular-nums' style={{ color }}>{loss.toFixed(1)}%</p>
+                  <div className={`mt-2 text-xs font-medium font-mono tabular-nums ${better ? 'text-green-400' : 'text-red-400'}`}>
                     {better
                       ? `✓ Outperform by ${Math.abs(diff).toFixed(1)}%`
                       : `✗ Underperform by ${Math.abs(diff).toFixed(1)}%`}
@@ -353,7 +353,7 @@ const SmartSummary = memo(function SmartSummary({ results }: { results: StressTe
         </div>
         <div className='text-right shrink-0'>
           <div className='text-xs text-gray-400 mb-0.5'>Portfolio Health Score</div>
-          <div className={`text-3xl font-bold ${healthColor}`}>
+          <div className={`text-3xl font-bold font-mono tabular-nums ${healthColor}`}>
             {healthScore.toFixed(1)}<span className='text-lg text-gray-500'>/10</span>
           </div>
           <div className={`text-xs font-medium ${healthColor}`}>{healthLabel}</div>
@@ -362,7 +362,7 @@ const SmartSummary = memo(function SmartSummary({ results }: { results: StressTe
 
       <div className='p-4 md:p-6 space-y-4 md:space-y-5'>
         <div className='flex items-center gap-4 bg-white/5 rounded-xl p-4'>
-          <div className={`text-4xl font-black ${
+          <div className={`text-4xl font-black font-mono tabular-nums ${
             severity === 'Extreme' ? 'text-red-500'
             : severity === 'Severe' ? 'text-orange-400'
             : 'text-yellow-400'
@@ -371,12 +371,12 @@ const SmartSummary = memo(function SmartSummary({ results }: { results: StressTe
           </div>
           <div>
             <p className='text-white font-semibold'>
-              {severity} scenario — {fmt(Math.abs(summary.total_loss))} at risk
+              {severity} scenario — <span className='font-mono tabular-nums'>{fmt(Math.abs(summary.total_loss))}</span> at risk
             </p>
             <p className='text-gray-400 text-sm mt-0.5'>
               Portfolio drops from{' '}
-              <span className='text-white'>{fmt(totalValue)}</span> to{' '}
-              <span className='text-red-400'>{fmt(summary.stressed_value)}</span>
+              <span className='text-white font-mono tabular-nums'>{fmt(totalValue)}</span> to{' '}
+              <span className='text-red-400 font-mono tabular-nums'>{fmt(summary.stressed_value)}</span>
             </p>
           </div>
         </div>
@@ -414,8 +414,8 @@ const SmartSummary = memo(function SmartSummary({ results }: { results: StressTe
           ].map(({ label, value, sub, color }) => (
             <div key={label} className='bg-white/5 rounded-xl p-3'>
               <div className='text-xs text-gray-500 mb-1'>{label}</div>
-              <div className={`text-lg font-bold ${color}`}>{value}</div>
-              <div className='text-xs text-gray-500'>{sub}</div>
+              <div className={`text-lg font-bold font-mono tabular-nums ${color}`}>{value}</div>
+              <div className='text-xs text-gray-500 font-mono tabular-nums'>{sub}</div>
             </div>
           ))}
         </div>
@@ -544,7 +544,7 @@ const ClientView = memo(function ClientView({ results }: { results: StressTestRe
         <div className='shrink-0 w-28 h-28 rounded-full flex items-center justify-center'
           style={{ background: `conic-gradient(${healthColor} ${healthScore * 10}%, rgba(255,255,255,0.06) 0)` }}>
           <div className='w-20 h-20 rounded-full bg-[#0A0F1E] flex flex-col items-center justify-center'>
-            <span className='text-2xl font-black text-white'>{healthScore.toFixed(1)}</span>
+            <span className='text-2xl font-black text-white font-mono tabular-nums'>{healthScore.toFixed(1)}</span>
             <span className='text-xs text-gray-400'>/10</span>
           </div>
         </div>
@@ -568,7 +568,7 @@ const ClientView = memo(function ClientView({ results }: { results: StressTestRe
 
       <div className='bg-white/3 rounded-3xl border border-white/8 p-5 md:p-8'>
         <p className='text-xs text-gray-500 uppercase tracking-widest mb-3'>Worst case loss</p>
-        <p className='text-4xl md:text-5xl font-black text-red-400 mb-3'>{fmt(lossAmount)}</p>
+        <p className='text-4xl md:text-5xl font-black text-red-400 mb-3 font-mono tabular-nums'>{fmt(lossAmount)}</p>
         <p className='text-gray-300 text-lg leading-relaxed'>
           Under this scenario, your portfolio would drop from{' '}
           <span className='text-white font-semibold'>{fmt(summary.total_value)}</span> to{' '}
@@ -590,7 +590,7 @@ const ClientView = memo(function ClientView({ results }: { results: StressTestRe
         ) : (
           <>
             <div className='flex items-baseline gap-3 mb-3'>
-              <p className='text-4xl md:text-5xl font-black text-[#3B82F6]'>{recoveryYears}</p>
+              <p className='text-4xl md:text-5xl font-black text-[#3B82F6] font-mono tabular-nums'>{recoveryYears}</p>
               <p className='text-2xl text-gray-400 font-semibold'>{recoveryYears === 1 ? 'year' : 'years'}</p>
             </div>
             <p className='text-gray-300 text-lg leading-relaxed'>
@@ -859,8 +859,8 @@ const AdvisorView = memo(function AdvisorView({ results, household, profile, set
   return (
     <div className='max-w-7xl mx-auto px-4 md:px-6 py-4 space-y-3'>
 
-      <div className='mb-2'>
-        <h1 className='text-2xl font-semibold tracking-tight'>Stress test results</h1>
+      <div className='mb-2 s-enter' style={{ '--s-delay': '0ms' } as React.CSSProperties}>
+        <h1 className='text-3xl font-black tracking-[-0.03em]'>Stress test results</h1>
         <p className='text-gray-500 mt-1 text-sm max-w-2xl leading-relaxed'>
           {results.summary.scenario_text}
         </p>
@@ -871,7 +871,7 @@ const AdvisorView = memo(function AdvisorView({ results, household, profile, set
         const totalAum  = household.reduce((s, a) => s + a.aum, 0)
         const totalLoss = results.summary.total_loss
         return (
-          <div className='rounded-2xl border border-blue-500/20 bg-blue-950/20 overflow-hidden mb-1'>
+          <div className='rounded-2xl border border-blue-500/20 bg-blue-950/20 overflow-hidden mb-1 s-enter' style={{ '--s-delay': '80ms' } as React.CSSProperties}>
             <div className='flex items-center gap-3 px-5 py-4 border-b border-blue-500/15'>
               <Layers size={16} className='text-blue-400 shrink-0' />
               <span className='font-semibold text-white'>Household breakdown</span>
@@ -923,87 +923,101 @@ const AdvisorView = memo(function AdvisorView({ results, household, profile, set
       })()}
 
       {/* Summary */}
-      <CollapsibleSection id='summary' title='Summary' metric={metrics.summaryMetric}
-        status={metrics.summaryStatus} defaultExpanded={metrics.summaryStatus !== 'green'}>
-        <SmartSummary results={results} />
-      </CollapsibleSection>
+      <div className='s-enter' style={{ '--s-delay': '0ms' } as React.CSSProperties}>
+        <CollapsibleSection id='summary' title='Summary' metric={metrics.summaryMetric}
+          status={metrics.summaryStatus} defaultExpanded={metrics.summaryStatus !== 'green'}>
+          <SmartSummary results={results} />
+        </CollapsibleSection>
+      </div>
 
       {/* Charts */}
-      <CollapsibleSection id='charts' title='Charts' metric={metrics.chartsMetric}
-        status={metrics.chartsStatus} defaultExpanded={metrics.chartsStatus !== 'green'}>
-        <ChartsTabs results={results} />
-      </CollapsibleSection>
+      <div className='s-enter' style={{ '--s-delay': '80ms' } as React.CSSProperties}>
+        <CollapsibleSection id='charts' title='Charts' metric={metrics.chartsMetric}
+          status={metrics.chartsStatus} defaultExpanded={metrics.chartsStatus !== 'green'}>
+          <ChartsTabs results={results} />
+        </CollapsibleSection>
+      </div>
 
       {/* Risk group */}
-      <SectionGroup label='Risk'>
-        <CollapsibleSection id='factors' title='Factor risk model' metric={metrics.factorMetric}
-          status={metrics.factorStatus} defaultExpanded={metrics.factorStatus !== 'green'}>
-          <FactorModel positions={results.positions} scenarioText={results.summary.scenario_text} />
-        </CollapsibleSection>
+      <div className='s-enter' style={{ '--s-delay': '160ms' } as React.CSSProperties}>
+        <SectionGroup label='Risk'>
+          <CollapsibleSection id='factors' title='Factor risk model' metric={metrics.factorMetric}
+            status={metrics.factorStatus} defaultExpanded={metrics.factorStatus !== 'green'}>
+            <FactorModel positions={results.positions} scenarioText={results.summary.scenario_text} />
+          </CollapsibleSection>
 
-        <CollapsibleSection id='correlation' title='Correlation breakdown' metric={metrics.corrMetric}
-          status={metrics.corrStatus} defaultExpanded={metrics.corrStatus !== 'green'}>
-          <CorrelationMatrix positions={results.positions} />
-        </CollapsibleSection>
+          <CollapsibleSection id='correlation' title='Correlation breakdown' metric={metrics.corrMetric}
+            status={metrics.corrStatus} defaultExpanded={metrics.corrStatus !== 'green'}>
+            <CorrelationMatrix positions={results.positions} />
+          </CollapsibleSection>
 
-        <CollapsibleSection id='liquidity' title='Liquidity stress analysis' metric={metrics.liquidityMetric}
-          status={metrics.liquidityStatus} defaultExpanded={metrics.liquidityStatus !== 'green'}>
-          <LiquidityPanel positions={results.positions} />
-        </CollapsibleSection>
+          <CollapsibleSection id='liquidity' title='Liquidity stress analysis' metric={metrics.liquidityMetric}
+            status={metrics.liquidityStatus} defaultExpanded={metrics.liquidityStatus !== 'green'}>
+            <LiquidityPanel positions={results.positions} />
+          </CollapsibleSection>
 
-        <CollapsibleSection id='monte-carlo' title='Monte Carlo simulation' metric='1,000 simulation paths'
-          status='gray' defaultExpanded={false}>
-          <MonteCarlo
-            portfolioValue={results.summary.total_value}
-            stressedValue={results.summary.stressed_value}
-          />
-        </CollapsibleSection>
-      </SectionGroup>
+          <CollapsibleSection id='monte-carlo' title='Monte Carlo simulation' metric='1,000 simulation paths'
+            status='gray' defaultExpanded={false}>
+            <MonteCarlo
+              portfolioValue={results.summary.total_value}
+              stressedValue={results.summary.stressed_value}
+            />
+          </CollapsibleSection>
+        </SectionGroup>
+      </div>
 
       {/* Goals group */}
-      <SectionGroup label='Goals'>
-        <CollapsibleSection id='client' title='Client impact & retirement' metric={metrics.clientMetric}
-          status={metrics.clientStatus} defaultExpanded={metrics.clientStatus !== 'green'}>
-          <ClientImpact
-            portfolioValue={results.summary.total_value}
-            stressedValue={results.summary.stressed_value}
-            profile={profile}
-            setProfile={setProfile}
-          />
-        </CollapsibleSection>
+      <div className='s-enter' style={{ '--s-delay': '240ms' } as React.CSSProperties}>
+        <SectionGroup label='Goals'>
+          <CollapsibleSection id='client' title='Client impact & retirement' metric={metrics.clientMetric}
+            status={metrics.clientStatus} defaultExpanded={metrics.clientStatus !== 'green'}>
+            <ClientImpact
+              portfolioValue={results.summary.total_value}
+              stressedValue={results.summary.stressed_value}
+              profile={profile}
+              setProfile={setProfile}
+            />
+          </CollapsibleSection>
 
-        <CollapsibleSection id='tax' title='Tax impact' metric='Opportunities available'
-          status='blue' defaultExpanded={false}>
-          <TaxImpact results={results} profile={profile} />
-        </CollapsibleSection>
-      </SectionGroup>
+          <CollapsibleSection id='tax' title='Tax impact' metric='Opportunities available'
+            status='blue' defaultExpanded={false}>
+            <TaxImpact results={results} profile={profile} />
+          </CollapsibleSection>
+        </SectionGroup>
+      </div>
 
       {/* Action group */}
-      <SectionGroup label='Action'>
-        <CollapsibleSection id='rebalancing' title='Rebalancing recommendations' metric={metrics.rebalMetric}
-          status={metrics.rebalStatus} defaultExpanded={metrics.rebalStatus !== 'green'}>
-          <RebalancingPanel results={results} />
-        </CollapsibleSection>
+      <div className='s-enter' style={{ '--s-delay': '320ms' } as React.CSSProperties}>
+        <SectionGroup label='Action'>
+          <CollapsibleSection id='rebalancing' title='Rebalancing recommendations' metric={metrics.rebalMetric}
+            status={metrics.rebalStatus} defaultExpanded={metrics.rebalStatus !== 'green'}>
+            <RebalancingPanel results={results} />
+          </CollapsibleSection>
 
-        <CollapsibleSection id='benchmark' title='Benchmark comparison' metric={metrics.benchMetric}
-          status={metrics.benchStatus} defaultExpanded={metrics.benchStatus !== 'green'}>
-          <BenchmarkComparison summary={results.summary} />
-        </CollapsibleSection>
+          <CollapsibleSection id='benchmark' title='Benchmark comparison' metric={metrics.benchMetric}
+            status={metrics.benchStatus} defaultExpanded={metrics.benchStatus !== 'green'}>
+            <BenchmarkComparison summary={results.summary} />
+          </CollapsibleSection>
 
-        <CollapsibleSection id='explanation' title='AI analysis' metric={`${metrics.sevLabel} scenario`}
-          status={metrics.aiStatus} defaultExpanded={metrics.aiStatus !== 'green'}>
-          <ExplanationPanel explanation={results.explanation} />
-        </CollapsibleSection>
-      </SectionGroup>
+          <CollapsibleSection id='explanation' title='AI analysis' metric={`${metrics.sevLabel} scenario`}
+            status={metrics.aiStatus} defaultExpanded={metrics.aiStatus !== 'green'}>
+            <ExplanationPanel explanation={results.explanation} />
+          </CollapsibleSection>
+        </SectionGroup>
+      </div>
 
       {/* Positions */}
-      <CollapsibleSection id='positions' title='Position detail' metric={metrics.positionMetric}
-        status={metrics.positionStatus} defaultExpanded={metrics.positionStatus !== 'green'}>
-        <PositionTable positions={results.positions} />
-      </CollapsibleSection>
+      <div className='s-enter' style={{ '--s-delay': '400ms' } as React.CSSProperties}>
+        <CollapsibleSection id='positions' title='Position detail' metric={metrics.positionMetric}
+          status={metrics.positionStatus} defaultExpanded={metrics.positionStatus !== 'green'}>
+          <PositionTable positions={results.positions} />
+        </CollapsibleSection>
+      </div>
 
       {/* Action plan */}
-      <ActionPlan results={results} />
+      <div className='s-enter' style={{ '--s-delay': '480ms' } as React.CSSProperties}>
+        <ActionPlan results={results} />
+      </div>
 
     </div>
   )
@@ -1256,19 +1270,19 @@ export default function ResultsPage() {
               <div className='flex items-center gap-2 shrink-0'>
                 <div className={`w-1.5 h-1.5 rounded-full ${hsDot}`} />
                 <span className='text-xs text-gray-500'>Health</span>
-                <span className={`text-xs font-semibold tabular-nums ${hsColor}`}>{hs.toFixed(1)}/10</span>
+                <span className={`text-xs font-semibold font-mono tabular-nums ${hsColor}`}>{hs.toFixed(1)}/10</span>
               </div>
               <div className='w-px h-3 bg-white/10 shrink-0' />
               <div className='flex items-center gap-2 shrink-0'>
                 <span className='text-xs text-gray-500'>Stress loss</span>
-                <span className='text-xs font-semibold tabular-nums text-red-400'>
+                <span className='text-xs font-semibold font-mono tabular-nums text-red-400'>
                   {results.summary.total_loss_pct.toFixed(1)}%
                 </span>
               </div>
               <div className='w-px h-3 bg-white/10 shrink-0' />
               <div className='flex items-center gap-2 shrink-0'>
                 <span className='text-xs text-gray-500'>Recovery</span>
-                <span className='text-xs font-semibold tabular-nums text-[#3B82F6]'>
+                <span className='text-xs font-semibold font-mono tabular-nums text-[#3B82F6]'>
                   {rv >= 30 ? '>30 yrs' : `${rv} yr${rv !== 1 ? 's' : ''}`}
                 </span>
               </div>
