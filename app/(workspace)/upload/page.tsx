@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useError } from '@/lib/error-context'
 import { useDropzone } from 'react-dropzone'
 import { runStressTest, runBrazilStressFile, listBrazilScenarios, BrazilScenarioMeta } from '@/lib/api'
 import {
@@ -80,6 +81,7 @@ const SAMPLE_SCENARIOS = [
 
 export default function UploadPage() {
   const router = useRouter()
+  const { showError } = useError()
   const [file, setFile]         = useState<File | null>(null)
   const [scenario, setScenario] = useState('')
   const [loading, setLoading]   = useState(false)
@@ -118,8 +120,10 @@ export default function UploadPage() {
         const results = await runBrazilStressFile(file, brazilScenarioId, brlUsdRate)
         sessionStorage.setItem('brazilStressResults', JSON.stringify(results))
         router.push('/wealth-presentation')
-      } catch {
-        setError('Brazil stress analysis failed. Please check your file format and try again.')
+      } catch (e) {
+        const msg = 'Brazil stress analysis failed. Please check your file format and try again.'
+        setError(msg)
+        showError(msg, { title: 'Analysis Failed', errorCode: e instanceof Error ? e.message : undefined })
       } finally {
         setLoading(false)
       }
@@ -134,8 +138,10 @@ export default function UploadPage() {
         const results = await runStressTest(file, scenario)
         sessionStorage.setItem('stressResults', JSON.stringify(results))
         router.push('/results')
-      } catch {
-        setError('Analysis failed. Please check your file format and try again.')
+      } catch (e) {
+        const msg = 'Analysis failed. Please check your file format and try again.'
+        setError(msg)
+        showError(msg, { title: 'Analysis Failed', errorCode: e instanceof Error ? e.message : undefined })
       } finally {
         setLoading(false)
       }

@@ -7,6 +7,7 @@ import {
   Copy, Check, Sparkles, Zap, ExternalLink,
 } from 'lucide-react'
 import { SKILLS, BADGE_COLORS, type Skill } from '@/lib/skills'
+import { useError } from '@/lib/error-context'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -53,6 +54,8 @@ export function FloatingAiAssistant() {
   const [streaming, setStreaming]   = useState(false)
   const [copied, setCopied]         = useState<number | null>(null)
   const [showSkills, setShowSkills] = useState(false)
+
+  const { showError } = useError()
 
   const bottomRef      = useRef<HTMLDivElement>(null)
   const abortRef       = useRef<AbortController | null>(null)
@@ -135,16 +138,28 @@ export function FloatingAiAssistant() {
     } catch (err: unknown) {
       if (err instanceof Error && err.name === 'AbortError') return
       const errMsg = err instanceof Error ? err.message : ''
+      const isConfig = errMsg.includes('ANTHROPIC_API_KEY')
+
       setMessages(prev => {
         const copy = [...prev]
         copy[copy.length - 1] = {
           ...copy[copy.length - 1],
-          content: errMsg.includes('ANTHROPIC_API_KEY')
-            ? 'AI Advisor is not configured. Add **ANTHROPIC_API_KEY** to your `.env.local` file and restart.'
+          content: isConfig
+            ? 'AI Advisor is not configured. Contact your administrator.'
             : 'Something went wrong. Please try again.',
         }
         return copy
       })
+
+      showError(
+        isConfig
+          ? 'The AI Advisor API key is not configured. Add ANTHROPIC_API_KEY to your environment and restart the server.'
+          : 'We encountered an error processing your AI Advisor request. Please try again.',
+        {
+          title: isConfig ? 'Configuration Error' : 'AI Advisor Error',
+          errorCode: errMsg || 'Unknown error',
+        }
+      )
     } finally {
       setStreaming(false)
     }
