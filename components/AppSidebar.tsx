@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Users, FolderOpen, Zap, BarChart2,
   BrainCircuit, Inbox, Settings, LogOut, ChevronLeft,
   ChevronRight, Target, Receipt, Landmark, BookOpen,
-  FlaskConical, Presentation,
+  FlaskConical, Presentation, Search,
 } from 'lucide-react'
 import Logo from '@/components/Logo'
 
@@ -76,6 +76,25 @@ export default function AppSidebar() {
           )
         })}
       </nav>
+
+      {/* Cmd+K skills launcher */}
+      <div className='px-2 pb-2'>
+        <button
+          onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true }))}
+          title='Skills (⌘K)'
+          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+            transition-colors text-gray-600 hover:text-white hover:bg-white/[0.04]
+            border border-white/[0.06] hover:border-white/[0.10]
+            ${collapsed ? 'justify-center' : ''}`}>
+          <Search size={14} className='shrink-0' />
+          {!collapsed && (
+            <>
+              <span className='flex-1 text-left'>Skills</span>
+              <kbd className='text-[10px] text-gray-600 font-mono'>⌘K</kbd>
+            </>
+          )}
+        </button>
+      </div>
 
       {/* Bottom: settings + user */}
       <div className='border-t border-white/[0.06] px-2 py-3 space-y-0.5'>

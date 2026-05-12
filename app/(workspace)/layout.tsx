@@ -1,5 +1,6 @@
 import AppSidebar from '@/components/AppSidebar'
 import { PresentationProvider } from '@/lib/presentation-context'
+import { CommandPalette } from '@/components/ui/command-palette'
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,6 +11,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
           {children}
         </main>
       </div>
+      <CommandPalette />
     </PresentationProvider>
   )
 }
