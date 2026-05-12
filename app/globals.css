@@ -216,3 +216,10 @@ tr:hover td { background: rgba(255, 255, 255, 0.02) !important; }
 }
 @utility animate-spin-slow { animation: spin-slow 3s linear infinite; }
 
+/* ── Chat message entrance ────────────────────────────────────── */
+@keyframes messageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@utility animate-message-in { animation: messageIn 0.2s ease-out forwards; }
+
