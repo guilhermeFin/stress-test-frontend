@@ -272,8 +272,9 @@ export function runClientMonteCarlo(goal: Goal, paths = 1000): MonteCarloResult 
   const months = Math.max(1,
     (new Date(goal.target_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 30))
   const years  = months / 12
-  const mu     = goal.expected_return / 12
-  const sigma  = (goal.expected_return * 2.5) / Math.sqrt(12)
+  const annualVol = 0.15  // ~15% annualised vol for a diversified balanced portfolio; independent of return
+  const sigma = annualVol / Math.sqrt(12)
+  const mu    = (goal.expected_return - 0.5 * annualVol * annualVol) / 12  // Itô drift correction
 
   const finals: number[] = []
   const bands: PercentileBand[] = []
@@ -285,8 +286,10 @@ export function runClientMonteCarlo(goal: Goal, paths = 1000): MonteCarloResult 
     for (let m = 0; m < Math.ceil(months); m++) {
       const r = mu + sigma * gaussRandom()
       v = v * (1 + r) + goal.monthly_contribution
-      const yr = Math.floor(m / 12)
-      if (yr < yearlySnapshots.length) yearlySnapshots[yr].push(v)
+      if ((m + 1) % 12 === 0) {
+        const yr = Math.floor(m / 12)
+        if (yr < yearlySnapshots.length) yearlySnapshots[yr].push(v)
+      }
     }
     finals.push(v)
   }

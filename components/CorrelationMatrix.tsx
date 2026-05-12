@@ -156,7 +156,7 @@ export default function CorrelationMatrix({ positions }: { positions: any[] }) {
             Average portfolio correlation rises from{' '}
             <strong>{avgNormalOffDiag.toFixed(2)}</strong> in normal markets to{' '}
             <strong>{avgStressOffDiag.toFixed(2)}</strong> under stress —
-            a <strong>+{corrIncrease}%</strong> increase.
+            a <strong>+{corrIncrease} pp</strong> increase.
             Assets that normally diversify each other start moving together.
           </p>
         </div>

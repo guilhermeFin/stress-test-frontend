@@ -164,8 +164,8 @@ const LTCG_BRACKETS: Record<FilingStatus, Bracket[]> = {
     { min: 300_000, max: Infinity, rate: 0.20 },
   ],
   hoh: [
-    { min: 0,       max: 64_750,  rate: 0 },
-    { min: 64_750,  max: 566_700, rate: 0.15 },
+    { min: 0,       max: 57_375,  rate: 0 },
+    { min: 57_375,  max: 566_700, rate: 0.15 },
     { min: 566_700, max: Infinity, rate: 0.20 },
   ],
 }
@@ -262,10 +262,11 @@ export function calculateTax(inputs: TaxInputs): TaxResult {
     remaining_ltcg -= taxed
   }
 
-  // NIIT
+  // NIIT — net investment income = all investment-type income (IRC §1411)
+  const net_investment_income = qualified_dividends + long_term_gains + interest_income + short_term_gains
   const niit_threshold = NIIT_THRESHOLD[filing_status]
   const niit = agi > niit_threshold
-    ? Math.min(investment_income, agi - niit_threshold) * 0.038
+    ? Math.min(net_investment_income, agi - niit_threshold) * 0.038
     : 0
 
   // AMT (simplified — add back standard deduction, no other preferences)
@@ -275,7 +276,8 @@ export function calculateTax(inputs: TaxInputs): TaxResult {
   const phase_out_reduction = Math.max(0, (amt_income - phase_out_start) * 0.25)
   const amt_exemption = Math.max(0, amt_exemption_base - phase_out_reduction)
   const amt_base = Math.max(0, amt_income - amt_exemption)
-  const tentative_amt = amt_base <= 232_600 ? amt_base * 0.26 : 232_600 * 0.26 + (amt_base - 232_600) * 0.28
+  const amtBreak = filing_status === 'mfj' ? 116_300 : 232_600
+  const tentative_amt = amt_base <= amtBreak ? amt_base * 0.26 : amtBreak * 0.26 + (amt_base - amtBreak) * 0.28
   const amt = Math.max(0, tentative_amt - ordinary_tax)
 
   const total_tax = ordinary_tax + ltcg_tax + niit + amt
@@ -327,7 +329,7 @@ export function calculateRoth(inputs: RothInputs): RothResult {
     const conv = Math.min(annual_conversion, ira_bal)
     const tax = conv * current_marginal_rate
     ira_bal = (ira_bal - conv) * (1 + growth_rate)
-    roth_bal = (roth_bal + conv - tax) * (1 + growth_rate)
+    roth_bal = (roth_bal + conv) * (1 + growth_rate)  // tax paid from outside funds, not deducted from Roth
     years.push({
       year: y,
       conversion_amount: conv,
@@ -391,9 +393,9 @@ export function calculateCharitable(inputs: CharitableInputs): CharitableOption[
     {
       vehicle: 'qcd',
       label: 'Qualified Charitable Distribution',
-      charity_receives: Math.min(donation_amount, 105_000),
+      charity_receives: Math.min(donation_amount, 108_000),
       tax_deduction: 0,
-      after_tax_cost: Math.min(donation_amount, 105_000) * (1 - marginal_rate),
+      after_tax_cost: Math.min(donation_amount, 108_000) * (1 - marginal_rate),
       setup_complexity: 'low',
       minimum_amount: 1,
       best_for: 'IRA owners 70½+; satisfies RMD; excludes from AGI entirely',

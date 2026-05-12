@@ -151,8 +151,8 @@ const BenchmarkComparison = memo(function BenchmarkComparison({ summary }: { sum
       ].sort((a, b) => b.loss - a.loss)
       const portfolioRank = allData.findIndex(d => d.isPortfolio) + 1
       const totalItems    = allData.length
-      const betterThan    = benchmarks.filter(b => b.loss < portfolioLoss).length
-      const worseThan     = benchmarks.filter(b => b.loss > portfolioLoss).length
+      const betterThan    = benchmarks.filter(b => b.loss > portfolioLoss).length  // losses are negative; higher = smaller loss = better
+      const worseThan     = benchmarks.filter(b => b.loss < portfolioLoss).length
       const rankLabel = portfolioRank === 1 ? 'Most Resilient'
         : portfolioRank === totalItems ? 'Least Resilient'
         : portfolioRank <= Math.ceil(totalItems / 2) ? 'Above Average'

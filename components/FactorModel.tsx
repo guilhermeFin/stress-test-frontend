@@ -166,10 +166,18 @@ export default function FactorModel({
   const totalFactorLoss = factorContributions.reduce((s, f) => s + f.contribution, 0)
 
   // Radar data
+  // 60/40 benchmark factor exposures (absolute values, scaled to 0-100)
+  const BENCHMARK_RADAR: Record<string, number> = {
+    market:    60,  // 60% equity → moderate market beta
+    rates:     45,  // 40% bonds → meaningful rate sensitivity
+    inflation: 15,  // low inflation exposure in vanilla 60/40
+    credit:    20,  // investment-grade bond credit exposure
+    growth:    35,  // slight growth tilt via S&P 500
+  }
   const radarData = Object.entries(portfolioFactors).map(([factor, value]) => ({
     factor: FACTOR_LABELS[factor],
     portfolio:  Number((Math.abs(value) * 100).toFixed(1)),
-    benchmark:  30,
+    benchmark:  BENCHMARK_RADAR[factor] ?? 30,
   }))
 
   // Per-position factor breakdown

@@ -97,7 +97,11 @@ export default function TLHScannerPage() {
 
   const selectedOpps = opps.filter(o => selected.has(o.ticker))
   const totalLoss    = selectedOpps.reduce((s, o) => s + o.unrealized_loss, 0)
-  const totalSavings = selectedOpps.reduce((s, o) => s + Math.abs(o.unrealized_loss) * taxRate, 0)
+  const LTCG_RATE    = 0.15  // 15% for most taxpayers; long-term = held > 365 days
+  const totalSavings = selectedOpps.reduce((s, o) => {
+    const rate = o.days_held > 365 ? LTCG_RATE : taxRate
+    return s + Math.abs(o.unrealized_loss) * rate
+  }, 0)
 
   return (
     <div className='max-w-4xl mx-auto px-6 py-10'>

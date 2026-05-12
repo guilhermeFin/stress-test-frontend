@@ -120,7 +120,7 @@ export const MOCK_MACRO: MacroData = {
     { label: '5Y5Y Breakeven',     value: 2.28,   unit: '%',    change: +0.04,  change_unit: '%',   direction: 'up',   description: 'Market inflation expectation' },
     { label: 'DXY Dollar Index',   value: 103.2,  unit: '',     change: -0.3,   change_unit: '',    direction: 'down', description: 'Dollar softening YTD' },
     { label: 'WTI Crude Oil',      value: 71.5,   unit: '$',    change: -1.2,   change_unit: '$',   direction: 'down', description: 'Per barrel — supply concerns' },
-    { label: 'Gold',               value: 2318,   unit: '$',    change: +8,     change_unit: '$',   direction: 'up',   description: 'Per troy oz — risk-off bid' },
+    { label: 'Gold',               value: 3100,   unit: '$',    change: +12,    change_unit: '$',   direction: 'up',   description: 'Per troy oz — risk-off bid' },
     { label: 'ISM Manufacturing',  value: 49.2,   unit: '',     change: +0.4,   change_unit: 'pts', direction: 'up',   description: 'Below 50 = contraction' },
     { label: '10Y Real Yield',     value: 2.14,   unit: '%',    change: +0.06,  change_unit: '%',   direction: 'up',   description: 'TIPS-implied — restrictive' },
   ],

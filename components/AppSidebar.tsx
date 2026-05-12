@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
@@ -8,9 +8,10 @@ import {
   LayoutDashboard, Users, FolderOpen, Zap, BarChart2,
   BrainCircuit, Inbox, Settings, LogOut, ChevronLeft,
   ChevronRight, Target, Receipt, Landmark, BookOpen,
-  FlaskConical, Presentation, Search,
+  FlaskConical, Presentation, Search, Sparkles,
 } from 'lucide-react'
 import Logo from '@/components/Logo'
+import { useAdvisor } from '@/lib/advisor-context'
 
 const NAV = [
   { href: '/dashboard',       icon: LayoutDashboard, label: 'Dashboard' },
@@ -32,6 +33,7 @@ export default function AppSidebar() {
   const pathname  = usePathname()
   const { data: session } = useSession()
   const [collapsed, setCollapsed] = useState(false)
+  const { toggle: toggleAdvisor, isOpen: advisorOpen } = useAdvisor()
 
   const w = collapsed ? 'w-[60px]' : 'w-[220px]'
 
@@ -77,8 +79,29 @@ export default function AppSidebar() {
         })}
       </nav>
 
-      {/* Cmd+K skills launcher */}
-      <div className='px-2 pb-2'>
+      {/* AI Advisor + Skills launcher */}
+      <div className='px-2 pb-2 space-y-1.5'>
+        {/* AI Advisor button */}
+        <button
+          onClick={toggleAdvisor}
+          title='AI Advisor'
+          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+            transition-colors border
+            ${advisorOpen
+              ? 'text-[#3B82F6] bg-[#3B82F6]/10 border-[#3B82F6]/30'
+              : 'text-gray-400 hover:text-white bg-[#3B82F6]/5 hover:bg-[#3B82F6]/10 border-[#3B82F6]/15 hover:border-[#3B82F6]/30'}
+            ${collapsed ? 'justify-center' : ''}`}>
+          <Sparkles size={14} className='shrink-0' />
+          {!collapsed && (
+            <>
+              <span className='flex-1 text-left'>AI Advisor</span>
+              <span className='text-[9px] font-bold px-1.5 py-0.5 rounded-full
+                bg-[#3B82F6]/20 text-[#3B82F6] leading-none'>AI</span>
+            </>
+          )}
+        </button>
+
+        {/* Cmd+K skills launcher */}
         <button
           onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true }))}
           title='Skills (⌘K)'

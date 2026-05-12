@@ -80,8 +80,8 @@ const StressCharts = memo(function StressCharts({ charts, positions }: any) {
         ? positionsWithVar.reduce((acc: number, p: any) => acc + (p.var_95 * (p.value / totalValue)), 0)
         : totalLossPct * 0.6
 
-      const cvar95  = weightedVar95 * 1.4
-      const var99   = weightedVar95 * 1.6
+      const cvar95  = weightedVar95 * 1.25  // normal dist: E[X|X>VaR95] ≈ VaR95 × 1.25
+      const var99   = weightedVar95 * 1.35  // normal dist: VaR99 ≈ VaR95 × 1.35
       const maxLoss = Math.min(...positions.map((p: Position) => p.loss_pct))
 
       return { sectorData, lossData, compareData, drawdownPath, sectorContrib, weightedVar95, cvar95, var99, maxLoss, totalValue, totalLossPct }
