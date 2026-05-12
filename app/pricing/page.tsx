@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { CheckCircle2, ArrowRight, Zap, Shield, Building2, MessageSquare } from 'lucide-react'
 import SiteNav from '@/components/marketing/site-nav'
+import MarketingFooter from '@/components/ui/footer-column'
 
 export const metadata = {
   title: 'Pricing — Vantage',
@@ -304,12 +305,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className='border-t border-white/[0.06] py-8'>
-        <p className='text-center text-xs text-gray-600'>
-          © 2026 Vantage · Built for independent wealth managers &amp; RIAs
-        </p>
-      </footer>
+      <MarketingFooter />
     </main>
   )
 }

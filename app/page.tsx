@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/neon-button'
 import Logo from '@/components/Logo'
 import GlobalBackground from '@/components/GlobalBackground'
 import SiteNav from '@/components/marketing/site-nav'
+import MarketingFooter from '@/components/ui/footer-column'
 
 const STEPS = [
   {
@@ -564,40 +565,7 @@ export default function HomePage() {
         </section>
 
         {/* ── 8. Footer ───────────────────────────────────────────────────── */}
-        <footer className='border-t border-white/8'>
-          <div className='max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row
-            items-center justify-between gap-4'>
-
-            <Logo size={20} />
-
-            <p className='text-xs text-gray-600 text-center'>
-              © 2026 Vantage · Built for independent wealth managers &amp; RIAs
-            </p>
-
-            <div className='flex items-center gap-6'>
-              <Link href='/upload'
-                className='text-xs text-gray-400 hover:text-white
-                  transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                Run a Test
-              </Link>
-              <Link href='/compare'
-                className='text-xs text-gray-400 hover:text-white
-                  transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                Compare
-              </Link>
-              <Link href='/intelligence'
-                className='text-xs text-gray-400 hover:text-white
-                  transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                Intelligence
-              </Link>
-              <Link href='/auth/sign-in'
-                className='text-xs text-gray-400 hover:text-white
-                  transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                Sign in
-              </Link>
-            </div>
-          </div>
-        </footer>
+        <MarketingFooter />
 
       </div>
     </main>
