@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
-import { ArrowRight, Mail, AlertCircle, BarChart3, Shield, TrendingDown, User } from 'lucide-react'
+import { ArrowRight, Mail, AlertCircle, BarChart3, Shield, TrendingDown, User, ArrowLeft } from 'lucide-react'
 import Logo from '@/components/Logo'
+import Link from 'next/link'
 
 type Mode = 'signin' | 'signup'
 type Step = 'initial' | 'otp'
@@ -95,7 +96,9 @@ export default function SignInForm() {
           <div className='absolute inset-0 bg-gradient-to-b from-black/40 to-transparent pointer-events-none' />
 
           <div className='relative z-10'>
-            <Logo size={20} />
+            <Link href='/'>
+              <Logo size={20} />
+            </Link>
           </div>
 
           <div className='relative z-10'>
@@ -128,6 +131,14 @@ export default function SignInForm() {
 
         {/* ── Right panel ─────────────────────────────────────────────── */}
         <div className='relative md:w-1/2 bg-[#0D1120] p-10 md:p-14 flex flex-col justify-center'>
+
+          {/* Back to home */}
+          <Link href='/'
+            className='inline-flex items-center gap-1.5 text-xs text-gray-500
+              hover:text-gray-300 transition-colors mb-8 self-start'>
+            <ArrowLeft size={12} />
+            Back to home
+          </Link>
 
           {/* Logo mark */}
           <div className='w-10 h-10 rounded-xl bg-[#3B82F6]/15 border border-[#3B82F6]/25
