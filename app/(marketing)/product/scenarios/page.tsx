@@ -38,7 +38,7 @@ const FEATURES = [
 
 const BENEFITS = [
   'Show clients exactly what their portfolio would have done in the worst crises of the last 40 years',
-  'Replace vague reassurances with hard numbers — no more "it's only temporary"',
+  'Replace vague reassurances with hard numbers — no more "it\'s only temporary"',
   'Identify concentration risks before they become client calls',
   'Build a paper trail for compliance and annual reviews',
 ]
