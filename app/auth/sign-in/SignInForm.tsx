@@ -4,16 +4,15 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Mail, ArrowRight, AlertCircle } from 'lucide-react'
+import { ArrowRight, Mail, AlertCircle, BarChart3, Shield, TrendingDown } from 'lucide-react'
 import Logo from '@/components/Logo'
-import { Button } from '@/components/ui/neon-button'
 
 type Step = 'initial' | 'otp'
 
 export default function SignInForm() {
-  const searchParams  = useSearchParams()
-  const callbackUrl   = searchParams.get('callbackUrl') ?? '/dashboard'
-  const urlError      = searchParams.get('error')
+  const searchParams = useSearchParams()
+  const callbackUrl  = searchParams.get('callbackUrl') ?? '/dashboard'
+  const urlError     = searchParams.get('error')
 
   const [step, setStep]       = useState<Step>('initial')
   const [email, setEmail]     = useState('')
@@ -25,7 +24,7 @@ export default function SignInForm() {
 
   const handleSendOtp = async () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError('Enter a valid email address.')
+      setError('Please enter a valid email address.')
       return
     }
     setLoading(true)
@@ -64,104 +63,157 @@ export default function SignInForm() {
   }
 
   return (
-    <main className='min-h-screen bg-[#0A0F1E] flex items-center justify-center px-4'>
-      <div className='fixed inset-0 pointer-events-none overflow-hidden' aria-hidden>
-        <div className='absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full opacity-[0.05]'
-          style={{ background: 'radial-gradient(circle at center, #3B82F6 0%, transparent 68%)' }} />
-        <div className='absolute bottom-0 right-[-5%] w-[30vw] h-[30vw] rounded-full opacity-[0.03]'
-          style={{ background: 'radial-gradient(circle at center, #3B82F6 0%, transparent 68%)' }} />
-      </div>
+    <div className='min-h-screen bg-[#0A0F1E] flex items-center justify-center p-4'>
+      <div className='w-full max-w-5xl flex flex-col md:flex-row rounded-[2rem] overflow-hidden
+        shadow-2xl shadow-black/60 border border-white/[0.07]'>
 
-      <div className='relative w-full max-w-sm'>
+        {/* ── Left panel ──────────────────────────────────────────────── */}
+        <div className='relative md:w-1/2 bg-[#07090F] p-10 md:p-14 flex flex-col
+          justify-between overflow-hidden min-h-[280px] md:min-h-[640px]'>
 
-        <Link href='/'
-          className='inline-flex items-center gap-2 text-gray-500 hover:text-gray-300
-            text-sm transition-colors mb-8 group'>
-          <ArrowLeft size={14} className='group-hover:-translate-x-0.5 transition-transform' />
-          Back to Vantage
-        </Link>
+          {/* Decorative orbs */}
+          <div className='absolute top-[-20%] left-[-15%] w-[70%] h-[70%] rounded-full pointer-events-none'
+            style={{ background: 'radial-gradient(circle, #3B82F620 0%, transparent 70%)' }} />
+          <div className='absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full pointer-events-none'
+            style={{ background: 'radial-gradient(circle, #8B5CF615 0%, transparent 70%)' }} />
+          {/* Vertical stripe texture */}
+          <div className='absolute inset-0 pointer-events-none'
+            style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px)' }} />
+          {/* Top-to-bottom gradient overlay */}
+          <div className='absolute inset-0 bg-gradient-to-b from-black/40 to-transparent pointer-events-none' />
 
-        {/* Card */}
-        <div className='p-[1.5px] rounded-[1.75rem] bg-gradient-to-b from-white/10 to-white/5'>
-          <div className='rounded-[calc(1.75rem-1.5px)] bg-[#0D1120] p-8
-            shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'>
+          {/* Content */}
+          <div className='relative z-10'>
+            <Logo size={20} />
+          </div>
 
-            <div className='flex items-center gap-3 mb-8'>
-              <Logo size={20} />
-              <div className='h-4 w-px bg-white/10' />
-              <span className='text-xs text-gray-500 uppercase tracking-wider'>Advisor portal</span>
+          <div className='relative z-10'>
+            <p className='text-[10px] font-semibold uppercase tracking-widest text-[#3B82F6] mb-4'>
+              Institutional-grade risk
+            </p>
+            <h2 className='text-2xl md:text-3xl font-bold text-white leading-snug tracking-tight mb-6'>
+              Clarity in uncertainty.<br />Confidence in every decision.
+            </h2>
+
+            {/* Stats */}
+            <div className='grid grid-cols-3 gap-3 mb-8'>
+              {[
+                { icon: BarChart3, label: 'Analysis sections', value: '12' },
+                { icon: TrendingDown, label: 'Crisis scenarios', value: '6+' },
+                { icon: Shield, label: 'Time to results', value: '60s' },
+              ].map(({ icon: Icon, label, value }) => (
+                <div key={label} className='bg-white/[0.04] border border-white/[0.07]
+                  rounded-xl p-3'>
+                  <Icon size={14} className='text-[#3B82F6] mb-2' />
+                  <p className='text-lg font-bold text-white leading-none mb-1'>{value}</p>
+                  <p className='text-[10px] text-gray-600 leading-tight'>{label}</p>
+                </div>
+              ))}
             </div>
 
-            <h1 className='text-2xl font-bold text-white mb-1.5 tracking-tight'>Welcome back</h1>
-            <p className='text-sm text-gray-500 mb-7'>Sign in to your Vantage workspace</p>
+            <p className='text-xs text-gray-600'>
+              Trusted by independent wealth managers and RIAs.
+            </p>
+          </div>
+        </div>
 
-            {/* OAuth */}
-            <div className='space-y-2.5 mb-6'>
-              <button
-                onClick={() => signIn('google', { callbackUrl })}
-                className='w-full flex items-center justify-center gap-3 px-4 py-3
-                  bg-white/[0.04] hover:bg-white/[0.07] border border-white/10
-                  hover:border-white/20 rounded-xl text-sm font-medium text-white
-                  transition-all duration-200 group'>
-                <GoogleIcon />
-                Continue with Google
-              </button>
-              <button
-                onClick={() => signIn('microsoft-entra-id', { callbackUrl })}
-                className='w-full flex items-center justify-center gap-3 px-4 py-3
-                  bg-white/[0.04] hover:bg-white/[0.07] border border-white/10
-                  hover:border-white/20 rounded-xl text-sm font-medium text-white
-                  transition-all duration-200'>
-                <MicrosoftIcon />
-                Continue with Microsoft
-              </button>
-            </div>
+        {/* ── Right panel ─────────────────────────────────────────────── */}
+        <div className='relative md:w-1/2 bg-[#0D1120] p-10 md:p-14 flex flex-col justify-center'>
 
-            <div className='flex items-center gap-4 mb-6'>
-              <div className='flex-1 h-px bg-white/8' />
-              <span className='text-xs text-gray-600'>or sign in with email</span>
-              <div className='flex-1 h-px bg-white/8' />
-            </div>
+          {/* Logo mark */}
+          <div className='w-10 h-10 rounded-xl bg-[#3B82F6]/15 border border-[#3B82F6]/25
+            flex items-center justify-center mb-8'>
+            <div className='w-4 h-4 rounded-md bg-[#3B82F6]' />
+          </div>
 
-            {/* Email OTP flow */}
-            {step === 'initial' ? (
-              <div className='space-y-3'>
+          <h1 className='text-2xl font-bold text-white tracking-tight mb-1.5'>
+            {step === 'initial' ? 'Welcome back' : 'Check your email'}
+          </h1>
+          <p className='text-sm text-gray-500 mb-8'>
+            {step === 'initial'
+              ? 'Sign in to your Vantage advisor workspace'
+              : `We sent a 6-digit code to ${email}`}
+          </p>
+
+          {/* OAuth */}
+          {step === 'initial' && (
+            <>
+              <div className='space-y-2.5 mb-6'>
+                <button
+                  onClick={() => signIn('google', { callbackUrl })}
+                  className='w-full flex items-center justify-center gap-3 px-4 py-3
+                    bg-white/[0.04] hover:bg-white/[0.07] border border-white/10
+                    hover:border-white/20 rounded-xl text-sm font-medium text-white
+                    transition-all duration-200'>
+                  <GoogleIcon />
+                  Continue with Google
+                </button>
+                <button
+                  onClick={() => signIn('microsoft-entra-id', { callbackUrl })}
+                  className='w-full flex items-center justify-center gap-3 px-4 py-3
+                    bg-white/[0.04] hover:bg-white/[0.07] border border-white/10
+                    hover:border-white/20 rounded-xl text-sm font-medium text-white
+                    transition-all duration-200'>
+                  <MicrosoftIcon />
+                  Continue with Microsoft
+                </button>
+              </div>
+
+              <div className='flex items-center gap-4 mb-6'>
+                <div className='flex-1 h-px bg-white/8' />
+                <span className='text-xs text-gray-600'>or continue with email</span>
+                <div className='flex-1 h-px bg-white/8' />
+              </div>
+            </>
+          )}
+
+          {/* Email / OTP form */}
+          {step === 'initial' ? (
+            <div className='space-y-3'>
+              <div>
+                <label className='block text-xs font-medium text-gray-400 mb-1.5'>
+                  Work email address
+                </label>
                 <div className='relative'>
-                  <Mail size={14} className='absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500' />
+                  <Mail size={14} className='absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600' />
                   <input
                     type='email'
                     value={email}
                     onChange={e => { setEmail(e.target.value); setError('') }}
                     onKeyDown={e => { if (e.key === 'Enter') handleSendOtp() }}
-                    placeholder='Work email address'
+                    placeholder='you@yourfirm.com'
                     autoComplete='email'
-                    className='w-full bg-white/[0.04] border border-white/10 rounded-xl pl-10 pr-4 py-3
-                      text-sm text-white placeholder-gray-600 focus:outline-none
-                      focus:border-[#3B82F6]/50 transition-colors'
+                    className='w-full bg-white/[0.04] border border-white/10 rounded-xl
+                      pl-10 pr-4 py-3 text-sm text-white placeholder-gray-600
+                      focus:outline-none focus:border-[#3B82F6]/50 transition-colors'
                   />
                 </div>
-                {error && (
-                  <div className='flex items-start gap-2 text-red-400 text-xs leading-relaxed'>
-                    <AlertCircle size={12} className='mt-0.5 shrink-0' />
-                    {error}
-                  </div>
-                )}
-                <Button
-                  onClick={handleSendOtp}
-                  disabled={loading || !email.trim()}
-                  variant='solid'
-                  className='w-full py-3 rounded-xl text-sm font-semibold disabled:opacity-50
-                    disabled:cursor-not-allowed mx-0 flex items-center justify-center gap-2'>
-                  {loading
-                    ? <span className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
-                    : <><Mail size={14} /> Send sign-in code</>}
-                </Button>
               </div>
-            ) : (
-              <div className='space-y-3'>
-                <p className='text-xs text-gray-500'>
-                  6-digit code sent to <span className='text-gray-300 font-medium'>{email}</span>
-                </p>
+
+              {error && (
+                <div className='flex items-start gap-2 text-red-400 text-xs'>
+                  <AlertCircle size={12} className='mt-0.5 shrink-0' />
+                  {error}
+                </div>
+              )}
+
+              <button
+                onClick={handleSendOtp}
+                disabled={loading || !email.trim()}
+                className='w-full flex items-center justify-center gap-2 py-3 rounded-xl
+                  text-sm font-semibold text-white bg-[#3B82F6] hover:bg-[#2563EB]
+                  transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
+                {loading
+                  ? <span className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+                  : <><Mail size={14} /> Send sign-in code</>}
+              </button>
+            </div>
+          ) : (
+            <div className='space-y-3'>
+              <div>
+                <label className='block text-xs font-medium text-gray-400 mb-1.5'>
+                  6-digit code
+                </label>
                 <input
                   type='text'
                   inputMode='numeric'
@@ -176,55 +228,54 @@ export default function SignInForm() {
                     text-sm text-white placeholder-gray-600 focus:outline-none
                     focus:border-[#3B82F6]/50 tracking-[0.4em] text-center font-mono transition-colors'
                 />
-                {error && (
-                  <div className='flex items-start gap-2 text-red-400 text-xs leading-relaxed'>
-                    <AlertCircle size={12} className='mt-0.5 shrink-0' />
-                    {error}
-                  </div>
-                )}
-                <Button
-                  onClick={handleVerifyOtp}
-                  disabled={loading || otp.length < 6}
-                  variant='solid'
-                  className='w-full py-3 rounded-xl text-sm font-semibold disabled:opacity-50
-                    disabled:cursor-not-allowed mx-0 flex items-center justify-center gap-2'>
-                  {loading
-                    ? <span className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
-                    : <>Sign in <ArrowRight size={14} /></>}
-                </Button>
-                <button
-                  onClick={() => { setStep('initial'); setOtp(''); setError('') }}
-                  className='w-full text-xs text-gray-600 hover:text-gray-400 py-1 transition-colors'>
-                  Use a different email
-                </button>
               </div>
-            )}
+
+              {error && (
+                <div className='flex items-start gap-2 text-red-400 text-xs'>
+                  <AlertCircle size={12} className='mt-0.5 shrink-0' />
+                  {error}
+                </div>
+              )}
+
+              <button
+                onClick={handleVerifyOtp}
+                disabled={loading || otp.length < 6}
+                className='w-full flex items-center justify-center gap-2 py-3 rounded-xl
+                  text-sm font-semibold text-white bg-[#3B82F6] hover:bg-[#2563EB]
+                  transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
+                {loading
+                  ? <span className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+                  : <>Sign in <ArrowRight size={14} /></>}
+              </button>
+
+              <button
+                onClick={() => { setStep('initial'); setOtp(''); setError('') }}
+                className='w-full text-xs text-gray-600 hover:text-gray-400 py-1 transition-colors'>
+                Use a different email
+              </button>
+            </div>
+          )}
+
+          {/* Footer */}
+          <p className='text-xs text-gray-700 mt-8 leading-relaxed'>
+            By signing in you agree to our{' '}
+            <a href='#' className='text-gray-500 hover:text-gray-300 underline underline-offset-2 transition-colors'>Terms</a>
+            {' '}and{' '}
+            <a href='#' className='text-gray-500 hover:text-gray-300 underline underline-offset-2 transition-colors'>Privacy Policy</a>.
+          </p>
+
+          {/* Dev bypass */}
+          <div className='mt-4 text-center'>
+            <a href='/dashboard'
+              className='text-xs text-gray-800 hover:text-gray-600 transition-colors
+                border border-white/[0.04] rounded-lg px-3 py-1.5 hover:border-white/[0.08]'>
+              Skip sign-in (dev only)
+            </a>
           </div>
         </div>
 
-        <p className='text-center text-xs text-gray-700 mt-5 leading-relaxed'>
-          By signing in you agree to our{' '}
-          <a href='#' className='text-gray-500 hover:text-gray-300 underline underline-offset-2 transition-colors'>
-            Terms of Service
-          </a>{' '}
-          and{' '}
-          <a href='#' className='text-gray-500 hover:text-gray-300 underline underline-offset-2 transition-colors'>
-            Privacy Policy
-          </a>
-        </p>
-
-        {/* Dev bypass — remove before launch */}
-        <div className='mt-6 text-center'>
-          <a
-            href='/dashboard'
-            className='text-xs text-gray-700 hover:text-gray-500 transition-colors
-              border border-white/[0.06] rounded-lg px-3 py-1.5 hover:border-white/10'
-          >
-            Skip sign-in (dev only)
-          </a>
-        </div>
       </div>
-    </main>
+    </div>
   )
 }
 
