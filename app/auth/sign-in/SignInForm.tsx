@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowRight, Mail, AlertCircle, BarChart3, Shield, TrendingDown } from 'lucide-react'
+import { ArrowRight, Mail, AlertCircle, BarChart3, Shield, TrendingDown, User } from 'lucide-react'
 import Logo from '@/components/Logo'
 
+type Mode = 'signin' | 'signup'
 type Step = 'initial' | 'otp'
 
 export default function SignInForm() {
@@ -14,7 +14,9 @@ export default function SignInForm() {
   const callbackUrl  = searchParams.get('callbackUrl') ?? '/dashboard'
   const urlError     = searchParams.get('error')
 
+  const [mode, setMode]       = useState<Mode>('signin')
   const [step, setStep]       = useState<Step>('initial')
+  const [name, setName]       = useState('')
   const [email, setEmail]     = useState('')
   const [otp, setOtp]         = useState('')
   const [loading, setLoading] = useState(false)
@@ -22,7 +24,18 @@ export default function SignInForm() {
     urlError ? 'Authentication failed. Please try again.' : ''
   )
 
+  const switchMode = (m: Mode) => {
+    setMode(m)
+    setStep('initial')
+    setError('')
+    setOtp('')
+  }
+
   const handleSendOtp = async () => {
+    if (mode === 'signup' && !name.trim()) {
+      setError('Please enter your full name.')
+      return
+    }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setError('Please enter a valid email address.')
       return
@@ -33,7 +46,7 @@ export default function SignInForm() {
       const res = await fetch('/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+        body: JSON.stringify({ email: email.trim().toLowerCase(), name: name.trim() || undefined }),
       })
       const data = await res.json() as { error?: string }
       if (!res.ok) {
@@ -62,6 +75,8 @@ export default function SignInForm() {
     }
   }
 
+  const isSignUp = mode === 'signup'
+
   return (
     <div className='min-h-screen bg-[#0A0F1E] flex items-center justify-center p-4'>
       <div className='w-full max-w-5xl flex flex-col md:flex-row rounded-[2rem] overflow-hidden
@@ -69,20 +84,16 @@ export default function SignInForm() {
 
         {/* ── Left panel ──────────────────────────────────────────────── */}
         <div className='relative md:w-1/2 bg-[#07090F] p-10 md:p-14 flex flex-col
-          justify-between overflow-hidden min-h-[280px] md:min-h-[640px]'>
+          justify-between overflow-hidden min-h-[280px] md:min-h-[680px]'>
 
-          {/* Decorative orbs */}
           <div className='absolute top-[-20%] left-[-15%] w-[70%] h-[70%] rounded-full pointer-events-none'
             style={{ background: 'radial-gradient(circle, #3B82F620 0%, transparent 70%)' }} />
           <div className='absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full pointer-events-none'
             style={{ background: 'radial-gradient(circle, #8B5CF615 0%, transparent 70%)' }} />
-          {/* Vertical stripe texture */}
           <div className='absolute inset-0 pointer-events-none'
             style={{ backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.015) 60px, rgba(255,255,255,0.015) 61px)' }} />
-          {/* Top-to-bottom gradient overlay */}
           <div className='absolute inset-0 bg-gradient-to-b from-black/40 to-transparent pointer-events-none' />
 
-          {/* Content */}
           <div className='relative z-10'>
             <Logo size={20} />
           </div>
@@ -95,15 +106,13 @@ export default function SignInForm() {
               Clarity in uncertainty.<br />Confidence in every decision.
             </h2>
 
-            {/* Stats */}
             <div className='grid grid-cols-3 gap-3 mb-8'>
               {[
-                { icon: BarChart3, label: 'Analysis sections', value: '12' },
-                { icon: TrendingDown, label: 'Crisis scenarios', value: '6+' },
-                { icon: Shield, label: 'Time to results', value: '60s' },
+                { icon: BarChart3,    label: 'Analysis sections', value: '12'  },
+                { icon: TrendingDown, label: 'Crisis scenarios',   value: '6+' },
+                { icon: Shield,       label: 'Time to results',    value: '60s'},
               ].map(({ icon: Icon, label, value }) => (
-                <div key={label} className='bg-white/[0.04] border border-white/[0.07]
-                  rounded-xl p-3'>
+                <div key={label} className='bg-white/[0.04] border border-white/[0.07] rounded-xl p-3'>
                   <Icon size={14} className='text-[#3B82F6] mb-2' />
                   <p className='text-lg font-bold text-white leading-none mb-1'>{value}</p>
                   <p className='text-[10px] text-gray-600 leading-tight'>{label}</p>
@@ -126,16 +135,42 @@ export default function SignInForm() {
             <div className='w-4 h-4 rounded-md bg-[#3B82F6]' />
           </div>
 
+          {/* Mode toggle — only show on initial step */}
+          {step === 'initial' && (
+            <div className='flex items-center gap-1 p-1 rounded-xl bg-white/[0.04]
+              border border-white/[0.07] mb-8 self-start'>
+              {(['signin', 'signup'] as Mode[]).map(m => (
+                <button
+                  key={m}
+                  onClick={() => switchMode(m)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    mode === m
+                      ? 'bg-[#3B82F6] text-white shadow-sm'
+                      : 'text-gray-500 hover:text-gray-300'
+                  }`}
+                >
+                  {m === 'signin' ? 'Sign in' : 'Create account'}
+                </button>
+              ))}
+            </div>
+          )}
+
           <h1 className='text-2xl font-bold text-white tracking-tight mb-1.5'>
-            {step === 'initial' ? 'Welcome back' : 'Check your email'}
+            {step === 'otp'
+              ? 'Check your email'
+              : isSignUp
+              ? 'Create your account'
+              : 'Welcome back'}
           </h1>
           <p className='text-sm text-gray-500 mb-8'>
-            {step === 'initial'
-              ? 'Sign in to your Vantage advisor workspace'
-              : `We sent a 6-digit code to ${email}`}
+            {step === 'otp'
+              ? `We sent a 6-digit code to ${email}`
+              : isSignUp
+              ? 'Start your 14-day free trial — no credit card required'
+              : 'Sign in to your Vantage advisor workspace'}
           </p>
 
-          {/* OAuth */}
+          {/* OAuth — only on initial step */}
           {step === 'initial' && (
             <>
               <div className='space-y-2.5 mb-6'>
@@ -146,7 +181,7 @@ export default function SignInForm() {
                     hover:border-white/20 rounded-xl text-sm font-medium text-white
                     transition-all duration-200'>
                   <GoogleIcon />
-                  Continue with Google
+                  {isSignUp ? 'Sign up with Google' : 'Continue with Google'}
                 </button>
                 <button
                   onClick={() => signIn('microsoft-entra-id', { callbackUrl })}
@@ -155,21 +190,44 @@ export default function SignInForm() {
                     hover:border-white/20 rounded-xl text-sm font-medium text-white
                     transition-all duration-200'>
                   <MicrosoftIcon />
-                  Continue with Microsoft
+                  {isSignUp ? 'Sign up with Microsoft' : 'Continue with Microsoft'}
                 </button>
               </div>
 
               <div className='flex items-center gap-4 mb-6'>
                 <div className='flex-1 h-px bg-white/8' />
-                <span className='text-xs text-gray-600'>or continue with email</span>
+                <span className='text-xs text-gray-600'>or with email</span>
                 <div className='flex-1 h-px bg-white/8' />
               </div>
             </>
           )}
 
-          {/* Email / OTP form */}
+          {/* Form fields */}
           {step === 'initial' ? (
             <div className='space-y-3'>
+              {/* Name field — sign-up only */}
+              {isSignUp && (
+                <div>
+                  <label className='block text-xs font-medium text-gray-400 mb-1.5'>
+                    Full name
+                  </label>
+                  <div className='relative'>
+                    <User size={14} className='absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600' />
+                    <input
+                      type='text'
+                      value={name}
+                      onChange={e => { setName(e.target.value); setError('') }}
+                      onKeyDown={e => { if (e.key === 'Enter') handleSendOtp() }}
+                      placeholder='Jane Smith'
+                      autoComplete='name'
+                      className='w-full bg-white/[0.04] border border-white/10 rounded-xl
+                        pl-10 pr-4 py-3 text-sm text-white placeholder-gray-600
+                        focus:outline-none focus:border-[#3B82F6]/50 transition-colors'
+                    />
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label className='block text-xs font-medium text-gray-400 mb-1.5'>
                   Work email address
@@ -205,8 +263,16 @@ export default function SignInForm() {
                   transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
                 {loading
                   ? <span className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+                  : isSignUp
+                  ? <><Mail size={14} /> Create account</>
                   : <><Mail size={14} /> Send sign-in code</>}
               </button>
+
+              {isSignUp && (
+                <p className='text-[11px] text-gray-600 text-center leading-relaxed'>
+                  We'll send a verification code to confirm your email.
+                </p>
+              )}
             </div>
           ) : (
             <div className='space-y-3'>
@@ -245,6 +311,8 @@ export default function SignInForm() {
                   transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
                 {loading
                   ? <span className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+                  : isSignUp
+                  ? <>Verify &amp; create account <ArrowRight size={14} /></>
                   : <>Sign in <ArrowRight size={14} /></>}
               </button>
 
@@ -258,7 +326,7 @@ export default function SignInForm() {
 
           {/* Footer */}
           <p className='text-xs text-gray-700 mt-8 leading-relaxed'>
-            By signing in you agree to our{' '}
+            By continuing you agree to our{' '}
             <a href='#' className='text-gray-500 hover:text-gray-300 underline underline-offset-2 transition-colors'>Terms</a>
             {' '}and{' '}
             <a href='#' className='text-gray-500 hover:text-gray-300 underline underline-offset-2 transition-colors'>Privacy Policy</a>.
