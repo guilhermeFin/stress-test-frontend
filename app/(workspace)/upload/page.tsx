@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import ShockBuilder from '@/components/ShockBuilder'
 import { Button } from '@/components/ui/neon-button'
+import { LumaSpin } from '@/components/ui/luma-spin'
 import Link from 'next/link'
 
 const HISTORICAL_SCENARIOS = [
@@ -153,7 +154,16 @@ export default function UploadPage() {
   }
 
   return (
-    <main className='min-h-screen text-white'>
+    <main className='min-h-screen text-white relative'>
+      {/* Full-screen loading overlay */}
+      {loading && (
+        <div className='absolute inset-0 z-50 flex flex-col items-center justify-center
+          bg-[#0A0F1E]/90 backdrop-blur-sm'>
+          <LumaSpin size={65} />
+          <p className='mt-6 text-sm text-gray-400 font-medium'>Running analysis…</p>
+          <p className='mt-1 text-xs text-gray-600'>This usually takes 15–45 seconds</p>
+        </div>
+      )}
       <div className='relative max-w-6xl mx-auto px-6 py-12'>
 
 

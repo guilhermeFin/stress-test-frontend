@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { comparePortfolios, StressTestResult } from '@/lib/api'
 import { Button } from '@/components/ui/neon-button'
+import { LumaSpin } from '@/components/ui/luma-spin'
 import {
   Upload, ChevronRight, AlertCircle,
   ArrowLeft, Trophy, Shield, Zap
@@ -208,7 +209,15 @@ export default function ComparePage() {
   ] : []
 
   return (
-    <main className='min-h-screen text-white'>
+    <main className='min-h-screen text-white relative'>
+      {loading && (
+        <div className='absolute inset-0 z-50 flex flex-col items-center justify-center
+          bg-[#0A0F1E]/90 backdrop-blur-sm'>
+          <LumaSpin size={65} />
+          <p className='mt-6 text-sm text-gray-400 font-medium'>Comparing portfolios…</p>
+          <p className='mt-1 text-xs text-gray-600'>Running both stress tests in parallel</p>
+        </div>
+      )}
       <div className='max-w-6xl mx-auto px-6 py-10'>
 
         {/* Header */}
