@@ -9,7 +9,7 @@ import {
 import ScrollReveal from '@/components/ScrollReveal'
 import { Button } from '@/components/ui/neon-button'
 import Logo from '@/components/Logo'
-import GlobalBackground from '@/components/GlobalBackground'
+import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
 import FeaturesSection from '@/components/marketing/features-section'
 import ToolsSection from '@/components/marketing/tools-section'
 
@@ -104,18 +104,8 @@ const TIERS = [
 export default function HomePage() {
   return (
     <div className='relative'>
-      <GlobalBackground />
+      <BackgroundGradientAnimation />
       <ScrollReveal />
-
-      {/* ── Ambient mesh orbs ─────────────────────────────────────────── */}
-      <div className='fixed inset-0 z-0 pointer-events-none overflow-hidden' aria-hidden>
-        <div className='absolute top-[-18%] left-[-8%] w-[55vw] h-[55vw] rounded-full opacity-[0.06]'
-          style={{ background: 'radial-gradient(circle at center, #3B82F6 0%, transparent 68%)' }} />
-        <div className='absolute bottom-[5%] right-[-6%] w-[38vw] h-[38vw] rounded-full opacity-[0.04]'
-          style={{ background: 'radial-gradient(circle at center, #3B82F6 0%, transparent 68%)' }} />
-        <div className='absolute top-[55%] left-[40%] w-[28vw] h-[28vw] rounded-full opacity-[0.03]'
-          style={{ background: 'radial-gradient(circle at center, #3B82F6 0%, transparent 68%)' }} />
-      </div>
 
       <div className='relative z-10'>
 
