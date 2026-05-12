@@ -42,9 +42,11 @@ export default function AppSidebar() {
     >
       {/* Logo */}
       <div className={`h-14 flex items-center px-4 border-b border-white/[0.06] ${collapsed ? 'justify-center' : 'gap-2'}`}>
-        {collapsed
-          ? <Logo variant='icon' size={22} />
-          : <Logo size={18} />}
+        <Link href='/' title='Back to home'>
+          {collapsed
+            ? <Logo variant='icon' size={22} />
+            : <Logo size={18} />}
+        </Link>
       </div>
 
       {/* Nav */}
