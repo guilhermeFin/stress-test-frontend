@@ -212,6 +212,17 @@ export default function SignInForm() {
             Privacy Policy
           </a>
         </p>
+
+        {/* Dev bypass — remove before launch */}
+        <div className='mt-6 text-center'>
+          <a
+            href='/dashboard'
+            className='text-xs text-gray-700 hover:text-gray-500 transition-colors
+              border border-white/[0.06] rounded-lg px-3 py-1.5 hover:border-white/10'
+          >
+            Skip sign-in (dev only)
+          </a>
+        </div>
       </div>
     </main>
   )
