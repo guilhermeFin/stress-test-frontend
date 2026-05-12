@@ -420,7 +420,7 @@ export function FloatingAiAssistant() {
       )}
 
       {/* ── Floating trigger button ── */}
-      <div className='fixed bottom-6 right-6 z-50 w-14 h-14 relative'>
+      <div className='fixed bottom-6 right-6 z-50 w-14 h-14'>
         {/* Spinning conic-gradient ring — extends 3px beyond button edges */}
         <div
           className='absolute rounded-full [animation:fab-ring-spin_4s_linear_infinite]'
