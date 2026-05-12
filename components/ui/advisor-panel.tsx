@@ -1,11 +1,9 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import Link from 'next/link'
-import { X, Sparkles, RotateCcw, Copy, Check, Zap, ExternalLink, ChevronRight } from 'lucide-react'
+import { X, Sparkles, RotateCcw, Copy, Check, Zap } from 'lucide-react'
 import { useAdvisor } from '@/lib/advisor-context'
 import { GlowingAdvisorInput } from '@/components/ui/animated-glowing-search-bar'
-import { SKILLS, BADGE_COLORS, type Skill } from '@/lib/skills'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -41,89 +39,6 @@ function renderMarkdown(raw: string) {
     .replace(/`([^`]+)`/g, '<code class="bg-white/10 px-1 py-0.5 rounded text-[#93C5FD] font-mono text-[11px]">$1</code>')
     .replace(/\n\n/g, '</p><p class="mt-2">')
     .replace(/\n/g, '<br/>')
-}
-
-// ── Skills sidebar ────────────────────────────────────────────────────────────
-
-function SkillRow({ skill, onAsk }: { skill: Skill; onAsk: (prompt: string) => void }) {
-  return (
-    <div
-      onClick={() => onAsk(skill.aiPrompt)}
-      title={`Ask AI about ${skill.slash}`}
-      className='group flex items-start gap-2 px-2.5 py-2 rounded-lg cursor-pointer
-        hover:bg-white/[0.04] transition-colors'
-    >
-      <div className='flex-1 min-w-0 space-y-0.5'>
-        <div className='flex items-center gap-1.5 flex-wrap'>
-          <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-md border shrink-0 ${skill.color}`}>
-            {skill.slash}
-          </span>
-          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border ${BADGE_COLORS[skill.badge]}`}>
-            {skill.badge}
-          </span>
-        </div>
-        <p className='text-[11px] font-medium text-gray-300 leading-tight'>{skill.label}</p>
-        <p className='text-[10px] text-gray-600 leading-snug line-clamp-2'>{skill.description}</p>
-      </div>
-
-      <Link
-        href={skill.href}
-        onClick={e => e.stopPropagation()}
-        title={`Open ${skill.label}`}
-        className='shrink-0 p-1 rounded-md opacity-0 group-hover:opacity-100
-          text-gray-500 hover:text-white hover:bg-white/10 transition-all mt-0.5'
-      >
-        <ExternalLink size={11} />
-      </Link>
-    </div>
-  )
-}
-
-function SkillsSidebar({ onAsk }: { onAsk: (prompt: string) => void }) {
-  const categories = Array.from(new Set(SKILLS.map(s => s.category)))
-
-  return (
-    <div className='w-[195px] border-r border-white/[0.06] flex flex-col shrink-0 min-h-0'>
-      {/* Sidebar header */}
-      <div className='px-3 py-3 border-b border-white/[0.05] shrink-0'>
-        <div className='flex items-center justify-between'>
-          <p className='text-[10px] font-semibold text-gray-500 uppercase tracking-wider'>
-            Skills
-          </p>
-          <span className='text-[10px] text-gray-600 tabular-nums'>{SKILLS.length} available</span>
-        </div>
-        <p className='text-[10px] text-gray-700 mt-0.5 leading-snug'>
-          Click any skill to ask the AI about it, or <ChevronRight size={9} className='inline' /> to open.
-        </p>
-      </div>
-
-      {/* Skill list */}
-      <div className='flex-1 overflow-y-auto py-2 px-1.5 space-y-3'>
-        {categories.map(cat => {
-          const catSkills = SKILLS.filter(s => s.category === cat)
-          return (
-            <div key={cat}>
-              <p className='text-[9px] font-semibold text-gray-600 uppercase tracking-wider px-2 mb-1'>
-                {cat}
-              </p>
-              <div className='space-y-0.5'>
-                {catSkills.map(skill => (
-                  <SkillRow key={skill.id} skill={skill} onAsk={onAsk} />
-                ))}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Footer hint */}
-      <div className='px-3 py-2.5 border-t border-white/[0.05] shrink-0'>
-        <p className='text-[9px] text-gray-700 leading-snug'>
-          Press <kbd className='font-mono text-gray-600 bg-white/[0.05] px-1 rounded'>⌘K</kbd> for full skill search
-        </p>
-      </div>
-    </div>
-  )
 }
 
 // ── Main panel ────────────────────────────────────────────────────────────────
@@ -238,8 +153,8 @@ export function AdvisorPanel() {
           ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
       />
 
-      {/* Panel — wider to fit sidebar + chat */}
-      <div className={`fixed right-0 top-0 h-screen w-[660px] z-50 flex flex-col
+      {/* Panel */}
+      <div className={`fixed right-0 top-0 h-screen w-[440px] z-50 flex flex-col
         bg-[#07090F] border-l border-white/[0.07] shadow-2xl
         transition-transform duration-200 ease-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
@@ -253,9 +168,7 @@ export function AdvisorPanel() {
             </div>
             <div>
               <p className='text-sm font-semibold text-white leading-tight'>AI Advisor</p>
-              <p className='text-[10px] text-gray-500 leading-none mt-0.5'>
-                Wealth management · Claude · {SKILLS.length} skills
-              </p>
+              <p className='text-[10px] text-gray-500 leading-none mt-0.5'>Wealth management · Claude</p>
             </div>
           </div>
           <div className='flex items-center gap-1'>
@@ -272,14 +185,8 @@ export function AdvisorPanel() {
           </div>
         </div>
 
-        {/* ── Body: sidebar + chat ── */}
-        <div className='flex flex-1 min-h-0'>
-
-          {/* Left: skills sidebar */}
-          <SkillsSidebar onAsk={prompt => { setInput(prompt); send(prompt) }} />
-
-          {/* Right: chat */}
-          <div className='flex flex-col flex-1 min-w-0 min-h-0'>
+        {/* ── Chat ── */}
+        <div className='flex flex-col flex-1 min-h-0'>
 
             {/* Messages */}
             <div className='flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0'>
@@ -396,9 +303,9 @@ export function AdvisorPanel() {
                 Enter to send · Shift+Enter for newline
               </p>
             </div>
-          </div>
         </div>
       </div>
     </>
   )
 }
+
