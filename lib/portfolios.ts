@@ -2,14 +2,33 @@
  * Client for the portfolio & run history API.
  *
  * FastAPI contract (backend to implement):
- *   GET    /api/v1/portfolios               → Portfolio[]
- *   POST   /api/v1/portfolios               → Portfolio   body: { name, holdings_json, scenario }
- *   GET    /api/v1/portfolios/:id           → Portfolio
- *   DELETE /api/v1/portfolios/:id           → 204
- *   GET    /api/v1/portfolios/:id/runs      → StressRun[]
- *   POST   /api/v1/portfolios/:id/runs      → StressRun   body: { scenario, results_json }
- *   GET    /api/v1/runs/:id                 → StressRun
- *   PATCH  /api/v1/runs/:id/actions/:aid    → RecommendedAction   body: { status }
+ *   GET    /api/v1/portfolios                      → Portfolio[]
+ *   POST   /api/v1/portfolios                      → Portfolio   body: { name, holdings_json, scenario }
+ *   GET    /api/v1/portfolios/:id                  → Portfolio
+ *   DELETE /api/v1/portfolios/:id                  → 204
+ *   GET    /api/v1/portfolios/:id/runs             → StressRun[]
+ *   POST   /api/v1/portfolios/:id/runs             → StressRun   body: { scenario, results_json }
+ *   GET    /api/v1/portfolios/:id/drift            → DriftAnalysis        (TODO)
+ *   POST   /api/v1/portfolios/:id/rebalance        → RebalancePlan        (TODO — Claude: Sonnet)
+ *   POST   /api/v1/portfolios/:id/audit            → XLSAuditReport       (TODO — pre-ingest check)
+ *   GET    /api/v1/runs/:id                        → StressRun
+ *   PATCH  /api/v1/runs/:id/actions/:aid           → RecommendedAction   body: { status }
+ *
+ * Skill: portfolio-rebalance (wealth-management bundle)
+ * Step 1 → GET /portfolios/:id  (current holdings + account types)
+ * Step 2 → GET /portfolios/:id/drift  (target vs actual per asset class — TODO)
+ * Step 3 → POST /portfolios/:id/rebalance  (tax-aware trade list via Claude Sonnet — TODO)
+ * Step 4 → Asset location rules in lib/tax.ts ASSET_LOCATION_RECS already cover account logic
+ * Step 5 → RecommendedAction.kind = 'rebalance' already in StressRun schema
+ * Skill ref: .claude/plugins/cache/claude-for-financial-services/wealth-management/0.1.0/skills/portfolio-rebalance/SKILL.md
+ *
+ * Skill: audit-xls (financial-analysis bundle)
+ * Step 1 → scope = 'selection' (pre-ingest: only formula-level checks, not full model audit)
+ * Step 2 → POST /portfolios/:id/audit  runs formula checks on uploaded Excel before ingesting (TODO)
+ *          Checks: #REF! errors, hardcoded values in formulas, off-by-one SUM ranges, unit mismatches
+ *          Returns: AuditFinding[] { sheet, cell, severity, issue, suggested_fix }
+ *          Inline warnings surface in the upload flow before the stress run fires
+ * Skill ref: .claude/plugins/cache/claude-for-financial-services/financial-analysis/0.1.0/skills/audit-xls/SKILL.md
  */
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'

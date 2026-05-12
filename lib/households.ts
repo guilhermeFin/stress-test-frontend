@@ -6,9 +6,26 @@
 // DELETE /api/v1/households/:id
 // GET    /api/v1/households/:id/portfolios     → Portfolio[]
 // GET    /api/v1/households/:id/timeline       → TimelineEvent[]
+// POST   /api/v1/households/:id/review         → ClientReviewPacket  (TODO — Claude: Sonnet)
+// POST   /api/v1/households/:id/proposal       → InvestmentProposal  (TODO — Claude: Sonnet)
 // GET    /api/v1/dashboard                     → DashboardData
 // GET    /api/v1/inbox                         → InboxItem[]
 // PATCH  /api/v1/inbox/:id                     → InboxItem  (action: dismiss|snooze|assign)
+
+// Skill: client-review (wealth-management bundle)
+// Step 1 → GET /households/:id  (client context, AUM, risk profile, last meeting date)
+// Step 2 → GET /households/:id/portfolios  (performance vs benchmark — needs return series TODO)
+// Step 3 → DriftAlert in DashboardData already provides allocation drift
+// Step 4 → POST /households/:id/review  generates talking points via Claude Sonnet (endpoint TODO)
+// Step 5 → recommendations surface as InboxItem + RecommendedAction (rebalance, harvest, etc.)
+// Step 6 → output: one-page PDF via /households/:id/review?format=pdf (TODO)
+// Skill ref: C:/Users/guilh/.claude/plugins/cache/claude-for-financial-services/wealth-management/0.1.0/skills/client-review/SKILL.md
+
+// Skill: investment-proposal (wealth-management bundle)
+// Step 1 → prospect context gathered on households creation (risk_profile, goals, tags)
+// Step 2–3 → POST /households/:id/proposal  drafts strategy + allocation table via Claude Sonnet (TODO)
+// Step 4 → runClientMonteCarlo() in planning.ts covers expected outcomes
+// Skill ref: C:/Users/guilh/.claude/plugins/cache/claude-for-financial-services/wealth-management/0.1.0/skills/investment-proposal/SKILL.md
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://stress-test-backend-production.up.railway.app'
 

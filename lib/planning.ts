@@ -7,8 +7,20 @@
 // PATCH  /api/v1/planning/goals/:id                      → Goal
 // DELETE /api/v1/planning/goals/:id
 // POST   /api/v1/planning/goals/:id/monte-carlo          → MonteCarloResult
+// POST   /api/v1/planning/cashflow/:household_id         → CashFlowProjection[]  (TODO)
+// POST   /api/v1/planning/scenarios/:household_id        → ScenarioComparison[]  (TODO — Claude: Sonnet)
 // GET    /api/v1/planning/strategies                     → Strategy[]
 // POST   /api/v1/planning/strategies/:id/apply           body: { household_id } → IPS
+
+// Skill: financial-plan (wealth-management bundle)
+// Step 1 → Household + IPS provides client profile (demographics, accounts, goals)
+// Step 2 → POST /planning/cashflow/:household_id  (annual cash flow table — TODO)
+// Step 3 → POST /planning/goals/:id/monte-carlo   already implemented (funded ratio, ruin prob)
+// Step 4 → Goal types (retirement, college, home, legacy) already modelled in Goal interface
+// Step 5 → POST /planning/scenarios/:household_id  (retire-early, market-drop comparisons — TODO, Claude: Sonnet)
+// Step 6 → recommendations as Goal-level action items (TODO)
+// Step 7 → export via PDF endpoint (TODO)
+// Skill ref: C:/Users/guilh/.claude/plugins/cache/claude-for-financial-services/wealth-management/0.1.0/skills/financial-plan/SKILL.md
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'https://stress-test-backend-production.up.railway.app'
 

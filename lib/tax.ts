@@ -1,9 +1,19 @@
 // FastAPI contract:
 // POST /api/v1/tax/project          body: TaxInputs    → TaxResult
 // GET  /api/v1/tax/tlh/:portfolio_id                   → TLHOpportunity[]
+// POST /api/v1/tax/tlh/:portfolio_id/execute           body: TLHExecutionPlan → TLHResult  (TODO)
 // POST /api/v1/tax/roth             body: RothInputs   → RothResult
 // POST /api/v1/tax/location         body: LocationInputs → LocationResult
 // POST /api/v1/tax/charitable       body: CharitableInputs → CharitableOption[]
+
+// Skill: tax-loss-harvesting (wealth-management bundle)
+// Step 1 → GET /tax/tlh/:portfolio_id  (candidates, unrealized losses, wash-sale flags)
+// Step 2 → calculateTax() already computes gain/loss budget inline from TaxInputs
+// Step 3 → TLHOpportunity.suggested_replacement covers replacement securities
+// Step 4 → TLHOpportunity.wash_sale_risk covers 30-day check; needs household-wide scan (TODO)
+// Step 5 → POST /tax/tlh/:portfolio_id/execute  (execution plan — endpoint TODO)
+// Step 6 → tracked via RecommendedAction.kind = 'harvest' in portfolios.ts
+// Skill ref: C:/Users/guilh/.claude/plugins/cache/claude-for-financial-services/wealth-management/0.1.0/skills/tax-loss-harvesting/SKILL.md
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
