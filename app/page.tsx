@@ -10,12 +10,7 @@ import ScrollReveal from '@/components/ScrollReveal'
 import { Button } from '@/components/ui/neon-button'
 import Logo from '@/components/Logo'
 import GlobalBackground from '@/components/GlobalBackground'
-
-const NAV_LINKS = [
-  { label: 'How it works', href: '#how-it-works' },
-  { label: 'Features',     href: '#features'     },
-  { label: 'Pricing',      href: '#pricing'      },
-]
+import SiteNav from '@/components/marketing/site-nav'
 
 const STEPS = [
   {
@@ -176,47 +171,13 @@ export default function HomePage() {
 
       <div className='relative z-10'>
 
-        {/* ── 1. Island Nav ───────────────────────────────────────────────── */}
-        <header className='fixed top-0 left-0 right-0 z-50 pointer-events-none'>
-          <div className='px-4 pt-4'>
-            <div className='max-w-6xl mx-auto flex items-center justify-between
-              pointer-events-auto bg-[#0A0F1E]/90 backdrop-blur-xl
-              ring-1 ring-white/10 rounded-full px-5 py-2.5'>
-
-              <div className='flex items-center gap-3'>
-                <Logo size={22} />
-              </div>
-
-              <div className='hidden md:flex items-center gap-8'>
-                {NAV_LINKS.map(({ label, href }) => (
-                  <a key={label} href={href}
-                    className='text-sm text-gray-400 hover:text-white
-                      transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                    {label}
-                  </a>
-                ))}
-              </div>
-
-              <div className='flex items-center gap-3'>
-                <Link href='/auth/sign-in'
-                  className='text-sm text-gray-400 hover:text-white transition-colors
-                    duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                  Sign in
-                </Link>
-                <Link href='/demo'>
-                  <Button variant='solid' className='flex items-center gap-2 text-sm font-semibold'>
-                    Try Free <ArrowRight size={12} />
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </header>
+        {/* ── 1. Site Nav ─────────────────────────────────────────────────── */}
+        <SiteNav />
 
         {/* ── 2. Hero ─────────────────────────────────────────────────────── */}
         <div className='relative'>
 
-        <section className='relative max-w-6xl mx-auto px-6 pt-40 pb-6 text-center'>
+        <section className='relative max-w-6xl mx-auto px-6 pt-32 pb-6 text-center'>
 
           <div data-reveal
             className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
