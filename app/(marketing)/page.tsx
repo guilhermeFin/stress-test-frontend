@@ -129,18 +129,19 @@ export default function HomePage() {
               fontSize: 'clamp(52px, 7vw, 88px)',
               lineHeight: '1.0',
             }}>
-            Stress test.<br />Build confidence.
+            Know exactly how<br />your portfolio breaks.
           </h1>
 
           <p data-reveal data-delay='150'
             className='text-lg font-medium text-gray-300 max-w-xl mx-auto mb-4'>
-            Institutional-grade portfolio risk analysis in 60 seconds.
+            Upload a portfolio. Pick a crisis. Get a full institutional risk report in 60 seconds.
           </p>
 
           <p data-reveal data-delay='200'
             className='text-gray-400 max-w-2xl mx-auto leading-relaxed mb-12'>
-            Vantage transforms complex market data into clear, actionable insights
-            so you can lead with confidence when your clients need it most.
+            Vantage runs your holdings through 2008, COVID, rate shocks, and custom scenarios —
+            returning factor risk, liquidity gaps, Monte Carlo paths, tax impact, and a plain-English
+            AI memo you can put in front of a client right now.
           </p>
 
           <div data-reveal data-delay='300'
