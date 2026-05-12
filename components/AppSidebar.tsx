@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Users, FolderOpen, Zap, BarChart2,
   BrainCircuit, Inbox, Settings, LogOut, ChevronLeft,
   ChevronRight, Target, Receipt, Landmark, BookOpen,
-  FlaskConical, Presentation, Search, Sparkles,
+  FlaskConical, Presentation, Sparkles,
 } from 'lucide-react'
 import Logo from '@/components/Logo'
 import { useAdvisor } from '@/lib/advisor-context'
@@ -79,9 +79,8 @@ export default function AppSidebar() {
         })}
       </nav>
 
-      {/* AI Advisor + Skills launcher */}
-      <div className='px-2 pb-2 space-y-1.5'>
-        {/* AI Advisor button */}
+      {/* AI Advisor */}
+      <div className='px-2 pb-2'>
         <button
           onClick={toggleAdvisor}
           title='AI Advisor'
@@ -97,23 +96,6 @@ export default function AppSidebar() {
               <span className='flex-1 text-left'>AI Advisor</span>
               <span className='text-[9px] font-bold px-1.5 py-0.5 rounded-full
                 bg-[#3B82F6]/20 text-[#3B82F6] leading-none'>AI</span>
-            </>
-          )}
-        </button>
-
-        {/* Cmd+K skills launcher */}
-        <button
-          onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true }))}
-          title='Skills (⌘K)'
-          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
-            transition-colors text-gray-600 hover:text-white hover:bg-white/[0.04]
-            border border-white/[0.06] hover:border-white/[0.10]
-            ${collapsed ? 'justify-center' : ''}`}>
-          <Search size={14} className='shrink-0' />
-          {!collapsed && (
-            <>
-              <span className='flex-1 text-left'>Skills</span>
-              <kbd className='text-[10px] text-gray-600 font-mono'>⌘K</kbd>
             </>
           )}
         </button>
