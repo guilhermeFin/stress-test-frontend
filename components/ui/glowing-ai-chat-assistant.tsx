@@ -420,21 +420,37 @@ export function FloatingAiAssistant() {
       )}
 
       {/* ── Floating trigger button ── */}
-      <button
-        onClick={() => setOpen(v => !v)}
-        aria-label='Toggle AI Advisor'
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full
-          flex items-center justify-center shadow-lg shadow-black/50
-          bg-violet-600 hover:bg-violet-500 transition-all duration-200
-          ${open ? 'rotate-90 scale-95' : 'hover:scale-105'}`}
-      >
-        {open
-          ? <X size={20} className='text-white' />
-          : <Bot size={22} className='text-white' />}
-        {!open && (
-          <span className='absolute inset-0 rounded-full bg-violet-500/30 animate-ping' />
-        )}
-      </button>
+      <div className='fixed bottom-6 right-6 z-50 w-14 h-14'>
+        {/* Shine border layer */}
+        <div
+          style={{
+            '--border-width': '2px',
+            '--border-radius': '9999px',
+            '--duration': '6s',
+            '--mask-linear-gradient': 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            '--background-radial-gradient': 'radial-gradient(transparent,transparent,#8B5CF6,#A78BFA,#6366F1,transparent,transparent)',
+          } as React.CSSProperties}
+          className='absolute inset-0 rounded-full
+            before:absolute before:inset-0 before:size-full before:rounded-full
+            before:p-[--border-width] before:will-change-[background-position]
+            before:content-[""] before:![-webkit-mask-composite:xor] before:![mask-composite:exclude]
+            before:[background-image:--background-radial-gradient]
+            before:[background-size:300%_300%] before:[mask:--mask-linear-gradient]
+            motion-safe:before:animate-shine'
+        />
+        <button
+          onClick={() => setOpen(v => !v)}
+          aria-label='Toggle AI Advisor'
+          className={`absolute inset-0 rounded-full flex items-center justify-center
+            shadow-lg shadow-black/50 bg-violet-600 hover:bg-violet-500
+            transition-all duration-200
+            ${open ? 'rotate-90 scale-95' : 'hover:scale-105'}`}
+        >
+          {open
+            ? <X size={20} className='text-white' />
+            : <Bot size={22} className='text-white' />}
+        </button>
+      </div>
     </>
   )
 }
