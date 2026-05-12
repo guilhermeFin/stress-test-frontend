@@ -22,7 +22,9 @@ import {
   TrendingDown, Landmark, BarChart3, Lightbulb, Brain,
   Users, Briefcase, CheckCircle, AlertTriangle, XCircle,
   ArrowRight, ChevronDown, BookmarkPlus, Layers, FileText,
+  Circle, CheckCircle2, XCircle as XCircleIcon, ListChecks,
 } from 'lucide-react'
+import ComplianceFooter from '@/components/compliance/ComplianceFooter'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Cell, ReferenceLine,
@@ -624,6 +626,147 @@ const ClientView = memo(function ClientView({ results }: { results: StressTestRe
   )
 })
 
+// ── Action plan ──────────────────────────────────────────────────────────────
+type ActionStatus = 'todo' | 'done' | 'dismissed'
+
+interface LocalAction {
+  id: string
+  kind: string
+  title: string
+  detail: string
+  status: ActionStatus
+}
+
+function deriveActions(results: StressTestResult): LocalAction[] {
+  const { positions, summary, explanation } = results
+  const actions: LocalAction[] = []
+
+  const worstPositions = [...positions]
+    .sort((a, b) => a.loss_pct - b.loss_pct)
+    .slice(0, 2)
+    .filter(p => p.loss_pct < -10)
+
+  worstPositions.forEach(p => {
+    actions.push({
+      id: `rebalance-${p.ticker}`,
+      kind: 'rebalance',
+      title: `Trim ${p.ticker} position`,
+      detail: `${p.ticker} loses ${p.loss_pct.toFixed(1)}% under this scenario. Consider reducing allocation.`,
+      status: 'todo',
+    })
+  })
+
+  const taxSavings = (summary as any).total_tax_impact
+  if (taxSavings && taxSavings > 0) {
+    actions.push({
+      id: 'harvest-tlh',
+      kind: 'harvest',
+      title: 'Execute tax-loss harvest',
+      detail: `Estimated ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(taxSavings)} in tax savings available.`,
+      status: 'todo',
+    })
+  }
+
+  if (summary.total_loss_pct < -20) {
+    actions.push({
+      id: 'raise-cash',
+      kind: 'raise_cash',
+      title: 'Raise cash buffer',
+      detail: 'Severe drawdown risk. Increasing cash to 5–10% reduces sequence-of-returns exposure.',
+      status: 'todo',
+    })
+  }
+
+  if (summary.total_loss_pct < -15) {
+    actions.push({
+      id: 'client-call',
+      kind: 'client_call',
+      title: 'Schedule client review call',
+      detail: 'Portfolio faces meaningful stress impact. Proactive communication builds trust during volatility.',
+      status: 'todo',
+    })
+  }
+
+  if ((explanation as any)?.advisor_summary) {
+    actions.push({
+      id: 'review-memo',
+      kind: 'review',
+      title: 'Review AI analyst memo',
+      detail: 'Read the generated memo and verify trade recommendations before client delivery.',
+      status: 'todo',
+    })
+  }
+
+  return actions
+}
+
+const KIND_LABELS: Record<string, string> = {
+  rebalance:   'Rebalance',
+  harvest:     'Tax harvest',
+  hedge:       'Hedge',
+  raise_cash:  'Raise cash',
+  client_call: 'Client call',
+  review:      'Review',
+}
+
+const ActionPlan = memo(function ActionPlan({ results }: { results: StressTestResult }) {
+  const [actions, setActions] = useState<LocalAction[]>(() => deriveActions(results))
+
+  const cycle = (id: string) => {
+    setActions(prev => prev.map(a => {
+      if (a.id !== id) return a
+      const next: ActionStatus = a.status === 'todo' ? 'done' : a.status === 'done' ? 'dismissed' : 'todo'
+      return { ...a, status: next }
+    }))
+  }
+
+  const todoCount = actions.filter(a => a.status === 'todo').length
+
+  return (
+    <div className='rounded-2xl border border-white/8 overflow-hidden'>
+      <div className='flex items-center gap-3 px-4 md:px-6 py-4 bg-white/3 border-b border-white/6'>
+        <div className='w-8 h-8 bg-[#3B82F6]/20 rounded-lg flex items-center justify-center'>
+          <ListChecks size={16} className='text-[#3B82F6]' />
+        </div>
+        <div>
+          <h2 className='font-semibold text-white tracking-tight text-sm'>Action plan</h2>
+          <p className='text-xs text-gray-500'>{todoCount} item{todoCount !== 1 ? 's' : ''} to-do</p>
+        </div>
+      </div>
+      <div className='divide-y divide-white/4'>
+        {actions.map(a => {
+          const Icon = a.status === 'done' ? CheckCircle2 : a.status === 'dismissed' ? XCircleIcon : Circle
+          const iconColor = a.status === 'done' ? 'text-green-400' : a.status === 'dismissed' ? 'text-gray-600' : 'text-gray-500'
+          return (
+            <button
+              key={a.id}
+              onClick={() => cycle(a.id)}
+              className='w-full flex items-start gap-3 px-4 md:px-6 py-3.5 hover:bg-white/3 text-left transition-colors group'>
+              <Icon size={15} className={`${iconColor} shrink-0 mt-0.5`} />
+              <div className='min-w-0 flex-1'>
+                <div className='flex items-center gap-2 flex-wrap'>
+                  <span className={`text-sm font-medium
+                    ${a.status === 'dismissed' ? 'text-gray-600 line-through' : 'text-gray-200'}`}>
+                    {a.title}
+                  </span>
+                  <span className='text-[10px] text-gray-600 bg-white/5 border border-white/8
+                    px-1.5 py-0.5 rounded font-medium'>
+                    {KIND_LABELS[a.kind] ?? a.kind}
+                  </span>
+                </div>
+                <p className='text-xs text-gray-500 leading-relaxed mt-0.5'>{a.detail}</p>
+              </div>
+            </button>
+          )
+        })}
+      </div>
+      <div className='px-4 md:px-6 py-2.5 bg-white/[0.015] border-t border-white/4'>
+        <p className='text-[10px] text-gray-700'>Click an action to cycle: to-do → done → dismissed</p>
+      </div>
+    </div>
+  )
+})
+
 // ── Interfaces ───────────────────────────────────────────────────────────────
 interface HouseholdAccount {
   name: string
@@ -858,6 +1001,9 @@ const AdvisorView = memo(function AdvisorView({ results, household, profile, set
         status={metrics.positionStatus} defaultExpanded={metrics.positionStatus !== 'green'}>
         <PositionTable positions={results.positions} />
       </CollapsibleSection>
+
+      {/* Action plan */}
+      <ActionPlan results={results} />
 
     </div>
   )
@@ -1151,6 +1297,8 @@ export default function ResultsPage() {
           setProfile={setProfile}
         />
       )}
+
+      {view !== 'presentation' && <ComplianceFooter />}
 
     </main>
   )
