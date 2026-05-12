@@ -9,6 +9,50 @@ import {
 import { EDUCATION_SLIDES, type Presentation } from '@/lib/research'
 import { usePresentationDraft } from '@/lib/presentation-context'
 
+function exportPresentation(pres: Presentation) {
+  const slides = pres.slides
+    .sort((a, b) => a.order - b.order)
+    .map(ps => EDUCATION_SLIDES.find(s => s.id === ps.slide_id))
+    .filter(Boolean)
+
+  const lines: string[] = [
+    `VANTAGE — ${pres.title}`,
+    pres.household_name ? `Client: ${pres.household_name}` : '',
+    `Date: ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`,
+    `Slides: ${slides.length}`,
+    '',
+    '─'.repeat(60),
+    '',
+  ]
+
+  slides.forEach((s, i) => {
+    if (!s) return
+    lines.push(`${i + 1}. ${s.title}`)
+    lines.push(`   ${s.subtitle}`)
+    lines.push('')
+    lines.push(`   ${s.description}`)
+    lines.push('')
+    lines.push('   Key Takeaways:')
+    s.key_takeaways.forEach(t => lines.push(`   • ${t}`))
+    lines.push('')
+    lines.push('   Talking Points:')
+    s.talking_points.forEach(t => lines.push(`   "${t}"`))
+    lines.push('')
+    lines.push('─'.repeat(60))
+    lines.push('')
+  })
+
+  lines.push('AI-assisted — verify before client delivery | Vantage by VANTAGE')
+
+  const blob = new Blob([lines.filter(Boolean).join('\n')], { type: 'text/plain' })
+  const url  = URL.createObjectURL(blob)
+  const a    = document.createElement('a')
+  a.href     = url
+  a.download = `${pres.title.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.txt`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 const MOCK_PRESENTATIONS: Presentation[] = [
   {
     id: 'p1',
@@ -91,7 +135,8 @@ function PresentationCard({ pres, onDelete, onAddDraft, draftCount }: {
               <Plus size={11} /> Add {draftCount} slide{draftCount > 1 ? 's' : ''}
             </button>
           )}
-          <button title='Export PDF'
+          <button title='Export outline'
+            onClick={() => exportPresentation(pres)}
             className='text-gray-600 hover:text-white transition-colors p-1.5 hover:bg-white/5 rounded-lg'>
             <Download size={14} />
           </button>
