@@ -29,7 +29,6 @@ export type PlainLink = {
 export type NavConfig = {
   product: MegaMenu
   solutions: MegaMenu
-  howItWorks: PlainLink
   pricing: PlainLink
 }
 
@@ -107,6 +106,5 @@ export const navConfig: NavConfig = {
       },
     ],
   },
-  howItWorks: { label: 'How it works', href: '/how-it-works' },
   pricing:    { label: 'Pricing',      href: '/pricing' },
 }

@@ -232,19 +232,6 @@ export default function SiteNav() {
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <Link
-                    href={navConfig.howItWorks.href}
-                    className='inline-flex h-9 items-center px-3 py-2 text-sm font-medium
-                      text-gray-300 hover:text-white transition-colors rounded-md
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]'
-                  >
-                    {navConfig.howItWorks.label}
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link
                     href={navConfig.pricing.href}
                     className='inline-flex h-9 items-center px-3 py-2 text-sm font-medium
                       text-gray-300 hover:text-white transition-colors rounded-md
@@ -323,16 +310,6 @@ export default function SiteNav() {
               <MobileSection menu={navConfig.product} onClose={() => setDrawerOpen(false)} />
               <MobileSection menu={navConfig.solutions} onClose={() => setDrawerOpen(false)} />
 
-              <div className='border-b border-white/[0.06]'>
-                <Link
-                  href={navConfig.howItWorks.href}
-                  onClick={() => setDrawerOpen(false)}
-                  className='flex items-center px-4 py-4 text-sm font-medium text-gray-300
-                    hover:text-white transition-colors'
-                >
-                  {navConfig.howItWorks.label}
-                </Link>
-              </div>
               <div className='border-b border-white/[0.06]'>
                 <Link
                   href={navConfig.pricing.href}
