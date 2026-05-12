@@ -8,10 +8,10 @@ import {
 } from 'lucide-react'
 import ScrollReveal from '@/components/ScrollReveal'
 import { Button } from '@/components/ui/neon-button'
-import Logo from '@/components/Logo'
 import GlobalBackground from '@/components/GlobalBackground'
 import FeaturesSection from '@/components/marketing/features-section'
 import ToolsSection from '@/components/marketing/tools-section'
+import HeroSection from '@/components/marketing/hero-section'
 
 const STEPS = [
   {
@@ -120,186 +120,8 @@ export default function HomePage() {
       <div className='relative z-10'>
 
         {/* ── 2. Hero ─────────────────────────────────────────────────────── */}
-        <div className='relative'>
+        <HeroSection />
 
-        <section className='relative max-w-6xl mx-auto px-6 pt-32 pb-6 text-center'>
-
-          <div data-reveal
-            className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-              bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs
-              font-medium mb-10'>
-            <span className='w-1.5 h-1.5 bg-[#3B82F6] rounded-full animate-pulse' />
-            Built for Wealth Managers &amp; RIAs
-          </div>
-
-          <h1 data-reveal data-delay='100'
-            className='font-black tracking-tight mb-6
-              bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent'
-            style={{
-              fontSize: 'clamp(52px, 7vw, 88px)',
-              lineHeight: '1.0',
-            }}>
-            Stress test.<br />Build confidence.
-          </h1>
-
-          <p data-reveal data-delay='150'
-            className='text-lg font-medium text-gray-300 max-w-xl mx-auto mb-4'>
-            Institutional-grade portfolio risk analysis in 60 seconds.
-          </p>
-
-          <p data-reveal data-delay='200'
-            className='text-gray-400 max-w-2xl mx-auto leading-relaxed mb-12'>
-            Vantage transforms complex market data into clear, actionable insights
-            so you can lead with confidence when your clients need it most.
-          </p>
-
-          <div data-reveal data-delay='300'
-            className='flex flex-wrap items-center justify-center gap-4 mb-8'>
-
-            <Link href='/upload'>
-              <Button variant='solid' size='lg' className='flex items-center gap-3 text-sm font-semibold'>
-                Start Stress Test <ArrowRight size={14} />
-              </Button>
-            </Link>
-
-            <a href='#how-it-works'
-              className='inline-flex items-center gap-2 px-8 py-3.5 rounded-full
-                border border-white/20 text-sm font-medium text-white/80 bg-white/5
-                hover:bg-white/8 hover:border-white/30
-                transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-              See How It Works
-            </a>
-          </div>
-
-          <div data-reveal data-delay='350' className='mb-24'>
-            <Link href='/auth/sign-in'
-              className='inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-300
-                transition-colors duration-300 group'>
-              Already a customer?
-              <span className='text-[#3B82F6] font-medium group-hover:underline'>
-                Sign in to your workspace <ArrowRight size={12} className='inline' />
-              </span>
-            </Link>
-          </div>
-
-          {/* Dashboard preview — double-bezel */}
-          <div data-reveal data-delay='400' className='relative mx-auto max-w-4xl'>
-            <div className='p-2 rounded-[2.5rem] bg-white/5 ring-1 ring-white/8
-              transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]
-              hover:ring-white/[0.14]'>
-              <div className='rounded-[1.9rem] overflow-hidden
-                shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] bg-[#0d1117]'>
-
-                <div className='border-b border-white/8 px-4 py-2 flex items-center
-                  gap-2 bg-[#0d1117]'>
-                  <Logo size={14} />
-                  <span className='w-px h-3 bg-white/10 shrink-0 mr-1' />
-                  <div className='w-px h-3 bg-white/10 shrink-0' />
-                  <div className='flex items-center gap-0.5 overflow-hidden'>
-                    {['Summary', 'Charts', 'Factors', 'Liquidity', 'Monte Carlo', 'Tax impact', 'AI Analysis'].map((s, i) => (
-                      <span key={s}
-                        className={`relative text-xs px-2 py-1 rounded-md whitespace-nowrap
-                          ${i === 0 ? 'text-white' : 'text-gray-600'}`}>
-                        {s}
-                        {i === 0 && (
-                          <span className='absolute bottom-0 left-1.5 right-1.5 h-0.5
-                            bg-[#3B82F6] rounded-full' />
-                        )}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className='border-b border-white/6 px-4 py-2 flex items-center
-                  gap-5 bg-white/[0.02]'>
-                  <div className='flex items-center gap-1 bg-white/5 rounded-lg p-0.5
-                    border border-white/8 shrink-0'>
-                    <span className='text-xs px-2 py-0.5 bg-white/10 rounded text-white'>Advisor</span>
-                    <span className='text-xs px-2 py-0.5 text-gray-500'>Client</span>
-                  </div>
-                  <div className='flex items-center gap-5 text-xs overflow-hidden'>
-                    {[
-                      { l: 'Health',      v: '6.2/10',  c: 'text-yellow-400' },
-                      { l: 'Stress loss', v: '−23.4%',  c: 'text-red-400'    },
-                      { l: 'Recovery',    v: '3.1 yrs', c: 'text-[#3B82F6]'  },
-                      { l: 'Goals',       v: 'At risk',  c: 'text-yellow-400' },
-                    ].map(m => (
-                      <span key={m.l} className='text-gray-500 shrink-0'>
-                        {m.l} <span className={`font-medium tabular-nums ${m.c}`}>{m.v}</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className='p-4 space-y-3'>
-                  <div className='bg-white/[0.03] rounded-2xl border border-white/8 p-3'>
-                    <div className='flex items-center justify-between mb-3'>
-                      <span className='text-xs font-medium text-white'>Summary</span>
-                      <span className='text-xs text-yellow-400 bg-yellow-900/20
-                        border border-yellow-800/30 px-2 py-0.5 rounded-full'>
-                        6.2/10 health
-                      </span>
-                    </div>
-                    <div className='grid grid-cols-4 gap-2'>
-                      {[
-                        { l: 'Portfolio Value', v: '$2,400,000', c: 'text-white'     },
-                        { l: 'Stressed Value',  v: '$1,838,240', c: 'text-red-400'   },
-                        { l: 'Total Loss',      v: '−$561,760',  c: 'text-red-400'   },
-                        { l: 'Tax Savings',     v: '+$14,200',   c: 'text-green-400' },
-                      ].map(m => (
-                        <div key={m.l} className='bg-white/5 rounded-xl p-2'>
-                          <p className='text-xs text-gray-500 mb-0.5'>{m.l}</p>
-                          <p className={`text-sm font-medium tabular-nums ${m.c}`}>{m.v}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className='grid grid-cols-2 gap-3'>
-                    <div className='bg-white/[0.03] rounded-2xl border border-white/8 p-3'>
-                      <p className='text-xs text-gray-500 mb-2'>Factor attribution</p>
-                      <div className='space-y-1.5'>
-                        {[
-                          { l: 'Market beta',   v: '−14.2%', w: 82 },
-                          { l: 'Rate risk',     v: '−5.1%',  w: 55 },
-                          { l: 'Credit spread', v: '−2.8%',  w: 34 },
-                          { l: 'Growth factor', v: '−1.3%',  w: 18 },
-                        ].map(f => (
-                          <div key={f.l} className='flex items-center gap-2'>
-                            <span className='text-xs text-gray-500 w-20 shrink-0'>{f.l}</span>
-                            <div className='flex-1 h-1 bg-white/10 rounded-full'>
-                              <div className='h-full bg-red-500/60 rounded-full'
-                                style={{ width: `${f.w}%` }} />
-                            </div>
-                            <span className='text-xs text-red-400 tabular-nums w-9 text-right'>{f.v}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className='bg-[#3B82F6]/10 border border-[#3B82F6]/20 rounded-2xl p-3'>
-                      <div className='flex items-center gap-1.5 mb-2'>
-                        <Brain size={11} className='text-[#3B82F6]' />
-                        <span className='text-xs text-[#3B82F6] font-medium'>AI Analyst Memo</span>
-                      </div>
-                      <p className='text-xs text-gray-400 leading-relaxed'>
-                        Under a 2008-style scenario, this portfolio faces a{' '}
-                        <span className='text-white font-medium'>23.4% drawdown</span>, driven
-                        primarily by market beta (61%) and rate sensitivity. Priority action:
-                        trim AAPL and MSFT, which account for 67% of total stress loss...
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <div className='absolute bottom-0 left-0 right-0 h-28
-              bg-gradient-to-t from-[#0A0F1E] to-transparent rounded-b-[2.5rem]
-              pointer-events-none' />
-          </div>
-        </section>
-        </div>{/* end hero wrapper */}
 
         {/* ── 3. How It Works ─────────────────────────────────────────────── */}
         <section id='how-it-works' className='max-w-6xl mx-auto px-6 py-32'>
