@@ -14,6 +14,7 @@ export function BackgroundGradientAnimation({
   size = '80%',
   blendingValue = 'hard-light',
   interactive = true,
+  darkenOverlay = 0.72,
   containerClassName,
 }: {
   gradientBackgroundStart?: string
@@ -27,6 +28,7 @@ export function BackgroundGradientAnimation({
   size?: string
   blendingValue?: string
   interactive?: boolean
+  darkenOverlay?: number
   containerClassName?: string
 }) {
   const interactiveRef = useRef<HTMLDivElement>(null)
@@ -142,6 +144,12 @@ export function BackgroundGradientAnimation({
           />
         )}
       </div>
+
+      {/* Darkening overlay — improves text legibility */}
+      <div
+        className='absolute inset-0 pointer-events-none'
+        style={{ background: `rgba(10, 15, 30, ${darkenOverlay})` }}
+      />
     </div>
   )
 }
