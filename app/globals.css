@@ -209,3 +209,10 @@ tr:hover td { background: rgba(255, 255, 255, 0.02) !important; }
 @utility animate-fourth { animation: moveHorizontal 40s ease    infinite; }
 @utility animate-fifth  { animation: moveInCircle   20s ease    infinite; }
 
+/* ── Glowing input border ─────────────────────────────────────── */
+@keyframes spin-slow {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@utility animate-spin-slow { animation: spin-slow 3s linear infinite; }
+

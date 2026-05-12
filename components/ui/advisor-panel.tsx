@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { X, Send, Sparkles, RotateCcw, Copy, Check, Zap } from 'lucide-react'
+import { X, Sparkles, RotateCcw, Copy, Check, Zap } from 'lucide-react'
 import { useAdvisor } from '@/lib/advisor-context'
+import { GlowingAdvisorInput } from '@/components/ui/animated-glowing-search-bar'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -64,12 +65,7 @@ export function AdvisorPanel() {
   const [streaming, setStreaming] = useState(false)
   const [copied, setCopied]      = useState<number | null>(null)
   const bottomRef  = useRef<HTMLDivElement>(null)
-  const inputRef   = useRef<HTMLTextAreaElement>(null)
   const abortRef   = useRef<AbortController | null>(null)
-
-  useEffect(() => {
-    if (isOpen) setTimeout(() => inputRef.current?.focus(), 80)
-  }, [isOpen])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -323,37 +319,15 @@ export function AdvisorPanel() {
 
         {/* Input */}
         <div className='px-4 pb-4 pt-1.5 shrink-0'>
-          <div className={`flex items-end gap-2 bg-white/[0.03] rounded-2xl px-3.5 py-2.5
-            border transition-colors
-            ${streaming ? 'border-white/[0.06]' : 'border-white/[0.08] hover:border-white/[0.14] focus-within:border-[#3B82F6]/50'}`}>
-            <textarea
-              ref={inputRef}
-              value={input}
-              disabled={streaming}
-              rows={1}
-              placeholder='Ask about markets, tax strategy, client communication…'
-              className='flex-1 bg-transparent text-sm text-white placeholder:text-gray-600
-                resize-none outline-none leading-relaxed disabled:opacity-40'
-              style={{ height: '24px', maxHeight: '120px' }}
-              onChange={e => {
-                setInput(e.target.value)
-                // auto-height
-                const t = e.target
-                t.style.height = 'auto'
-                t.style.height = Math.min(t.scrollHeight, 120) + 'px'
-              }}
-              onKeyDown={onKeyDown}
-            />
-            <button
-              onClick={() => send(input)}
-              disabled={!input.trim() || streaming}
-              className='shrink-0 w-7 h-7 rounded-lg bg-[#3B82F6] hover:bg-[#2563EB]
-                flex items-center justify-center mb-0.5
-                disabled:opacity-30 disabled:cursor-not-allowed transition-colors'>
-              <Send size={13} className='text-white' />
-            </button>
-          </div>
-          <p className='text-[10px] text-gray-700 mt-1.5 text-right'>
+          <GlowingAdvisorInput
+            value={input}
+            onChange={setInput}
+            onSend={() => send(input)}
+            onKeyDown={onKeyDown}
+            disabled={streaming}
+            placeholder='Ask about markets, tax strategy, client communication…'
+          />
+          <p className='text-[10px] text-gray-700 mt-2 text-right'>
             Enter to send · Shift+Enter for newline
           </p>
         </div>
