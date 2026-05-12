@@ -197,11 +197,18 @@ export default function HomePage() {
                 ))}
               </div>
 
-              <Link href='/demo'>
-                <Button variant='solid' className='flex items-center gap-2 text-sm font-semibold'>
-                  Try Free <ArrowRight size={12} />
-                </Button>
-              </Link>
+              <div className='flex items-center gap-3'>
+                <Link href='/auth/sign-in'
+                  className='text-sm text-gray-400 hover:text-white transition-colors
+                    duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'>
+                  Sign in
+                </Link>
+                <Link href='/demo'>
+                  <Button variant='solid' className='flex items-center gap-2 text-sm font-semibold'>
+                    Try Free <ArrowRight size={12} />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </header>
@@ -241,7 +248,7 @@ export default function HomePage() {
           </p>
 
           <div data-reveal data-delay='300'
-            className='flex flex-wrap items-center justify-center gap-4 mb-24'>
+            className='flex flex-wrap items-center justify-center gap-4 mb-8'>
 
             <Link href='/upload'>
               <Button variant='solid' size='lg' className='flex items-center gap-3 text-sm font-semibold'>
@@ -256,6 +263,17 @@ export default function HomePage() {
                 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]'>
               See How It Works
             </a>
+          </div>
+
+          <div data-reveal data-delay='350' className='mb-24'>
+            <Link href='/auth/sign-in'
+              className='inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-300
+                transition-colors duration-300 group'>
+              Already a customer?
+              <span className='text-[#3B82F6] font-medium group-hover:underline'>
+                Sign in to your workspace <ArrowRight size={12} className='inline' />
+              </span>
+            </Link>
           </div>
 
           {/* Dashboard preview — double-bezel */}
@@ -610,6 +628,11 @@ export default function HomePage() {
                 className='text-xs text-gray-400 hover:text-white
                   transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'>
                 Intelligence
+              </Link>
+              <Link href='/auth/sign-in'
+                className='text-xs text-gray-400 hover:text-white
+                  transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'>
+                Sign in
               </Link>
             </div>
           </div>

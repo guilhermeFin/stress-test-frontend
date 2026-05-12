@@ -12,7 +12,7 @@ type Step = 'initial' | 'otp'
 
 export default function SignInForm() {
   const searchParams  = useSearchParams()
-  const callbackUrl   = searchParams.get('callbackUrl') ?? '/upload'
+  const callbackUrl   = searchParams.get('callbackUrl') ?? '/dashboard'
   const urlError      = searchParams.get('error')
 
   const [step, setStep]       = useState<Step>('initial')
