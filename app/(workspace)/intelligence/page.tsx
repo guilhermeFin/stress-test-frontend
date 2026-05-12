@@ -4,12 +4,11 @@ import { useState } from 'react'
 import { runStressTest } from '@/lib/api'
 import { Button } from '@/components/ui/neon-button'
 import {
-  Zap, ArrowLeft, Plus, X,
+  Zap, Plus, X,
   BarChart2, Brain, AlertCircle
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Logo from '@/components/Logo'
 
 interface TickerRow {
   ticker: string
@@ -159,17 +158,6 @@ export default function IntelligencePage() {
     <main className='min-h-screen text-white'>
       <div className='max-w-4xl mx-auto px-6 py-10'>
 
-        {/* Header */}
-        <div className='flex items-center justify-between mb-10'>
-          <div className='flex items-center gap-3'>
-            <Logo size={22} />
-          </div>
-          <Link href='/' className='flex items-center gap-2 text-sm
-            text-gray-400 hover:text-white transition-colors'>
-            <ArrowLeft size={14} />
-            Back to home
-          </Link>
-        </div>
 
         {/* Title */}
         <div className='mb-8'>

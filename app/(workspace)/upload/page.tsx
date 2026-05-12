@@ -6,12 +6,11 @@ import { useDropzone } from 'react-dropzone'
 import { runStressTest, runBrazilStressFile, listBrazilScenarios, BrazilScenarioMeta } from '@/lib/api'
 import {
   Upload, AlertCircle, Download,
-  Shield, BarChart3, Brain, Activity, ChevronRight, Clock, ArrowLeft, Calendar
+  Shield, BarChart3, Brain, Activity, ChevronRight, Clock
 } from 'lucide-react'
 import ShockBuilder from '@/components/ShockBuilder'
 import { Button } from '@/components/ui/neon-button'
 import Link from 'next/link'
-import Logo from '@/components/Logo'
 
 const HISTORICAL_SCENARIOS = [
   {
@@ -157,39 +156,6 @@ export default function UploadPage() {
     <main className='min-h-screen text-white'>
       <div className='relative max-w-6xl mx-auto px-6 py-12'>
 
-        {/* Header */}
-        <div className='flex items-center justify-between mb-16'>
-          <div className='flex items-center gap-3'>
-            <Link href='/' className='flex items-center gap-2 text-gray-400
-              hover:text-white transition-colors mr-1'>
-              <ArrowLeft size={14} />
-            </Link>
-            <Logo size={22} />
-          </div>
-          <div className='flex items-center gap-2'>
-            <Link href='/clients'
-              className='flex items-center gap-2 px-4 py-2 rounded-full
-                bg-white/5 hover:opacity-85 border border-white/10
-                text-sm text-gray-300 transition-opacity'>
-              <Calendar size={14} className='text-green-400' />
-              Annual Review
-            </Link>
-            <Link href='/compare'
-              className='flex items-center gap-2 px-4 py-2 rounded-full
-                bg-white/5 hover:opacity-85 border border-white/10
-                text-sm text-gray-300 transition-opacity'>
-              <Shield size={14} className='text-yellow-400' />
-              Compare Portfolios
-            </Link>
-            <Link href='/intelligence'
-              className='flex items-center gap-2 px-4 py-2 rounded-full
-                bg-white/5 hover:opacity-85 border border-white/10
-                text-sm text-gray-300 transition-opacity'>
-              <Brain size={14} className='text-[#3B82F6]' />
-              Custom Portfolio
-            </Link>
-          </div>
-        </div>
 
         {/* Hero */}
         <div className='text-center mb-16'>
