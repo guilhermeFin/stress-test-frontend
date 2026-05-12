@@ -420,28 +420,20 @@ export function FloatingAiAssistant() {
       )}
 
       {/* ── Floating trigger button ── */}
-      <div className='fixed bottom-6 right-6 z-50 w-14 h-14'>
-        {/* Shine border layer */}
+      <div className='fixed bottom-6 right-6 z-50 w-14 h-14 relative'>
+        {/* Spinning conic-gradient ring — extends 3px beyond button edges */}
         <div
+          className='absolute rounded-full [animation:fab-ring-spin_4s_linear_infinite]'
           style={{
-            '--border-width': '2px',
-            '--border-radius': '9999px',
-            '--duration': '6s',
-            '--mask-linear-gradient': 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            '--background-radial-gradient': 'radial-gradient(transparent,transparent,#8B5CF6,#A78BFA,#6366F1,transparent,transparent)',
-          } as React.CSSProperties}
-          className='absolute inset-0 rounded-full
-            before:absolute before:inset-0 before:size-full before:rounded-full
-            before:p-[--border-width] before:will-change-[background-position]
-            before:content-[""] before:![-webkit-mask-composite:xor] before:![mask-composite:exclude]
-            before:[background-image:--background-radial-gradient]
-            before:[background-size:300%_300%] before:[mask:--mask-linear-gradient]
-            motion-safe:before:animate-shine'
+            inset: '-3px',
+            background: 'conic-gradient(from 0deg, #4f46e5, #7c3aed, #a855f7, #c084fc, #818cf8, #4f46e5)',
+          }}
         />
+        {/* Button sits on top, its bg covers the ring center leaving only the 3px rim */}
         <button
           onClick={() => setOpen(v => !v)}
           aria-label='Toggle AI Advisor'
-          className={`absolute inset-0 rounded-full flex items-center justify-center
+          className={`absolute inset-0 rounded-full flex items-center justify-center z-10
             shadow-lg shadow-black/50 bg-violet-600 hover:bg-violet-500
             transition-all duration-200
             ${open ? 'rotate-90 scale-95' : 'hover:scale-105'}`}

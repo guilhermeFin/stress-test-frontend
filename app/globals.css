@@ -225,6 +225,12 @@ tr:hover td { background: rgba(255, 255, 255, 0.02) !important; }
 @utility animate-shine   { animation: shine var(--duration, 14s) linear infinite; }
 @utility bg-shine-size   { background-size: 300% 300%; }
 
+/* ── FAB ring spin ────────────────────────────────────────────── */
+@keyframes fab-ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* ── Pop-in (floating chat window) ───────────────────────────── */
 @keyframes popIn {
   from { opacity: 0; transform: scale(0.95) translateY(8px); }
