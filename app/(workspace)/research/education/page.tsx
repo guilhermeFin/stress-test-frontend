@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import {
   ArrowLeft, BookOpen, Check, ChevronRight,
-  ChevronLeft, X, Eye,
+  ChevronLeft, X, Eye, Maximize2,
 } from 'lucide-react'
 import { EDUCATION_SLIDES, type SlideCategory, type EducationSlide } from '@/lib/research'
 
@@ -233,14 +233,6 @@ function SlideCard({ slide, added, onAdd, onPreview }: {
           <p className='text-sm font-semibold text-white leading-snug'>{slide.title}</p>
           <p className='text-[11px] text-gray-500 mt-0.5'>{slide.subtitle}</p>
         </div>
-        <button
-          onClick={onPreview}
-          className='shrink-0 p-1.5 rounded-lg text-gray-600 hover:text-white
-            hover:bg-white/[0.06] transition-colors'
-          title='Preview slide'
-        >
-          <Eye size={14} />
-        </button>
       </div>
 
       <p className='text-xs text-gray-400 leading-relaxed'>{slide.description}</p>
@@ -258,6 +250,12 @@ function SlideCard({ slide, added, onAdd, onPreview }: {
       </div>
 
       <div className='flex items-center gap-2 mt-auto pt-1'>
+        <button
+          onClick={onPreview}
+          className='flex items-center gap-1 text-xs text-gray-500 hover:text-white transition-colors'
+        >
+          <Eye size={11} /> Preview
+        </button>
         <button
           onClick={() => onAdd(slide.id)}
           className={`ml-auto flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg
