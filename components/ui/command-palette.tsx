@@ -3,97 +3,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Search, ArrowRight, X } from 'lucide-react'
+import { SKILLS as COMMANDS, BADGE_COLORS } from '@/lib/skills'
 
-interface PaletteCommand {
-  id: string
-  slash: string
-  label: string
-  description: string
-  triggers: string[]
-  href: string
-  category: string
-  badge: 'P0' | 'P1'
-}
+import type { Skill } from '@/lib/skills'
 
-const COMMANDS: PaletteCommand[] = [
-  {
-    id: 'client-review',
-    slash: '/client-review',
-    label: 'Client Review Prep',
-    description: 'Performance summary, allocation drift, talking points, and action items for a client meeting.',
-    triggers: ['client review', 'meeting prep', 'quarterly review', 'prep for client', 'client meeting'],
-    href: '/households',
-    category: 'Wealth Management',
-    badge: 'P0',
-  },
-  {
-    id: 'tlh',
-    slash: '/tlh',
-    label: 'Tax-Loss Harvesting',
-    description: 'Scan taxable accounts for loss candidates, wash-sale check, and trade execution plan.',
-    triggers: ['tax-loss harvesting', 'TLH', 'harvest losses', 'tax losses', 'unrealized losses', 'year-end tax planning'],
-    href: '/tax/tlh',
-    category: 'Wealth Management',
-    badge: 'P0',
-  },
-  {
-    id: 'financial-plan',
-    slash: '/financial-plan',
-    label: 'Financial Plan',
-    description: 'Cash flow projection, Monte Carlo retirement success, goals, and scenario modeling.',
-    triggers: ['financial plan', 'retirement plan', 'can I retire', 'education funding', 'estate plan', 'plan update'],
-    href: '/planning/goals',
-    category: 'Wealth Management',
-    badge: 'P0',
-  },
-  {
-    id: 'rebalance',
-    slash: '/rebalance',
-    label: 'Portfolio Rebalance',
-    description: 'Drift vs IPS targets across asset classes, tax-aware trade list for all account types.',
-    triggers: ['rebalance', 'portfolio drift', 'allocation check', 'rebalancing trades', 'out of balance'],
-    href: '/portfolios',
-    category: 'Wealth Management',
-    badge: 'P0',
-  },
-  {
-    id: 'proposal',
-    slash: '/proposal',
-    label: 'Investment Proposal',
-    description: 'Prospect presentation: firm overview, proposed allocation, expected outcomes, fee structure.',
-    triggers: ['investment proposal', 'prospect presentation', 'pitch new client', 'new client presentation', 'proposal for'],
-    href: '/households',
-    category: 'Wealth Management',
-    badge: 'P1',
-  },
-  {
-    id: 'client-report',
-    slash: '/client-report',
-    label: 'Client Report',
-    description: 'One-page performance and allocation report for a client household.',
-    triggers: ['client report', 'performance report', 'account report'],
-    href: '/households',
-    category: 'Wealth Management',
-    badge: 'P1',
-  },
-  {
-    id: 'morning-note',
-    slash: '/morning-note',
-    label: 'Morning Note',
-    description: 'Overnight developments, macro context, and trade ideas — 2-minute read for the 7am meeting.',
-    triggers: ['morning note', 'morning meeting', 'what happened overnight', 'trade idea', 'morning call prep', 'daily note'],
-    href: '/research/macro',
-    category: 'Equity Research',
-    badge: 'P1',
-  },
-]
-
-const BADGE_COLORS = {
-  P0: 'text-[#3B82F6] bg-[#3B82F6]/10 border-[#3B82F6]/20',
-  P1: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
-}
-
-function score(cmd: PaletteCommand, q: string): number {
+function score(cmd: Skill, q: string): number {
   const lower = q.toLowerCase()
   if (cmd.slash.toLowerCase().includes(lower)) return 3
   if (cmd.label.toLowerCase().includes(lower)) return 2
