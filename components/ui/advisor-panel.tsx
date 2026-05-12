@@ -276,11 +276,7 @@ export function AdvisorPanel() {
         <div className='flex flex-1 min-h-0'>
 
           {/* Left: skills sidebar */}
-          <SkillsSidebar onAsk={prompt => {
-            setInput(prompt)
-            // Let the user see the prompt populate in the input, then auto-send
-            setTimeout(() => send(prompt), 320)
-          }} />
+          <SkillsSidebar onAsk={prompt => { setInput(prompt); send(prompt) }} />
 
           {/* Right: chat */}
           <div className='flex flex-col flex-1 min-w-0 min-h-0'>
@@ -288,8 +284,8 @@ export function AdvisorPanel() {
             {/* Messages */}
             <div className='flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0'>
 
-              <div className={`space-y-3 transition-all duration-300 ease-out
-                ${messages.length > 0 ? 'opacity-0 -translate-y-2 pointer-events-none h-0 overflow-hidden' : 'opacity-100 translate-y-0'}`}>
+              {messages.length === 0 && (
+                <div className='space-y-3'>
                   <div className='text-center pt-2 pb-1'>
                     <div className='w-10 h-10 rounded-2xl bg-[#3B82F6]/10 border border-[#3B82F6]/15
                       flex items-center justify-center mx-auto mb-3'>
@@ -326,12 +322,12 @@ export function AdvisorPanel() {
                       </button>
                     ))}
                   </div>
-              </div>
+                </div>
+              )}
 
               {messages.map((msg, idx) => (
                 <div key={idx}
-                  className={`flex gap-2 animate-message-in ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  style={{ animationDelay: `${Math.min(idx * 30, 60)}ms` }}>
+                  className={`flex gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {msg.role === 'assistant' && (
                     <div className='w-6 h-6 rounded-md bg-[#3B82F6]/15 border border-[#3B82F6]/20
                       flex items-center justify-center shrink-0 mt-0.5'>
