@@ -22,7 +22,7 @@ const NAV = [
   { href: '/coaching',        icon: BookOpen,        label: 'Coaching' },
   { href: '/research',        icon: FlaskConical,    label: 'Research' },
   { href: '/presentations',   icon: Presentation,    label: 'Presentations' },
-  { href: '/',                icon: Zap,             label: 'Stress Test' },
+  { href: '/upload',          icon: Zap,             label: 'Stress Test' },
   { href: '/compare',         icon: BarChart2,       label: 'Compare' },
   { href: '/intelligence',    icon: BrainCircuit,    label: 'Intelligence' },
   { href: '/inbox',           icon: Inbox,           label: 'Inbox' },
