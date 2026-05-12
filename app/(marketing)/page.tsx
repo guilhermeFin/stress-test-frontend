@@ -2,14 +2,15 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 import {
   ArrowRight, CheckCircle2,
-  Upload, Shield, Brain, Activity,
-  BarChart3, Target, Scissors, RefreshCw, FileText,
+  Upload, Shield, Brain,
+  Target,
   Search, Zap,
 } from 'lucide-react'
 import ScrollReveal from '@/components/ScrollReveal'
 import { Button } from '@/components/ui/neon-button'
 import Logo from '@/components/Logo'
 import GlobalBackground from '@/components/GlobalBackground'
+import FeaturesSection from '@/components/marketing/features-section'
 
 const STEPS = [
   {
@@ -29,57 +30,6 @@ const STEPS = [
     icon: Brain,
     title: 'Get Your Full Analysis',
     desc: '12-section institutional report in under 60 seconds: factor risk, liquidity, Monte Carlo, tax impact, AI memo, and more.',
-  },
-]
-
-const FEATURES = [
-  {
-    icon: BarChart3,
-    title: 'Factor Risk Model',
-    desc: '5-factor attribution across beta, rates, inflation, credit, and growth. See exactly where your risk is concentrated.',
-    color: 'text-[#3B82F6]',
-    bg: 'bg-[#3B82F6]/20',
-    wide: true,
-  },
-  {
-    icon: Target,
-    title: 'Goal Impact',
-    desc: 'Map stress to client outcomes — retirement age, monthly income, and financial goals.',
-    color: 'text-green-400',
-    bg: 'bg-green-600/20',
-    wide: false,
-  },
-  {
-    icon: RefreshCw,
-    title: 'Rebalancing',
-    desc: 'Position-level guidance with specific reduce/increase targets based on the scenario.',
-    color: 'text-orange-400',
-    bg: 'bg-orange-600/20',
-    wide: false,
-  },
-  {
-    icon: Scissors,
-    title: 'Tax Impact Layer',
-    desc: 'Harvest losses, estimate rebalancing costs, and calculate withdrawal drag — one click.',
-    color: 'text-purple-400',
-    bg: 'bg-purple-600/20',
-    wide: false,
-  },
-  {
-    icon: Activity,
-    title: 'Monte Carlo',
-    desc: '1,000 path simulation with ruin probability and depletion charts for any time horizon.',
-    color: 'text-yellow-400',
-    bg: 'bg-yellow-600/20',
-    wide: false,
-  },
-  {
-    icon: FileText,
-    title: 'Client-Ready Reports',
-    desc: 'One-click branded PDF with plain-English explanations your clients can actually understand — no quant jargon required.',
-    color: 'text-red-400',
-    bg: 'bg-red-600/20',
-    wide: true,
   },
 ]
 
@@ -149,8 +99,6 @@ const TIERS = [
     href: 'mailto:hello@portfoliostress.com',
   },
 ]
-
-const BENTO_DELAYS = ['', '100', '150', '200', '250', '300'] as const
 
 export default function HomePage() {
   return (
@@ -403,57 +351,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── 4. Features bento ───────────────────────────────────────────── */}
-        <section id='features' className='max-w-6xl mx-auto px-6 py-32'>
-          <div data-reveal className='text-center mb-20'>
-            <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-              bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs
-              font-medium mb-5'>
-              Full institutional stack
-            </div>
-            <h2 className='font-bold tracking-tight text-white mb-5'
-              style={{ fontSize: '48px', lineHeight: '1.21' }}>
-              Everything your clients expect
-            </h2>
-            <p className='text-gray-400 max-w-lg mx-auto'>
-              Every section of the analysis is built for speed, clarity,
-              and client communication — not just internal modeling.
-            </p>
-          </div>
-
-          <div className='grid grid-cols-1 md:grid-cols-6 gap-3 auto-rows-fr'>
-            {FEATURES.map((f, i) => (
-              <div key={f.title}
-                data-reveal
-                {...(BENTO_DELAYS[i] ? { 'data-delay': BENTO_DELAYS[i] } : {})}
-                className={`group ${
-                  i === 0 ? 'md:col-span-4' :
-                  i === 5 ? 'md:col-span-6' :
-                  'md:col-span-2'
-                }`}>
-                <div className='h-full p-1.5 rounded-[1.75rem] bg-white/4 ring-1 ring-white/8
-                  hover:ring-white/[0.16]
-                  transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                  <div className={`h-full rounded-[1.25rem] bg-[#0A0F1E] p-7
-                    shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]
-                    ${i === 5 ? 'flex flex-col md:flex-row items-start md:items-center gap-8' : ''}`}>
-                    <div className={i === 5 ? 'shrink-0' : 'mb-5'}>
-                      <div className={`w-10 h-10 ${f.bg} rounded-xl flex items-center
-                        justify-center group-hover:scale-105
-                        transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]`}>
-                        <f.icon size={18} className={f.color} />
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className='font-semibold text-white mb-2 text-lg'>{f.title}</h3>
-                      <p className='text-sm text-gray-400 leading-relaxed'>{f.desc}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* ── 4. Features ─────────────────────────────────────────────────── */}
+        <FeaturesSection />
 
         {/* ── 5. Pricing ──────────────────────────────────────────────────── */}
         <section id='pricing' className='max-w-6xl mx-auto px-6 py-32'>

@@ -181,3 +181,8 @@ tr:hover td { background: rgba(255, 255, 255, 0.02) !important; }
 .animate-pulse-glow { animation: pulseAccent 2.5s ease infinite; }
 .animate-breathe    { animation: breathe 2.5s ease-in-out infinite; }
 
+@keyframes border-beam-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
