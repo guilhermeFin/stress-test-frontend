@@ -66,16 +66,6 @@ export default function SoloPage() {
       </section>
 
       <section className='px-6 pb-20'>
-        <div className='max-w-5xl mx-auto rounded-2xl overflow-hidden border border-white/[0.08] shadow-2xl shadow-black/40'>
-          <img
-            src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80'
-            alt='Solo advisor working efficiently at their desk'
-            className='w-full h-[420px] object-cover'
-          />
-        </div>
-      </section>
-
-      <section className='px-6 pb-20'>
         <div className='max-w-4xl mx-auto'>
           <p className='text-xs font-semibold uppercase tracking-widest text-gray-500 text-center mb-10'>
             Before Vantage vs. after Vantage

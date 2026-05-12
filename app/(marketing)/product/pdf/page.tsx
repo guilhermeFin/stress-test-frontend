@@ -65,16 +65,6 @@ export default function PdfPage() {
       </section>
 
       <section className='px-6 pb-20'>
-        <div className='max-w-5xl mx-auto rounded-2xl overflow-hidden border border-white/[0.08] shadow-2xl shadow-black/40'>
-          <img
-            src='https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=1200&q=80'
-            alt='Professional financial report documents on a desk'
-            className='w-full h-[420px] object-cover'
-          />
-        </div>
-      </section>
-
-      <section className='px-6 pb-20'>
         <div className='max-w-3xl mx-auto'>
           <p className='text-xs font-semibold uppercase tracking-widest text-gray-500 text-center mb-10'>
             Three pages. Everything your client needs.
