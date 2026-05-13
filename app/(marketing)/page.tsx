@@ -1,36 +1,166 @@
 import Link from 'next/link'
-import { Fragment } from 'react'
-import {
-  ArrowRight, CheckCircle2,
-  Upload, Shield, Brain,
-  Target,
-  Search, Zap,
-} from 'lucide-react'
-import ScrollReveal from '@/components/ScrollReveal'
-import { Button } from '@/components/ui/neon-button'
-import Logo from '@/components/Logo'
-import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
-import FeaturesSection from '@/components/marketing/features-section'
-import ToolsSection from '@/components/marketing/tools-section'
+import { Source_Serif_4, JetBrains_Mono, Audiowide } from 'next/font/google'
+import { Search, Upload, Shield, Brain } from 'lucide-react'
 
-const STEPS = [
+// ── Fonts (scoped to this page via CSS variables) ─────────────────────────────
+
+const sourceSerif4 = Source_Serif_4({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--vantage-serif',
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--vantage-mono',
+})
+
+const audiowide = Audiowide({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--vantage-wordmark',
+})
+
+// ── Static data ───────────────────────────────────────────────────────────────
+
+const NAV_ITEMS = ['Stress Test', 'Methodology', 'Customers', 'Resources', 'About'] as const
+
+const INDEX_CARDS = [
   {
-    num: '01',
-    icon: Upload,
-    title: 'Upload Your Portfolio',
-    desc: 'Drop in an Excel file with your positions, or type tickers and weights directly. Any size, any mix.',
+    name: 'Summary',
+    value: '−23.4',
+    unit: '%',
+    gain: false,
+    direction: '▼ 23.4% max drawdown',
+    sparkline: '0,20 10,18 20,22 30,14 40,17 50,10 60,14 70,8 80,12',
   },
   {
-    num: '02',
-    icon: Shield,
-    title: 'Choose a Scenario',
-    desc: 'Pick from 6 historical crises — 2008 GFC, COVID, Dot-Com, and more — or describe your own in plain English.',
+    name: 'Factor Risk',
+    value: '82',
+    unit: '%',
+    gain: false,
+    direction: '▼ beta concentrated',
+    sparkline: '0,8 10,10 20,14 30,16 40,18 50,20 60,21 70,22 80,22',
   },
   {
-    num: '03',
-    icon: Brain,
-    title: 'Get Your Full Analysis',
-    desc: '12-section institutional report in under 60 seconds: factor risk, liquidity, Monte Carlo, tax impact, AI memo, and more.',
+    name: 'Correlation',
+    value: '0.91',
+    unit: '',
+    gain: false,
+    direction: '▼ stress spike +0.31',
+    sparkline: '0,10 10,12 20,10 30,16 40,12 50,18 60,16 70,20 80,22',
+  },
+  {
+    name: 'Liquidity',
+    value: '14',
+    unit: ' days',
+    gain: false,
+    direction: '▼ 3.2× longer exit',
+    sparkline: '0,6 10,8 20,10 30,14 40,16 50,18 60,20 70,20 80,22',
+  },
+  {
+    name: 'Monte Carlo',
+    value: '−31.2',
+    unit: '%',
+    gain: false,
+    direction: '▼ P95 scenario',
+    sparkline: '0,18 10,16 20,20 30,14 40,18 50,12 60,16 70,10 80,12',
+  },
+  {
+    name: 'Benchmark',
+    value: '−4.8',
+    unit: 'pp',
+    gain: false,
+    direction: '▼ vs S&P 500',
+    sparkline: '0,10 10,12 20,10 30,14 40,12 50,16 60,14 70,18 80,16',
+  },
+  {
+    name: 'Client Impact',
+    value: '67',
+    unit: '%',
+    gain: false,
+    direction: '▼ goal at risk',
+    sparkline: '0,8 10,10 20,12 30,16 40,14 50,18 60,20 70,22 80,22',
+  },
+  {
+    name: 'Rebalancing',
+    value: '8.3',
+    unit: '/10',
+    gain: true,
+    direction: '▲ clear actions ready',
+    sparkline: '0,22 10,20 20,18 30,16 40,14 50,12 60,10 70,8 80,6',
+  },
+  {
+    name: 'Tax Impact',
+    value: '$14.2',
+    unit: 'K',
+    gain: true,
+    direction: '▲ harvest opportunity',
+    sparkline: '0,22 10,20 20,16 30,14 40,12 50,10 60,8 70,6 80,4',
+  },
+  {
+    name: 'AI Memo',
+    value: '92',
+    unit: '%',
+    gain: true,
+    direction: '▲ high confidence',
+    sparkline: '0,20 10,18 20,16 30,14 40,12 50,10 60,8 70,6 80,4',
+  },
+]
+
+const HOW_STEPS = [
+  {
+    Icon: Upload,
+    title: 'Upload your portfolio',
+    desc: 'Drop in an Excel file with your positions, or type tickers directly. Any size, any asset mix — Vantage handles it.',
+  },
+  {
+    Icon: Shield,
+    title: 'Choose a scenario',
+    desc: 'Pick from 6 historical crises or describe your own in plain English. Custom shock sliders let you fine-tune every factor.',
+  },
+  {
+    Icon: Brain,
+    title: 'Get full analysis in 60s',
+    desc: '12-section institutional report: factor risk, liquidity, Monte Carlo, tax impact, AI memo — ready to put in front of a client.',
+  },
+]
+
+const COMPARISON = [
+  {
+    name: 'Riskalyze',
+    price: '$4–10K/yr',
+    featured: false,
+    features: [
+      'Risk score (single number)',
+      'Basic scenario analysis',
+      'Limited customization',
+      'Annual contract required',
+    ],
+  },
+  {
+    name: 'Vantage',
+    price: '$99–799/mo',
+    featured: true,
+    features: [
+      '12-section institutional report',
+      'Custom scenarios & shock builder',
+      'AI analyst memo with trade ideas',
+      'Month-to-month billing',
+      'Cancel anytime',
+    ],
+  },
+  {
+    name: 'eMoney',
+    price: '$5–15K/yr',
+    featured: false,
+    features: [
+      'Financial planning suite',
+      'Basic stress testing only',
+      'Complex onboarding required',
+      'Long-term contract',
+    ],
   },
 ]
 
@@ -45,14 +175,9 @@ const TIERS = [
       'Excel upload + template',
       '6 historical crisis scenarios',
       'Smart Risk Summary (health score)',
-      'Charts & position breakdown',
       'Factor risk model (5 factors)',
-      'Correlation breakdown',
-      'Liquidity stress analysis',
-      'Monte Carlo simulation (1,000 paths)',
       'Benchmark comparison',
       'PDF export',
-      'Email support',
     ],
     cta: 'Get Started',
     href: '/upload',
@@ -60,26 +185,19 @@ const TIERS = [
   {
     name: 'Professional',
     price: '$299',
-    desc: 'For advisors who need to communicate risk clearly and run client meetings confidently.',
+    desc: 'For advisors who run client meetings and communicate risk clearly.',
     popular: true,
     features: [
       'Unlimited stress tests',
       'Everything in Starter',
-      'Custom scenario builder + shock sliders',
-      'Tax impact analysis',
-      'Client impact & retirement goals',
-      'Rebalancing recommendations',
+      'Custom scenario builder + sliders',
       'AI analyst memo',
-      'Client Presentation Mode (slide deck)',
+      'Client Presentation Mode',
       'Portfolio comparison tool',
-      'Custom ticker portfolios (no Excel needed)',
-      'Household / multi-account view',
       'Annual review tracking',
-      'Branded PDF reports',
-      'Priority support',
     ],
     cta: 'Start Free Trial',
-    href: '/upload',
+    href: '/demo',
   },
   {
     name: 'Enterprise',
@@ -93,405 +211,609 @@ const TIERS = [
       'CRM integration (Salesforce, Redtail)',
       'Custodian sync (Schwab, Fidelity)',
       'Compliance audit trail',
-      'API access',
-      'Dedicated account manager',
     ],
     cta: 'Contact Sales',
-    href: 'mailto:hello@portfoliostress.com',
+    href: 'mailto:hello@vantage.app',
   },
 ]
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+const SERIF: React.CSSProperties = {
+  fontFamily: 'var(--vantage-serif), Georgia, "Times New Roman", serif',
+}
+
+const MONO: React.CSSProperties = {
+  fontFamily: 'var(--vantage-mono), "SF Mono", Menlo, monospace',
+}
+
+const WORDMARK: React.CSSProperties = {
+  fontFamily: 'var(--vantage-wordmark), sans-serif',
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+
 export default function HomePage() {
   return (
-    <div className='relative'>
-      <BackgroundGradientAnimation />
-      <ScrollReveal />
+    <div
+      className={`bg-white text-[#0B1B2E] ${sourceSerif4.variable} ${jetbrainsMono.variable} ${audiowide.variable}`}
+    >
+      {/* pt-16 clears the fixed SiteNav (h-16) */}
+      <div className="pt-16">
 
-      <div className='relative z-10'>
-
-        {/* ── 2. Hero ─────────────────────────────────────────────────────── */}
-        <div className='relative'>
-
-        <section className='relative max-w-6xl mx-auto px-6 pt-32 pb-6 text-center'>
-
-          <div data-reveal
-            className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-              bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs
-              font-medium mb-10'>
-            <span className='w-1.5 h-1.5 bg-[#3B82F6] rounded-full animate-pulse' />
-            Built for Wealth Managers &amp; RIAs
+        {/* ── Bloomberg header layer 1: utility strip ─────────────────── */}
+        <div className="h-8 bg-slate-50 border-b border-slate-200">
+          <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <div className="flex items-center gap-0.5 text-xs text-slate-500">
+              <Link href="#" className="px-1.5 py-0.5 hover:text-[#0B1B2E] transition-colors duration-150">
+                Product
+              </Link>
+              <span className="text-slate-300 select-none px-0.5">·</span>
+              <Link href="#pricing" className="px-1.5 py-0.5 hover:text-[#0B1B2E] transition-colors duration-150">
+                Pricing
+              </Link>
+              <span className="text-slate-300 select-none px-0.5">·</span>
+              <Link href="#how-it-works" className="px-1.5 py-0.5 hover:text-[#0B1B2E] transition-colors duration-150">
+                How it works
+              </Link>
+            </div>
+            <div className="flex items-center gap-4 text-xs">
+              <Link
+                href="/auth/sign-in"
+                className="text-slate-500 hover:text-[#0B1B2E] transition-colors duration-150"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/demo"
+                className="text-[#2563EB] font-semibold hover:text-[#1D4ED8] transition-colors duration-150"
+              >
+                Start free trial
+              </Link>
+            </div>
           </div>
+        </div>
 
-          <h1 data-reveal data-delay='100'
-            className='font-black tracking-tight mb-6
-              bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent'
-            style={{
-              fontSize: 'clamp(52px, 7vw, 88px)',
-              lineHeight: '1.0',
-            }}>
-            Know exactly how<br />your portfolio breaks.
-          </h1>
-
-          <p data-reveal data-delay='150'
-            className='text-lg font-medium text-gray-300 max-w-xl mx-auto mb-4'>
-            Upload a portfolio. Pick a crisis. Get a full institutional risk report in 60 seconds.
-          </p>
-
-          <p data-reveal data-delay='200'
-            className='text-gray-400 max-w-2xl mx-auto leading-relaxed mb-12'>
-            Vantage runs your holdings through 2008, COVID, rate shocks, and custom scenarios —
-            returning factor risk, liquidity gaps, Monte Carlo paths, tax impact, and a plain-English
-            AI memo you can put in front of a client right now.
-          </p>
-
-          <div data-reveal data-delay='300'
-            className='flex flex-wrap items-center justify-center gap-4 mb-8'>
-
-            <Link href='/upload'>
-              <Button variant='solid' size='lg' className='flex items-center gap-3 text-sm font-semibold'>
-                Start Stress Test <ArrowRight size={14} />
-              </Button>
-            </Link>
-
-            <a href='#how-it-works'
-              className='inline-flex items-center gap-2 px-8 py-3.5 rounded-full
-                border border-white/20 text-sm font-medium text-white/80 bg-white/5
-                hover:bg-white/8 hover:border-white/30
-                transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-              See How It Works
-            </a>
-          </div>
-
-          <div data-reveal data-delay='350' className='mb-24'>
-            <Link href='/auth/sign-in'
-              className='inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-300
-                transition-colors duration-300 group'>
-              Already a customer?
-              <span className='text-[#3B82F6] font-medium group-hover:underline'>
-                Sign in to your workspace <ArrowRight size={12} className='inline' />
+        {/* ── Bloomberg header layer 2: brand bar ─────────────────────── */}
+        <div className="h-[72px] bg-white border-b border-slate-200">
+          <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <Link href="/" aria-label="Vantage home">
+              <span
+                className="text-[#0B1B2E] tracking-[0.12em]"
+                style={{ ...WORDMARK, fontSize: '20px' }}
+              >
+                VANTAGE
               </span>
             </Link>
+            <div className="flex items-center gap-4">
+              <button
+                aria-label="Search"
+                className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[#0B1B2E] transition-colors duration-150"
+              >
+                <Search size={15} />
+              </button>
+              <Link
+                href="/auth/sign-in"
+                className="text-sm text-slate-600 hover:text-[#0B1B2E] transition-colors duration-150"
+              >
+                Sign in
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Bloomberg header layer 3: primary nav ───────────────────── */}
+        <div className="h-12 bg-[#0B1B2E]">
+          <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <nav className="flex items-center gap-6">
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item}
+                  href="#"
+                  className="text-sm text-white/70 hover:text-white transition-colors duration-150"
+                >
+                  {item}
+                </Link>
+              ))}
+            </nav>
+            <div className="flex items-center gap-2">
+              <span className="block w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse" />
+              <span className="text-xs text-white/50 tracking-wide">
+                Live · Stress Engine Active
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ── Hero ──────────────────────────────────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+        {/* Copy */}
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-4">
+            INSTITUTIONAL PORTFOLIO RISK
+          </p>
+          <h1
+            className="mb-5"
+            style={{
+              ...SERIF,
+              fontSize: 'clamp(52px, 5.5vw, 76px)',
+              lineHeight: 1.05,
+              fontWeight: 600,
+              letterSpacing: '-0.02em',
+              color: '#0B1B2E',
+            }}
+          >
+            Stress test.<br />Build confidence.
+          </h1>
+          <p className="text-lg text-slate-600 mb-8 leading-relaxed max-w-md">
+            Institutional-grade portfolio risk analysis in 60 seconds.
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/demo"
+              className="inline-flex items-center gap-2 bg-[#2563EB] hover:bg-[#1D4ED8]
+                text-white px-4 py-2.5 rounded-md text-sm font-semibold transition-colors duration-150"
+            >
+              Start free trial
+            </Link>
+            <Link
+              href="#how-it-works"
+              className="inline-flex items-center border border-slate-300 hover:bg-slate-50
+                text-[#0B1B2E] px-4 py-2.5 rounded-md text-sm font-semibold transition-colors duration-150"
+            >
+              Watch 60-second demo
+            </Link>
+          </div>
+          <p className="text-xs text-slate-400 mt-6">
+            No credit card required · Takes 60 seconds · Cancel anytime
+          </p>
+        </div>
+
+        {/* Mock dashboard preview */}
+        <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-[0_4px_12px_rgba(15,23,42,0.08)]">
+
+          {/* Chrome bar */}
+          <div className="bg-[#0B1B2E] px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-white text-xs tracking-[0.12em]" style={WORDMARK}>
+                VANTAGE
+              </span>
+              <span className="text-white/20 select-none">|</span>
+              <span className="text-white/60 text-xs">2008 GFC · Advisor view</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="block w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse" />
+              <span className="text-[10px] text-white/50">Live</span>
+            </div>
           </div>
 
-          {/* Dashboard preview — double-bezel */}
-          <div data-reveal data-delay='400' className='relative mx-auto max-w-4xl'>
-            <div className='p-2 rounded-[2.5rem] bg-white/5 ring-1 ring-white/8
-              transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]
-              hover:ring-white/[0.14]'>
-              <div className='rounded-[1.9rem] overflow-hidden
-                shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] bg-[#0d1117]'>
-
-                <div className='border-b border-white/8 px-4 py-2 flex items-center
-                  gap-2 bg-[#0d1117]'>
-                  <Logo size={14} />
-                  <span className='w-px h-3 bg-white/10 shrink-0 mr-1' />
-                  <div className='w-px h-3 bg-white/10 shrink-0' />
-                  <div className='flex items-center gap-0.5 overflow-hidden'>
-                    {['Summary', 'Charts', 'Factors', 'Liquidity', 'Monte Carlo', 'Tax impact', 'AI Analysis'].map((s, i) => (
-                      <span key={s}
-                        className={`relative text-xs px-2 py-1 rounded-md whitespace-nowrap
-                          ${i === 0 ? 'text-white' : 'text-gray-600'}`}>
-                        {s}
-                        {i === 0 && (
-                          <span className='absolute bottom-0 left-1.5 right-1.5 h-0.5
-                            bg-[#3B82F6] rounded-full' />
-                        )}
-                      </span>
-                    ))}
-                  </div>
+          <div className="p-4">
+            {/* Key metrics grid */}
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {(
+                [
+                  { label: 'Portfolio Value', value: '$2,400,000', color: '#0B1B2E' },
+                  { label: 'Stressed Value',  value: '$1,838,240', color: '#B91C1C' },
+                  { label: 'Total Drawdown',  value: '▼ 23.4%',   color: '#B91C1C' },
+                  { label: 'Health Score',    value: '6.2 / 10',  color: '#0B1B2E' },
+                ] as const
+              ).map((m) => (
+                <div key={m.label} className="bg-slate-50 rounded-md p-3">
+                  <p className="text-[10px] text-slate-500 mb-1">{m.label}</p>
+                  <p
+                    className="text-sm font-medium tabular-nums"
+                    style={{ ...MONO, color: m.color }}
+                  >
+                    {m.value}
+                  </p>
                 </div>
+              ))}
+            </div>
 
-                <div className='border-b border-white/6 px-4 py-2 flex items-center
-                  gap-5 bg-white/[0.02]'>
-                  <div className='flex items-center gap-1 bg-white/5 rounded-lg p-0.5
-                    border border-white/8 shrink-0'>
-                    <span className='text-xs px-2 py-0.5 bg-white/10 rounded text-white'>Advisor</span>
-                    <span className='text-xs px-2 py-0.5 text-gray-500'>Client</span>
-                  </div>
-                  <div className='flex items-center gap-5 text-xs overflow-hidden'>
-                    {[
-                      { l: 'Health',      v: '6.2/10',  c: 'text-yellow-400' },
-                      { l: 'Stress loss', v: '−23.4%',  c: 'text-red-400'    },
-                      { l: 'Recovery',    v: '3.1 yrs', c: 'text-[#3B82F6]'  },
-                      { l: 'Goals',       v: 'At risk',  c: 'text-yellow-400' },
-                    ].map(m => (
-                      <span key={m.l} className='text-gray-500 shrink-0'>
-                        {m.l} <span className={`font-medium tabular-nums ${m.c}`}>{m.v}</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className='p-4 space-y-3'>
-                  <div className='bg-white/[0.03] rounded-2xl border border-white/8 p-3'>
-                    <div className='flex items-center justify-between mb-3'>
-                      <span className='text-xs font-medium text-white'>Summary</span>
-                      <span className='text-xs text-yellow-400 bg-yellow-900/20
-                        border border-yellow-800/30 px-2 py-0.5 rounded-full'>
-                        6.2/10 health
-                      </span>
+            {/* Factor attribution bars */}
+            <div className="mb-4">
+              <p className="text-[10px] text-slate-500 mb-2">Factor Attribution</p>
+              <div className="space-y-1.5">
+                {(
+                  [
+                    { label: 'Market beta',   pct: 82, value: '−14.2%' },
+                    { label: 'Rate risk',     pct: 55, value: '−5.1%'  },
+                    { label: 'Credit spread', pct: 34, value: '−2.8%'  },
+                  ] as const
+                ).map((f) => (
+                  <div key={f.label} className="flex items-center gap-2">
+                    <span className="text-[10px] text-slate-500 w-20 shrink-0">{f.label}</span>
+                    <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#B91C1C] rounded-full"
+                        style={{ width: `${f.pct}%` }}
+                      />
                     </div>
-                    <div className='grid grid-cols-4 gap-2'>
-                      {[
-                        { l: 'Portfolio Value', v: '$2,400,000', c: 'text-white'     },
-                        { l: 'Stressed Value',  v: '$1,838,240', c: 'text-red-400'   },
-                        { l: 'Total Loss',      v: '−$561,760',  c: 'text-red-400'   },
-                        { l: 'Tax Savings',     v: '+$14,200',   c: 'text-green-400' },
-                      ].map(m => (
-                        <div key={m.l} className='bg-white/5 rounded-xl p-2'>
-                          <p className='text-xs text-gray-500 mb-0.5'>{m.l}</p>
-                          <p className={`text-sm font-medium tabular-nums ${m.c}`}>{m.v}</p>
-                        </div>
-                      ))}
-                    </div>
+                    <span
+                      className="text-[10px] tabular-nums text-[#B91C1C] w-10 text-right shrink-0"
+                      style={MONO}
+                    >
+                      {f.value}
+                    </span>
                   </div>
-
-                  <div className='grid grid-cols-2 gap-3'>
-                    <div className='bg-white/[0.03] rounded-2xl border border-white/8 p-3'>
-                      <p className='text-xs text-gray-500 mb-2'>Factor attribution</p>
-                      <div className='space-y-1.5'>
-                        {[
-                          { l: 'Market beta',   v: '−14.2%', w: 82 },
-                          { l: 'Rate risk',     v: '−5.1%',  w: 55 },
-                          { l: 'Credit spread', v: '−2.8%',  w: 34 },
-                          { l: 'Growth factor', v: '−1.3%',  w: 18 },
-                        ].map(f => (
-                          <div key={f.l} className='flex items-center gap-2'>
-                            <span className='text-xs text-gray-500 w-20 shrink-0'>{f.l}</span>
-                            <div className='flex-1 h-1 bg-white/10 rounded-full'>
-                              <div className='h-full bg-red-500/60 rounded-full'
-                                style={{ width: `${f.w}%` }} />
-                            </div>
-                            <span className='text-xs text-red-400 tabular-nums w-9 text-right'>{f.v}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className='bg-[#3B82F6]/10 border border-[#3B82F6]/20 rounded-2xl p-3'>
-                      <div className='flex items-center gap-1.5 mb-2'>
-                        <Brain size={11} className='text-[#3B82F6]' />
-                        <span className='text-xs text-[#3B82F6] font-medium'>AI Analyst Memo</span>
-                      </div>
-                      <p className='text-xs text-gray-400 leading-relaxed'>
-                        Under a 2008-style scenario, this portfolio faces a{' '}
-                        <span className='text-white font-medium'>23.4% drawdown</span>, driven
-                        primarily by market beta (61%) and rate sensitivity. Priority action:
-                        trim AAPL and MSFT, which account for 67% of total stress loss...
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
+                ))}
               </div>
             </div>
 
-            <div className='absolute bottom-0 left-0 right-0 h-28
-              bg-gradient-to-t from-[#0A0F1E] to-transparent rounded-b-[2.5rem]
-              pointer-events-none' />
+            {/* Stress sparkline */}
+            <svg viewBox="0 0 280 48" className="w-full h-12" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#B91C1C" stopOpacity="0.1" />
+                  <stop offset="100%" stopColor="#B91C1C" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <polygon
+                points="0,34 40,30 80,38 120,22 160,32 200,16 240,24 280,12 280,48 0,48"
+                fill="url(#heroGrad)"
+              />
+              <polyline
+                points="0,34 40,30 80,38 120,22 160,32 200,16 240,24 280,12"
+                fill="none"
+                stroke="#B91C1C"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              />
+            </svg>
           </div>
-        </section>
-        </div>{/* end hero wrapper */}
+        </div>
+      </section>
 
-        {/* ── 3. How It Works ─────────────────────────────────────────────── */}
-        <section id='how-it-works' className='max-w-6xl mx-auto px-6 py-32'>
-          <div data-reveal className='text-center mb-20'>
-            <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-              bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs
-              font-medium mb-5'>
-              Simple by design
-            </div>
-            <h2 className='font-bold tracking-tight text-white mb-5'
-              style={{ fontSize: '48px', lineHeight: '1.21' }}>
-              How it works
-            </h2>
-            <p className='text-gray-400 max-w-md mx-auto'>
-              Three steps. Under 60 seconds. Full institutional output.
+      {/* ── "What You Get" — Bloomberg index card row ─────────────────── */}
+      <section className="border-t border-slate-100 py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-3">
+              WHAT YOU GET
             </p>
+            <h2
+              style={{
+                ...SERIF,
+                fontSize: '36px',
+                fontWeight: 600,
+                lineHeight: 1.15,
+                color: '#0B1B2E',
+              }}
+            >
+              Inside the 12-section dashboard
+            </h2>
           </div>
-
-          <div className='flex flex-col md:flex-row items-stretch gap-3'>
-            {STEPS.map((step, i) => (
-              <Fragment key={step.num}>
-                <div data-reveal data-delay={i === 0 ? '' : i === 1 ? '150' : '300'}
-                  className='flex-1 p-1.5 rounded-[1.75rem] bg-white/4 ring-1 ring-white/8
-                    hover:ring-white/[0.16] group
-                    transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                  <div className='h-full rounded-[1.25rem] bg-[#0A0F1E] p-7
-                    shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'>
-                    <div className='flex items-center gap-4 mb-5'>
-                      <div className='w-10 h-10 bg-[#3B82F6]/20 rounded-xl flex items-center
-                        justify-center group-hover:bg-[#3B82F6]/30 shrink-0
-                        transition-colors duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                        <step.icon size={18} className='text-[#3B82F6]' />
-                      </div>
-                      <span className='text-4xl font-bold text-white/8 tabular-nums leading-none'>
-                        {step.num}
-                      </span>
-                    </div>
-                    <h3 className='font-semibold text-white mb-2 text-lg'>{step.title}</h3>
-                    <p className='text-sm text-gray-400 leading-relaxed'>{step.desc}</p>
-                  </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            {INDEX_CARDS.map((card) => (
+              <div
+                key={card.name}
+                className="bg-white border border-slate-200 rounded-lg shadow-sm p-4
+                  hover:shadow-md transition-shadow duration-150 cursor-default"
+              >
+                <p className="text-sm font-semibold text-[#0B1B2E] mb-2 truncate">{card.name}</p>
+                <div className="flex items-baseline gap-0.5 mb-1">
+                  <span
+                    className="text-2xl font-medium tabular-nums text-[#0B1B2E]"
+                    style={MONO}
+                  >
+                    {card.value}
+                  </span>
+                  {card.unit && (
+                    <span className="text-xs text-slate-500 ml-0.5">{card.unit}</span>
+                  )}
                 </div>
-
-                {i < STEPS.length - 1 && (
-                  <div className='hidden md:flex items-center justify-center shrink-0 w-8'>
-                    <ArrowRight size={16} className='text-white/20' />
-                  </div>
-                )}
-              </Fragment>
+                <p
+                  className={`text-xs tabular-nums mb-2 ${
+                    card.gain ? 'text-[#15803D]' : 'text-[#B91C1C]'
+                  }`}
+                >
+                  {card.direction}
+                </p>
+                <svg viewBox="0 0 80 24" className="w-full h-6" preserveAspectRatio="none">
+                  <polyline
+                    points={card.sparkline}
+                    fill="none"
+                    stroke={card.gain ? '#15803D' : '#B91C1C'}
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── 4. Tools ────────────────────────────────────────────────────── */}
-        <ToolsSection />
-
-        {/* ── 5. Features ─────────────────────────────────────────────────── */}
-        <FeaturesSection />
-
-        {/* ── 5. Pricing ──────────────────────────────────────────────────── */}
-        <section id='pricing' className='max-w-6xl mx-auto px-6 py-32'>
-          <div data-reveal className='text-center mb-20'>
-            <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-              bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs
-              font-medium mb-5'>
-              Transparent pricing
+      {/* ── How Vantage Works (§3.9 section wrap) ─────────────────────── */}
+      <section id="how-it-works" className="py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="bg-slate-50 rounded-xl p-8 md:p-12">
+            <div className="mb-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-3">
+                HOW IT WORKS
+              </p>
+              <h2
+                style={{
+                  ...SERIF,
+                  fontSize: '36px',
+                  fontWeight: 600,
+                  lineHeight: 1.15,
+                  color: '#0B1B2E',
+                }}
+              >
+                Three steps. 60 seconds. Full analysis.
+              </h2>
             </div>
-            <h2 className='font-bold tracking-tight text-white mb-5'
-              style={{ fontSize: '48px', lineHeight: '1.21' }}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+              {HOW_STEPS.map(({ Icon, title, desc }) => (
+                <div key={title}>
+                  <div className="w-10 h-10 bg-[#2563EB]/10 rounded-lg flex items-center justify-center mb-4">
+                    <Icon size={18} className="text-[#2563EB]" />
+                  </div>
+                  <p className="font-semibold text-[#0B1B2E] mb-2">{title}</p>
+                  <p className="text-sm text-slate-600 leading-relaxed">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Comparison row ────────────────────────────────────────────── */}
+      <section className="border-t border-slate-100 py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-3">
+              COMPETITIVE LANDSCAPE
+            </p>
+            <h2
+              style={{
+                ...SERIF,
+                fontSize: '36px',
+                fontWeight: 600,
+                color: '#0B1B2E',
+              }}
+            >
+              How Vantage compares
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {COMPARISON.map((comp) => (
+              <div
+                key={comp.name}
+                className={`bg-white rounded-lg p-6 ${
+                  comp.featured
+                    ? 'border-2 border-[#2563EB]'
+                    : 'border border-slate-200'
+                }`}
+              >
+                {comp.featured && (
+                  <p className="text-xs font-semibold text-[#2563EB] uppercase tracking-wider mb-3">
+                    Recommended
+                  </p>
+                )}
+                <p className="text-sm font-semibold text-[#0B1B2E] mb-2">{comp.name}</p>
+                <p
+                  className="text-3xl font-medium tabular-nums text-[#0B1B2E] mb-4"
+                  style={MONO}
+                >
+                  {comp.price}
+                </p>
+                <ul className="space-y-2">
+                  {comp.features.map((f) => (
+                    <li key={f} className="text-sm text-slate-600 flex items-start gap-2">
+                      <span
+                        className={comp.featured ? 'text-[#2563EB]' : 'text-slate-400'}
+                        aria-hidden="true"
+                      >
+                        ▪
+                      </span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Pricing module ────────────────────────────────────────────── */}
+      <section id="pricing" className="border-t border-slate-100 py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-12 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-3">
+              TRANSPARENT PRICING
+            </p>
+            <h2
+              style={{
+                ...SERIF,
+                fontSize: '36px',
+                fontWeight: 600,
+                color: '#0B1B2E',
+              }}
+            >
               Simple, flat pricing
             </h2>
-            <p className='text-gray-400 max-w-md mx-auto'>
+            <p className="text-slate-500 mt-3">
               No per-seat fees. No usage surprises. Cancel anytime.
             </p>
           </div>
-
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4 items-start'>
-            {TIERS.map((tier, i) => (
-              <div key={tier.name}
-                data-reveal
-                {...(i > 0 ? { 'data-delay': i === 1 ? '150' : '300' } : {})}
-                className='relative'>
-                {tier.popular ? (
-                  <div className='p-[2px] rounded-[1.75rem] bg-gradient-to-b
-                    from-[#3B82F6]/60 to-[#3B82F6]/20'>
-                    <div className='rounded-[calc(1.75rem-2px)] bg-[#0A0F1E] p-7 flex flex-col
-                      shadow-[inset_0_1px_0_rgba(59,130,246,0.2)]'>
-                      <PricingCardContent tier={tier} />
-                    </div>
-                  </div>
-                ) : (
-                  <div className='p-1.5 rounded-[1.75rem] bg-white/4 ring-1 ring-white/8
-                    hover:ring-white/[0.14]
-                    transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]'>
-                    <div className='rounded-[1.25rem] bg-[#0A0F1E] p-7 flex flex-col
-                      shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'>
-                      <PricingCardContent tier={tier} />
-                    </div>
-                  </div>
-                )}
-
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+            {TIERS.map((tier) => (
+              <div
+                key={tier.name}
+                className={`bg-white rounded-lg p-7 flex flex-col ${
+                  tier.popular
+                    ? 'border-2 border-[#2563EB] shadow-[0_4px_12px_rgba(37,99,235,0.12)] md:scale-105'
+                    : 'border border-slate-200'
+                }`}
+              >
                 {tier.popular && (
-                  <div className='absolute -top-4 left-1/2 -translate-x-1/2'>
-                    <span className='px-4 py-1.5 bg-[#3B82F6] text-white text-xs
-                      font-semibold rounded-full shadow-lg shadow-[#3B82F6]/20'>
-                      Most Popular
-                    </span>
-                  </div>
+                  <p className="text-xs font-semibold text-[#2563EB] uppercase tracking-wider mb-3">
+                    Most Popular
+                  </p>
                 )}
+                <h3 className="font-semibold text-[#0B1B2E] text-base mb-2">{tier.name}</h3>
+                <div className="flex items-baseline gap-1 mb-1">
+                  <span
+                    className="tabular-nums text-[#0B1B2E]"
+                    style={{
+                      ...MONO,
+                      fontSize: '40px',
+                      fontWeight: 500,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {tier.price}
+                  </span>
+                  <span className="text-sm text-slate-500">/mo</span>
+                </div>
+                <p className="text-sm text-slate-600 mb-6 leading-relaxed">{tier.desc}</p>
+                <ul className="space-y-2.5 flex-1 mb-6">
+                  {tier.features.map((feat) => (
+                    <li key={feat} className="flex items-start gap-2 text-sm text-slate-600">
+                      <span className="text-[#2563EB] shrink-0 mt-px" aria-hidden="true">
+                        ▪
+                      </span>
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={tier.href}
+                  className={`block text-center px-4 py-2.5 rounded-md text-sm font-semibold
+                    transition-colors duration-150 ${
+                      tier.popular
+                        ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white'
+                        : 'border border-slate-300 hover:bg-slate-50 text-[#0B1B2E]'
+                    }`}
+                >
+                  {tier.cta}
+                </Link>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── 6. Final CTA ────────────────────────────────────────────────── */}
-        <section data-reveal className='max-w-6xl mx-auto px-6 py-16 pb-32'>
-          <div className='p-1.5 rounded-[2rem] bg-white/4 ring-1 ring-white/8'>
-            <div className='rounded-[1.6rem] bg-[#0A0F1E] p-16 text-center
-              shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'>
-              <h2 className='font-bold tracking-tight text-white mb-5'
-                style={{ fontSize: '48px', lineHeight: '1.21' }}>
-                Ready to run your first stress test?
-              </h2>
-              <p className='text-gray-400 mb-10 max-w-lg mx-auto leading-relaxed'>
-                Upload a portfolio and see your risk in 60 seconds.
-                No setup required. No contract.
-              </p>
-              <Link href='/demo' className='inline-block mb-6'>
-                <Button variant='solid' size='lg' className='flex items-center gap-3 text-sm font-semibold'>
-                  Try It Free — No Upload Needed <ArrowRight size={14} />
-                </Button>
-              </Link>
-              <p className='text-xs text-gray-600 block'>
-                No credit card required · Takes 60 seconds · Cancel anytime
+      {/* ── Footer ────────────────────────────────────────────────────── */}
+      <footer className="bg-[#0B1B2E] text-white mt-20">
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 mb-12">
+
+            {/* Brand */}
+            <div className="lg:col-span-1">
+              <span
+                className="text-white tracking-[0.12em] block mb-4"
+                style={{ ...WORDMARK, fontSize: '18px' }}
+              >
+                VANTAGE
+              </span>
+              <p className="text-sm text-white/50 leading-relaxed max-w-xs">
+                Institutional-grade portfolio stress testing for independent wealth managers and RIAs.
+                Clarity in uncertainty. Confidence in every decision.
               </p>
             </div>
-          </div>
-        </section>
 
-        {/* ── 7. Brand Pillars ────────────────────────────────────────────── */}
-        <section data-reveal className='max-w-6xl mx-auto px-6 pb-20'>
-          <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-            {[
-              { icon: Search, label: 'Clarity' },
-              { icon: Zap,    label: 'Speed'   },
-              { icon: Shield, label: 'Trust'   },
-              { icon: Target, label: 'Precision'},
-            ].map(({ icon: Icon, label }) => (
-              <div key={label}
-                className='flex flex-col items-center gap-3 p-6 rounded-2xl
-                  bg-white/[0.03] border border-white/8'>
-                <div className='w-10 h-10 bg-[#3B82F6]/10 rounded-xl
-                  flex items-center justify-center'>
-                  <Icon size={18} className='text-[#3B82F6]' />
-                </div>
-                <span className='text-xs font-medium uppercase tracking-widest text-gray-400'>
-                  {label}
-                </span>
+            {/* Link columns */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:col-span-3 gap-8">
+
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-4">
+                  Product
+                </p>
+                <ul className="space-y-2.5">
+                  {[
+                    { text: 'Historical Scenarios', href: '/product/scenarios' },
+                    { text: 'Custom Scenarios',     href: '/product/custom-scenarios' },
+                    { text: 'Monte Carlo',          href: '/product/monte-carlo' },
+                    { text: 'Factor Risk Model',    href: '/product/factor-model' },
+                    { text: 'Branded PDF Export',   href: '/product/pdf' },
+                  ].map(({ text, href }) => (
+                    <li key={text}>
+                      <Link href={href} className="text-sm text-white/50 hover:text-white transition-colors duration-150">
+                        {text}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
+
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-4">
+                  Methodology
+                </p>
+                <ul className="space-y-2.5">
+                  {[
+                    { text: 'Independent RIAs',    href: '/solutions/rias' },
+                    { text: 'Solo Advisors',        href: '/solutions/solo' },
+                    { text: 'Multi-Family Offices', href: '/solutions/mfo' },
+                    { text: 'Client Panic Mode',    href: '/solutions/panic-mode' },
+                    { text: 'Quarterly Reviews',    href: '/solutions/qbr' },
+                  ].map(({ text, href }) => (
+                    <li key={text}>
+                      <Link href={href} className="text-sm text-white/50 hover:text-white transition-colors duration-150">
+                        {text}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="space-y-8">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-4">
+                    Company
+                  </p>
+                  <ul className="space-y-2.5">
+                    {[
+                      { text: 'Pricing',  href: '/pricing'   },
+                      { text: 'Roadmap',  href: '/roadmap'   },
+                      { text: 'Try Demo', href: '/demo'       },
+                      { text: 'Sign in',  href: '/auth/sign-in' },
+                    ].map(({ text, href }) => (
+                      <li key={text}>
+                        <Link href={href} className="text-sm text-white/50 hover:text-white transition-colors duration-150">
+                          {text}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-4">
+                    Legal
+                  </p>
+                  <ul className="space-y-2.5">
+                    {[
+                      { text: 'Privacy Policy', href: '#' },
+                      { text: 'Terms of Service', href: '#' },
+                    ].map(({ text, href }) => (
+                      <li key={text}>
+                        <Link href={href} className="text-sm text-white/50 hover:text-white transition-colors duration-150">
+                          {text}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
-        </section>
 
-      </div>
-    </div>
-  )
-}
-
-function PricingCardContent({ tier }: { tier: typeof TIERS[number] }) {
-  return (
-    <>
-      <div className='mb-7'>
-        <h3 className='font-semibold text-white mb-1 text-lg'>{tier.name}</h3>
-        <div className='flex items-baseline gap-1 mb-3'>
-          <span className='font-bold text-white'
-            style={{ fontSize: '40px', letterSpacing: '-0.4px' }}>
-            {tier.price}
-          </span>
-          <span className='text-gray-400 text-sm'>/mo</span>
+          <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/30">
+            <p>© 2026 Vantage. All rights reserved.</p>
+            <p>Built for independent wealth managers &amp; RIAs.</p>
+          </div>
         </div>
-        <p className='text-sm text-gray-400 leading-relaxed'>{tier.desc}</p>
-      </div>
+      </footer>
 
-      <ul className='space-y-3 flex-1 mb-7'>
-        {tier.features.map(feat => (
-          <li key={feat} className='flex items-start gap-2.5'>
-            <CheckCircle2 size={14}
-              className={`shrink-0 mt-0.5 ${tier.popular ? 'text-[#3B82F6]' : 'text-green-400'}`} />
-            <span className='text-sm text-gray-400'>{feat}</span>
-          </li>
-        ))}
-      </ul>
-
-      <Link href={tier.href} className='block'>
-        <Button
-          variant='solid'
-          size='lg'
-          className='w-full text-sm font-semibold tracking-wide'
-        >
-          {tier.cta}
-        </Button>
-      </Link>
-    </>
+    </div>
   )
 }
