@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { Upload, Shield, Brain } from 'lucide-react'
+import { Upload, Shield, Brain, Eye, Zap, Target } from 'lucide-react'
+import OfferTabs from './OfferTabs'
 
 // ── Static data ───────────────────────────────────────────────────────────────
 
@@ -194,6 +195,50 @@ const TIERS = [
   },
 ]
 
+const PILLARS = [
+  {
+    Icon: Eye,
+    title: 'Clarity',
+    desc: 'Plain-English output any client can understand.',
+  },
+  {
+    Icon: Zap,
+    title: 'Speed',
+    desc: 'Sixty seconds from upload to full institutional report.',
+  },
+  {
+    Icon: Shield,
+    title: 'Trust',
+    desc: 'Methodology that survives any compliance review.',
+  },
+  {
+    Icon: Target,
+    title: 'Precision',
+    desc: 'Decimal-precise math you can stake your reputation on.',
+  },
+]
+
+const TESTIMONIALS = [
+  {
+    quote: 'When the call came at 4pm on a down day, I had Vantage open before my client finished the sentence.',
+    name: 'Maria Hernandez, CFP®',
+    title: 'Founder',
+    firm: 'Hernandez Wealth · $20M AUM',
+  },
+  {
+    quote: 'My clients walk out understanding what just happened. That is the entire job.',
+    name: 'David Chen, CFA',
+    title: 'Senior Advisor',
+    firm: 'Sterling Partners',
+  },
+  {
+    quote: 'Riskalyze gave me a number. Vantage gives me an answer.',
+    name: 'Sarah Okonkwo, CFP®',
+    title: 'Lead Advisor',
+    firm: 'Okonkwo Capital · $5M AUM',
+  },
+]
+
 // ── Style helpers ─────────────────────────────────────────────────────────────
 
 const SERIF: React.CSSProperties = {
@@ -214,7 +259,7 @@ export default function HomePage() {
   return (
     <div className="bg-white text-[#0B1B2E]">
 
-      {/* ── Hero ──────────────────────────────────────────────────────── */}
+      {/* ── 1. Hero ───────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
         {/* Copy */}
@@ -355,7 +400,182 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── "What You Get" — Bloomberg index card row ─────────────────── */}
+      {/* ── 2. Dashboard Preview ──────────────────────────────────────── */}
+      <section className="border-t border-slate-100 py-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-3">
+              THE DASHBOARD
+            </p>
+            <h2
+              style={{ ...SERIF, fontSize: '36px', fontWeight: 600, lineHeight: 1.15, color: '#0B1B2E' }}
+            >
+              See your portfolio under fire
+            </h2>
+            <p className="text-lg text-slate-600 mt-3 max-w-2xl leading-relaxed">
+              A 12-section institutional risk report rendered in 60 seconds. Built for the room, not the office.
+            </p>
+          </div>
+
+          {/* Large mockup card */}
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-[0_8px_32px_rgba(15,23,42,0.10)]">
+            {/* Chrome */}
+            <div className="bg-[#0B1B2E] px-5 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-white text-xs tracking-[0.12em]" style={WORDMARK}>VANTAGE</span>
+                <span className="text-white/20 select-none">|</span>
+                <span className="text-white/60 text-xs">Portfolio Risk Analysis · 2008 GFC</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="block w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
+                <span className="text-[10px] text-white/50">Analysis complete</span>
+              </div>
+            </div>
+
+            {/* Tab bar */}
+            <div className="border-b border-slate-200 bg-white px-5 flex items-center overflow-x-auto">
+              {['Summary', 'Factor Risk', 'Monte Carlo', 'Tax Impact', '+ 8 more'].map((tab, i) => (
+                <div
+                  key={tab}
+                  className={`px-4 py-3 text-xs font-medium whitespace-nowrap border-b-2 transition-colors ${
+                    i === 0
+                      ? 'border-[#2563EB] text-[#2563EB]'
+                      : i === 4
+                      ? 'border-transparent text-slate-300 italic'
+                      : 'border-transparent text-slate-400 hover:text-slate-600'
+                  }`}
+                >
+                  {tab}
+                </div>
+              ))}
+            </div>
+
+            {/* Dashboard content */}
+            <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left column: metrics + factors */}
+              <div className="lg:col-span-2 space-y-5">
+                {/* Metric tiles */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {(
+                    [
+                      { label: 'Portfolio Value', value: '$2,400,000', sub: 'Pre-stress',    color: '#0B1B2E' },
+                      { label: 'Stressed Value',  value: '$1,838,240', sub: '2008 GFC',      color: '#B91C1C' },
+                      { label: 'Max Drawdown',    value: '−23.4%',     sub: 'Total loss',    color: '#B91C1C' },
+                      { label: 'Health Score',    value: '6.2 / 10',   sub: 'Risk-adjusted', color: '#0B1B2E' },
+                    ] as const
+                  ).map((m) => (
+                    <div key={m.label} className="bg-slate-50 rounded-lg p-3 border border-slate-100">
+                      <p className="text-[10px] text-slate-400 mb-1">{m.label}</p>
+                      <p className="text-sm font-semibold tabular-nums" style={{ ...MONO, color: m.color }}>
+                        {m.value}
+                      </p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">{m.sub}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Factor attribution */}
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-3">
+                    Factor Attribution
+                  </p>
+                  <div className="space-y-2">
+                    {(
+                      [
+                        { label: 'Market Beta',   pct: 82, value: '−14.2%', desc: '82% of total risk' },
+                        { label: 'Rate Risk',     pct: 55, value: '−5.1%',  desc: 'duration exposure' },
+                        { label: 'Credit Spread', pct: 34, value: '−2.8%',  desc: 'HY spread widening' },
+                        { label: 'Inflation',     pct: 22, value: '−1.9%',  desc: 'real rate impact'  },
+                        { label: 'Growth',        pct: 16, value: '−1.4%',  desc: 'earnings sensitivity' },
+                      ] as const
+                    ).map((f) => (
+                      <div key={f.label} className="flex items-center gap-3">
+                        <span className="text-[11px] text-slate-600 w-24 shrink-0">{f.label}</span>
+                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-[#2563EB] rounded-full" style={{ width: `${f.pct}%` }} />
+                        </div>
+                        <span className="text-[11px] tabular-nums text-[#B91C1C] w-12 text-right shrink-0" style={MONO}>
+                          {f.value}
+                        </span>
+                        <span className="text-[10px] text-slate-400 hidden md:inline w-28 shrink-0">{f.desc}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right column: sparkline + summary */}
+              <div className="space-y-4">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                    Portfolio Stress Path
+                  </p>
+                  <svg viewBox="0 0 200 80" className="w-full h-20" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="dashGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#B91C1C" stopOpacity="0.12" />
+                        <stop offset="100%" stopColor="#B91C1C" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <polygon
+                      points="0,40 30,36 60,44 90,28 120,38 150,20 180,28 200,16 200,80 0,80"
+                      fill="url(#dashGrad)"
+                    />
+                    <polyline
+                      points="0,40 30,36 60,44 90,28 120,38 150,20 180,28 200,16"
+                      fill="none" stroke="#B91C1C" strokeWidth="1.5"
+                      strokeLinejoin="round" strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+
+                <div className="bg-slate-50 rounded-lg border border-slate-100 p-4 space-y-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-3">
+                    Smart Risk Summary
+                  </p>
+                  {[
+                    { label: 'Drawdown',   value: '−23.4%', color: '#B91C1C' },
+                    { label: 'Recovery',   value: '14 mo',  color: '#0B1B2E' },
+                    { label: 'Liquidity',  value: '14 days', color: '#F59E08' },
+                    { label: 'Tail (P5)',  value: '−31.2%', color: '#B91C1C' },
+                  ].map((r) => (
+                    <div key={r.label} className="flex items-center justify-between">
+                      <span className="text-[11px] text-slate-500">{r.label}</span>
+                      <span className="text-[11px] font-semibold tabular-nums" style={{ ...MONO, color: r.color }}>
+                        {r.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 3. Brand Pillars ──────────────────────────────────────────── */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-3">
+              WHAT WE STAND FOR
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {PILLARS.map(({ Icon, title, desc }) => (
+              <div key={title}>
+                <div className="w-10 h-10 bg-[#2563EB]/10 rounded-lg flex items-center justify-center mb-4">
+                  <Icon size={18} className="text-[#2563EB]" />
+                </div>
+                <p className="font-semibold text-[#0B1B2E] mb-1.5">{title}</p>
+                <p className="text-sm text-slate-600 leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. Inside the 12-section dashboard (index cards) ─────────── */}
       <section className="border-t border-slate-100 py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-10">
@@ -416,7 +636,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── How Vantage Works ─────────────────────────────────────────── */}
+      {/* ── 5. What We Offer (tabbed) ─────────────────────────────────── */}
+      <OfferTabs />
+
+      {/* ── 6. How Vantage Works ──────────────────────────────────────── */}
       <section id="how-it-works" className="py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="bg-slate-50 rounded-xl p-8 md:p-12">
@@ -451,7 +674,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Comparison row ────────────────────────────────────────────── */}
+      {/* ── 7. Comparison row ─────────────────────────────────────────── */}
       <section className="border-t border-slate-100 py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-10">
@@ -510,7 +733,43 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Pricing module ────────────────────────────────────────────── */}
+      {/* ── 8. Testimonials ───────────────────────────────────────────── */}
+      <section className="border-t border-slate-100 py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-3">
+              TRUSTED BY ADVISORS
+            </p>
+            <h2
+              style={{ ...SERIF, fontSize: '36px', fontWeight: 600, lineHeight: 1.15, color: '#0B1B2E' }}
+            >
+              Built for the moment a client calls
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {TESTIMONIALS.map((t) => (
+              <div
+                key={t.name}
+                className="bg-white border border-slate-200 rounded-lg shadow-sm p-6 flex flex-col"
+              >
+                <p
+                  className="text-lg text-[#0B1B2E] leading-relaxed mb-6 flex-1"
+                  style={{ ...SERIF, fontStyle: 'italic' }}
+                >
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                <div>
+                  <p className="font-semibold text-[#0B1B2E] text-sm">{t.name}</p>
+                  <p className="text-sm text-slate-500 mt-0.5">{t.title}</p>
+                  <p className="text-sm text-slate-400 mt-0.5">{t.firm}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 9. Pricing module ─────────────────────────────────────────── */}
       <section id="pricing" className="border-t border-slate-100 py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12 text-center">
@@ -585,6 +844,46 @@ export default function HomePage() {
                 </Link>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 10. Final CTA ─────────────────────────────────────────────── */}
+      <section className="border-t border-slate-100 py-24">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-4">
+            GET STARTED
+          </p>
+          <h2
+            className="mb-4"
+            style={{
+              ...SERIF,
+              fontSize: 'clamp(36px, 4vw, 52px)',
+              fontWeight: 600,
+              lineHeight: 1.1,
+              color: '#0B1B2E',
+            }}
+          >
+            Run your first stress test<br />in 60 seconds.
+          </h2>
+          <p className="text-slate-500 text-lg mb-10">
+            No credit card required. Cancel anytime.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/demo"
+              className="inline-flex items-center gap-2 bg-[#2563EB] hover:bg-[#1D4ED8]
+                text-white px-6 py-3 rounded-md text-sm font-semibold transition-colors duration-150"
+            >
+              Start free trial
+            </Link>
+            <Link
+              href="mailto:hello@vantage.app"
+              className="inline-flex items-center border border-slate-300 hover:bg-slate-50
+                text-[#0B1B2E] px-6 py-3 rounded-md text-sm font-semibold transition-colors duration-150"
+            >
+              Talk to founder
+            </Link>
           </div>
         </div>
       </section>
