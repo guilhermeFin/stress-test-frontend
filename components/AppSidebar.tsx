@@ -37,15 +37,15 @@ export default function AppSidebar() {
 
   return (
     <aside
-      className={`${w} flex-shrink-0 bg-[#07090F] border-r border-white/[0.06]
+      className={`${w} flex-shrink-0 bg-white border-r border-slate-200
         flex flex-col transition-all duration-200 h-screen sticky top-0 z-40`}
     >
       {/* Logo */}
-      <div className={`h-14 flex items-center px-4 border-b border-white/[0.06] ${collapsed ? 'justify-center' : 'gap-2'}`}>
+      <div className={`h-14 flex items-center px-4 border-b border-slate-200 ${collapsed ? 'justify-center' : 'gap-2'}`}>
         <Link href='/' title='Back to home'>
           {collapsed
-            ? <Logo variant='icon' size={22} />
-            : <Logo size={18} />}
+            ? <Logo variant='dark' size={22} />
+            : <Logo variant='dark' size={18} />}
         </Link>
       </div>
 
@@ -58,16 +58,16 @@ export default function AppSidebar() {
               key={href}
               href={href}
               title={collapsed ? label : undefined}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
+              className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
                 transition-colors duration-150 group
                 ${active
-                  ? 'bg-[#3B82F6]/10 text-[#3B82F6]'
-                  : 'text-gray-500 hover:text-white hover:bg-white/[0.04]'}`}
+                  ? 'bg-[#2563EB]/10 text-[#2563EB]'
+                  : 'text-slate-500 hover:text-[#0B1B2E] hover:bg-slate-100'}`}
             >
               <Icon size={16} className='shrink-0' />
               {!collapsed && <span>{label}</span>}
               {label === 'Inbox' && !collapsed && (
-                <span className='ml-auto bg-[#3B82F6] text-white text-[10px] font-bold
+                <span className='ml-auto bg-[#2563EB] text-white text-[10px] font-bold
                   px-1.5 py-0.5 rounded-full leading-none'>
                   3
                 </span>
@@ -78,13 +78,13 @@ export default function AppSidebar() {
       </nav>
 
       {/* Bottom: settings + user */}
-      <div className='border-t border-white/[0.06] px-2 py-3 space-y-0.5'>
+      <div className='border-t border-slate-200 px-2 py-3 space-y-0.5'>
         <Link
           href='/settings'
           title={collapsed ? 'Settings' : undefined}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
-            transition-colors text-gray-500 hover:text-white hover:bg-white/[0.04]
-            ${pathname.startsWith('/settings') ? 'bg-[#3B82F6]/10 text-[#3B82F6]' : ''}`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
+            transition-colors text-slate-500 hover:text-[#0B1B2E] hover:bg-slate-100
+            ${pathname.startsWith('/settings') ? 'bg-[#2563EB]/10 text-[#2563EB]' : ''}`}
         >
           <Settings size={16} className='shrink-0' />
           {!collapsed && <span>Settings</span>}
@@ -92,13 +92,13 @@ export default function AppSidebar() {
 
         {session?.user && (
           <div className={`flex items-center gap-2 px-3 py-2 ${collapsed ? 'justify-center' : ''}`}>
-            <div className='w-6 h-6 rounded-full bg-[#3B82F6]/20 flex items-center justify-center
-              text-[#3B82F6] text-[10px] font-bold shrink-0'>
+            <div className='w-6 h-6 rounded-full bg-[#2563EB]/15 flex items-center justify-center
+              text-[#2563EB] text-[10px] font-bold shrink-0'>
               {(session.user.name ?? session.user.email ?? 'U')[0].toUpperCase()}
             </div>
             {!collapsed && (
               <div className='flex-1 min-w-0'>
-                <p className='text-xs font-medium text-white truncate'>
+                <p className='text-xs font-medium text-[#0B1B2E] truncate'>
                   {session.user.name ?? session.user.email}
                 </p>
               </div>
@@ -107,7 +107,7 @@ export default function AppSidebar() {
               <button
                 onClick={() => signOut({ callbackUrl: '/auth/sign-in' })}
                 title='Sign out'
-                className='text-gray-600 hover:text-red-400 transition-colors'
+                className='text-slate-400 hover:text-[#B91C1C] transition-colors'
               >
                 <LogOut size={14} />
               </button>
@@ -119,9 +119,9 @@ export default function AppSidebar() {
       {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed(c => !c)}
-        className='absolute -right-3 top-[52px] w-6 h-6 bg-[#0A0F1E] border border-white/10
-          rounded-full flex items-center justify-center text-gray-500 hover:text-white
-          hover:border-white/20 transition-all shadow-lg'
+        className='absolute -right-3 top-[52px] w-6 h-6 bg-white border border-slate-200
+          rounded-full flex items-center justify-center text-slate-400 hover:text-[#0B1B2E]
+          hover:border-slate-300 transition-all shadow-sm'
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
         {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}

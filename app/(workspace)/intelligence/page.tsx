@@ -1,14 +1,11 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
-import { runStressTest } from '@/lib/api'
-import { Button } from '@/components/ui/neon-button'
 import { LumaSpin } from '@/components/ui/luma-spin'
 import {
   Zap, Plus, X,
-  BarChart2, Brain, AlertCircle
+  Brain, AlertCircle
 } from 'lucide-react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 interface TickerRow {
@@ -148,7 +145,7 @@ export default function IntelligencePage() {
       const results = await response.json()
       sessionStorage.setItem('stressResults', JSON.stringify(results))
       router.push('/results')
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Is the backend running?')
     } finally {
       setLoading(false)
@@ -156,31 +153,30 @@ export default function IntelligencePage() {
   }
 
   return (
-    <main className='min-h-screen text-white relative'>
+    <main className='min-h-screen text-[#0B1B2E] relative'>
       {loading && (
         <div className='absolute inset-0 z-50 flex flex-col items-center justify-center
-          bg-[#0A0F1E]/90 backdrop-blur-sm'>
+          bg-white/95 backdrop-blur-sm'>
           <LumaSpin size={65} />
-          <p className='mt-6 text-sm text-gray-400 font-medium'>Running analysis…</p>
-          <p className='mt-1 text-xs text-gray-600'>This usually takes 15–45 seconds</p>
+          <p className='mt-6 text-sm text-slate-600 font-medium'>Running analysis…</p>
+          <p className='mt-1 text-xs text-slate-400'>This usually takes 15–45 seconds</p>
         </div>
       )}
       <div className='max-w-4xl mx-auto px-6 py-10'>
 
-
         {/* Title */}
         <div className='mb-8'>
           <div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full
-            bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6]
+            bg-[#2563EB]/8 border border-[#2563EB]/20 text-[#2563EB]
             text-xs font-medium mb-4'>
             <Brain size={12} />
             Live Portfolio Analysis
           </div>
-          <h1 className='font-medium text-white mb-3'
+          <h1 className='font-semibold text-[#0B1B2E] mb-3'
             style={{ fontSize: 'clamp(28px, 4vw, 48px)', lineHeight: '1.1', letterSpacing: '-0.8px' }}>
             Build your portfolio,<br />stress test it live
           </h1>
-          <p className='text-gray-400 text-base max-w-lg' style={{ letterSpacing: '0.16px' }}>
+          <p className='text-slate-500 text-base max-w-lg'>
             Enter your stocks and weights, pick a scenario, and get the same
             institutional analysis — factor risk, correlation breakdown,
             liquidity, Monte Carlo, and AI memo.
@@ -188,37 +184,37 @@ export default function IntelligencePage() {
         </div>
 
         {/* Main card */}
-        <div className='bg-white/4 border border-white/10 rounded-3xl p-8 space-y-6'>
+        <div className='bg-white border border-slate-200 rounded-xl p-8 shadow-sm space-y-6'>
 
           {/* Presets */}
           <div>
-            <p className='text-xs text-gray-400 font-medium mb-3'>Quick presets</p>
+            <p className='text-xs text-slate-500 font-medium mb-3'>Quick presets</p>
             <div className='flex gap-2 flex-wrap'>
               {PRESETS.map(p => (
-                <Button key={p.label} onClick={() => applyPreset(p)}
-                  variant='ghost'
-                  className='px-3 py-1.5 rounded-full text-xs text-gray-300 mx-0'>
+                <button key={p.label} onClick={() => applyPreset(p)}
+                  className='px-3 py-1.5 rounded-full text-xs text-slate-600
+                    border border-slate-200 hover:border-slate-300 hover:text-[#0B1B2E]
+                    bg-white transition-colors'>
                   {p.label}
-                </Button>
+                </button>
               ))}
             </div>
           </div>
 
           {/* AUM */}
           <div>
-            <label className='text-xs text-gray-400 font-medium mb-2 block'>
+            <label className='text-xs text-slate-500 font-medium mb-2 block'>
               Total Portfolio Value (AUM)
             </label>
             <div className='relative w-48'>
-              <span className='absolute left-3 top-1/2 -translate-y-1/2
-                text-gray-500 text-sm'>$</span>
+              <span className='absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm'>$</span>
               <input
                 type='number'
                 value={totalAum}
                 onChange={e => setTotalAum(e.target.value)}
-                className='w-full bg-white/3 border border-white/10 rounded-xl
-                  pl-7 pr-4 py-2.5 text-white text-sm focus:outline-none
-                  focus:border-[#3B82F6]/50 transition-all'
+                className='w-full bg-slate-50 border border-slate-200 rounded-lg
+                  pl-7 pr-4 py-2.5 text-[#0B1B2E] text-sm focus:outline-none
+                  focus:border-[#2563EB] transition-all tabular-nums'
               />
             </div>
           </div>
@@ -226,28 +222,28 @@ export default function IntelligencePage() {
           {/* Ticker table */}
           <div>
             <div className='flex items-center justify-between mb-3'>
-              <label className='text-xs text-gray-400 font-medium'>
+              <label className='text-xs text-slate-500 font-medium'>
                 Portfolio positions
               </label>
               <div className='flex items-center gap-2'>
-                <span className={`text-xs font-medium ${
-                  Math.abs(totalWeight - 100) < 1 ? 'text-green-400'
-                  : totalWeight > 100 ? 'text-red-400' : 'text-orange-400'
+                <span className={`text-xs font-medium tabular-nums ${
+                  Math.abs(totalWeight - 100) < 1 ? 'text-[#15803D]'
+                  : totalWeight > 100 ? 'text-[#B91C1C]' : 'text-orange-600'
                 }`}>
                   {totalWeight.toFixed(1)}% / 100%
                 </span>
-                <Button onClick={equalizeWeights}
-                  variant='ghost'
-                  className='text-xs text-[#3B82F6] hover:opacity-80 border border-[#3B82F6]/30 px-2 py-1 rounded-full transition-opacity mx-0'>
+                <button onClick={equalizeWeights}
+                  className='text-xs text-[#2563EB] hover:text-[#1D4ED8] border border-[#2563EB]/30
+                    hover:border-[#2563EB]/50 px-2 py-1 rounded-full transition-colors'>
                   Equal weights
-                </Button>
+                </button>
               </div>
             </div>
 
             <div className='space-y-2'>
               <div className='grid grid-cols-12 gap-2 px-2'>
-                <div className='col-span-5 text-xs text-gray-600'>Ticker</div>
-                <div className='col-span-5 text-xs text-gray-600'>Weight %</div>
+                <div className='col-span-5 text-xs text-slate-400'>Ticker</div>
+                <div className='col-span-5 text-xs text-slate-400'>Weight %</div>
                 <div className='col-span-2' />
               </div>
 
@@ -257,10 +253,10 @@ export default function IntelligencePage() {
                     value={row.ticker}
                     onChange={e => updateRow(i, 'ticker', e.target.value)}
                     placeholder='AAPL'
-                    className='col-span-5 bg-white/3 border border-white/10
-                      rounded-xl px-3 py-2.5 text-white text-sm
-                      placeholder-gray-600 focus:outline-none
-                      focus:border-[#3B82F6]/50 transition-all uppercase'
+                    className='col-span-5 bg-slate-50 border border-slate-200
+                      rounded-lg px-3 py-2.5 text-[#0B1B2E] text-sm
+                      placeholder-slate-300 focus:outline-none
+                      focus:border-[#2563EB] transition-all uppercase'
                   />
                   <div className='col-span-5 relative'>
                     <input
@@ -268,39 +264,38 @@ export default function IntelligencePage() {
                       value={row.weight}
                       onChange={e => updateRow(i, 'weight', e.target.value)}
                       placeholder='10'
-                      className='w-full bg-white/3 border border-white/10
-                        rounded-xl px-3 py-2.5 text-white text-sm
-                        placeholder-gray-600 focus:outline-none
-                        focus:border-[#3B82F6]/50 transition-all pr-7'
+                      className='w-full bg-slate-50 border border-slate-200
+                        rounded-lg px-3 py-2.5 text-[#0B1B2E] text-sm
+                        placeholder-slate-300 focus:outline-none
+                        focus:border-[#2563EB] transition-all pr-7 tabular-nums'
                     />
-                    <span className='absolute right-3 top-1/2 -translate-y-1/2
-                      text-gray-500 text-sm'>%</span>
+                    <span className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm'>%</span>
                   </div>
-                  <Button onClick={() => removeRow(i)}
-                    variant='ghost'
-                    className='col-span-2 flex items-center justify-center text-gray-600 hover:text-red-400 transition-colors mx-0 p-0'>
+                  <button onClick={() => removeRow(i)}
+                    className='col-span-2 flex items-center justify-center
+                      text-slate-300 hover:text-[#B91C1C] transition-colors'>
                     <X size={14} />
-                  </Button>
+                  </button>
                 </div>
               ))}
             </div>
 
-            <Button onClick={addRow}
-              variant='ghost'
-              className='mt-3 flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-200 transition-colors mx-0'>
+            <button onClick={addRow}
+              className='mt-3 flex items-center gap-1.5 text-xs text-slate-500
+                hover:text-[#0B1B2E] transition-colors'>
               <Plus size={13} />
               Add position
-            </Button>
+            </button>
           </div>
 
           {/* Scenario */}
           <div>
             <div className='flex items-center justify-between mb-2'>
-              <label className='text-xs text-gray-400 font-medium'>
+              <label className='text-xs text-slate-500 font-medium'>
                 Stress scenario
               </label>
               {activeScenario && (
-                <span className='text-xs text-[#3B82F6]'>{activeScenario} loaded</span>
+                <span className='text-xs text-[#2563EB]'>{activeScenario} loaded</span>
               )}
             </div>
             <textarea
@@ -311,58 +306,57 @@ export default function IntelligencePage() {
               }}
               rows={2}
               placeholder='e.g. Market crashes 30%, rates rise 2%, tech drops 50%'
-              className='w-full bg-white/3 border border-white/10 rounded-xl
-                p-4 text-white placeholder-gray-600 resize-none
-                focus:outline-none focus:border-[#3B82F6]/50 text-sm
+              className='w-full bg-slate-50 border border-slate-200 rounded-lg
+                p-4 text-[#0B1B2E] placeholder-slate-400 resize-none
+                focus:outline-none focus:border-[#2563EB] text-sm
                 transition-all mb-3'
             />
             <div className='flex flex-wrap gap-2'>
               {HISTORICAL_SCENARIOS.map(s => (
-                <Button key={s.label}
+                <button key={s.label}
                   onClick={() => {
                     setScenario(s.text)
                     setActiveScenario(s.label)
                   }}
-                  variant='ghost'
-                  className={`text-xs px-3 py-1.5 rounded-full mx-0 transition-all
+                  className={`text-xs px-3 py-1.5 rounded-full transition-all border
                     ${activeScenario === s.label
-                      ? 'border-[#3B82F6]/50 bg-[#3B82F6]/10 text-[#3B82F6]'
-                      : 'text-gray-400 hover:text-gray-200 hover:border-white/15'
+                      ? 'border-[#2563EB]/40 bg-[#2563EB]/8 text-[#2563EB]'
+                      : 'border-slate-200 text-slate-500 hover:text-[#0B1B2E] hover:border-slate-300 bg-white'
                     }`}>
                   {s.label}
-                </Button>
+                </button>
               ))}
             </div>
           </div>
 
           {error && (
-            <div className='flex items-center gap-2 text-red-400 text-sm
-              bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3'>
-              <AlertCircle size={14} />
+            <div className='flex items-center gap-2 text-[#B91C1C] text-sm
+              bg-red-50 border border-red-200 rounded-lg px-4 py-3'>
+              <AlertCircle size={14} className='shrink-0' />
               {error}
             </div>
           )}
 
-          <Button
+          <button
             onClick={handleRun}
             disabled={loading}
-            variant='solid'
-            className='w-full py-4 rounded-full font-medium text-sm transition-opacity duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mx-0'>
+            className='w-full py-3.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white
+              font-semibold text-sm transition-colors active:scale-[0.98] disabled:opacity-50
+              disabled:cursor-not-allowed flex items-center justify-center gap-2'>
             {loading ? (
-              <span className='flex items-center justify-center gap-2'>
-                <span className='w-4 h-4 border-2 border-white/30
-                  border-t-white rounded-full animate-spin' />
+              <>
+                <span className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
                 Running analysis...
-              </span>
+              </>
             ) : (
-              <span className='flex items-center justify-center gap-2'>
+              <>
                 <Zap size={16} />
                 Run Live Stress Test
-              </span>
+              </>
             )}
-          </Button>
+          </button>
 
-          <p className='text-center text-xs text-gray-600'>
+          <p className='text-center text-xs text-slate-400'>
             Results include factor model, correlation breakdown, liquidity
             analysis, Monte Carlo simulation, and AI analyst memo
           </p>
@@ -371,4 +365,3 @@ export default function IntelligencePage() {
     </main>
   )
 }
-

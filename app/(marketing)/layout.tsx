@@ -1,15 +1,13 @@
 import type { ReactNode } from 'react'
-import SiteNav from '@/components/marketing/site-nav'
-import MarketingFooter from '@/components/ui/footer-column'
+import SiteHeader from '@/components/system/SiteHeader'
+import SiteFooter from '@/components/system/SiteFooter'
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
-    <div className='min-h-screen bg-[#0A0F1E] text-white flex flex-col'>
-      <SiteNav />
+    <div className='min-h-screen bg-white text-[#0B1B2E] flex flex-col'>
+      <SiteHeader variant='marketing' />
       <div className='flex-1'>{children}</div>
-      <div className='relative z-10'>
-        <MarketingFooter />
-      </div>
+      <SiteFooter />
     </div>
   )
 }

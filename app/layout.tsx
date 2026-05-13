@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Source_Serif_4, JetBrains_Mono, Audiowide } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 
@@ -11,6 +11,24 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const sourceSerif4 = Source_Serif_4({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--vantage-serif",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--vantage-mono",
+});
+
+const audiowide = Audiowide({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--vantage-wordmark",
 });
 
 export const metadata: Metadata = {
@@ -31,9 +49,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif4.variable} ${jetbrainsMono.variable} ${audiowide.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#0A0F1E]" style={{ fontFamily: 'var(--font-geist-sans), sans-serif' }}>
+      <body className="min-h-full flex flex-col bg-white" style={{ fontFamily: 'var(--font-geist-sans), sans-serif' }}>
         <Providers>
           <div className="relative z-10 flex flex-col min-h-full">
             {children}

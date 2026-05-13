@@ -1,30 +1,7 @@
 import Link from 'next/link'
-import { Source_Serif_4, JetBrains_Mono, Audiowide } from 'next/font/google'
-import { Search, Upload, Shield, Brain } from 'lucide-react'
-
-// ── Fonts (scoped to this page via CSS variables) ─────────────────────────────
-
-const sourceSerif4 = Source_Serif_4({
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--vantage-serif',
-})
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--vantage-mono',
-})
-
-const audiowide = Audiowide({
-  subsets: ['latin'],
-  weight: '400',
-  variable: '--vantage-wordmark',
-})
+import { Upload, Shield, Brain } from 'lucide-react'
 
 // ── Static data ───────────────────────────────────────────────────────────────
-
-const NAV_ITEMS = ['Stress Test', 'Methodology', 'Customers', 'Resources', 'About'] as const
 
 const INDEX_CARDS = [
   {
@@ -217,7 +194,7 @@ const TIERS = [
   },
 ]
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Style helpers ─────────────────────────────────────────────────────────────
 
 const SERIF: React.CSSProperties = {
   fontFamily: 'var(--vantage-serif), Georgia, "Times New Roman", serif',
@@ -235,97 +212,7 @@ const WORDMARK: React.CSSProperties = {
 
 export default function HomePage() {
   return (
-    <div
-      className={`bg-white text-[#0B1B2E] ${sourceSerif4.variable} ${jetbrainsMono.variable} ${audiowide.variable}`}
-    >
-      {/* pt-16 clears the fixed SiteNav (h-16) */}
-      <div className="pt-16">
-
-        {/* ── Bloomberg header layer 1: utility strip ─────────────────── */}
-        <div className="h-8 bg-slate-50 border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-            <div className="flex items-center gap-0.5 text-xs text-slate-500">
-              <Link href="#" className="px-1.5 py-0.5 hover:text-[#0B1B2E] transition-colors duration-150">
-                Product
-              </Link>
-              <span className="text-slate-300 select-none px-0.5">·</span>
-              <Link href="#pricing" className="px-1.5 py-0.5 hover:text-[#0B1B2E] transition-colors duration-150">
-                Pricing
-              </Link>
-              <span className="text-slate-300 select-none px-0.5">·</span>
-              <Link href="#how-it-works" className="px-1.5 py-0.5 hover:text-[#0B1B2E] transition-colors duration-150">
-                How it works
-              </Link>
-            </div>
-            <div className="flex items-center gap-4 text-xs">
-              <Link
-                href="/auth/sign-in"
-                className="text-slate-500 hover:text-[#0B1B2E] transition-colors duration-150"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/demo"
-                className="text-[#2563EB] font-semibold hover:text-[#1D4ED8] transition-colors duration-150"
-              >
-                Start free trial
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Bloomberg header layer 2: brand bar ─────────────────────── */}
-        <div className="h-[72px] bg-white border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-            <Link href="/" aria-label="Vantage home">
-              <span
-                className="text-[#0B1B2E] tracking-[0.12em]"
-                style={{ ...WORDMARK, fontSize: '20px' }}
-              >
-                VANTAGE
-              </span>
-            </Link>
-            <div className="flex items-center gap-4">
-              <button
-                aria-label="Search"
-                className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[#0B1B2E] transition-colors duration-150"
-              >
-                <Search size={15} />
-              </button>
-              <Link
-                href="/auth/sign-in"
-                className="text-sm text-slate-600 hover:text-[#0B1B2E] transition-colors duration-150"
-              >
-                Sign in
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Bloomberg header layer 3: primary nav ───────────────────── */}
-        <div className="h-12 bg-[#0B1B2E]">
-          <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-            <nav className="flex items-center gap-6">
-              {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item}
-                  href="#"
-                  className="text-sm text-white/70 hover:text-white transition-colors duration-150"
-                >
-                  {item}
-                </Link>
-              ))}
-            </nav>
-            <div className="flex items-center gap-2">
-              <span className="block w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse" />
-              <span className="text-xs text-white/50 tracking-wide">
-                Live · Stress Engine Active
-              </span>
-            </div>
-          </div>
-        </div>
-
-      </div>
+    <div className="bg-white text-[#0B1B2E]">
 
       {/* ── Hero ──────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -529,7 +416,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── How Vantage Works (§3.9 section wrap) ─────────────────────── */}
+      {/* ── How Vantage Works ─────────────────────────────────────────── */}
       <section id="how-it-works" className="py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="bg-slate-50 rounded-xl p-8 md:p-12">
@@ -701,118 +588,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ── Footer ────────────────────────────────────────────────────── */}
-      <footer className="bg-[#0B1B2E] text-white mt-20">
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 mb-12">
-
-            {/* Brand */}
-            <div className="lg:col-span-1">
-              <span
-                className="text-white tracking-[0.12em] block mb-4"
-                style={{ ...WORDMARK, fontSize: '18px' }}
-              >
-                VANTAGE
-              </span>
-              <p className="text-sm text-white/50 leading-relaxed max-w-xs">
-                Institutional-grade portfolio stress testing for independent wealth managers and RIAs.
-                Clarity in uncertainty. Confidence in every decision.
-              </p>
-            </div>
-
-            {/* Link columns */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:col-span-3 gap-8">
-
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-4">
-                  Product
-                </p>
-                <ul className="space-y-2.5">
-                  {[
-                    { text: 'Historical Scenarios', href: '/product/scenarios' },
-                    { text: 'Custom Scenarios',     href: '/product/custom-scenarios' },
-                    { text: 'Monte Carlo',          href: '/product/monte-carlo' },
-                    { text: 'Factor Risk Model',    href: '/product/factor-model' },
-                    { text: 'Branded PDF Export',   href: '/product/pdf' },
-                  ].map(({ text, href }) => (
-                    <li key={text}>
-                      <Link href={href} className="text-sm text-white/50 hover:text-white transition-colors duration-150">
-                        {text}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-4">
-                  Methodology
-                </p>
-                <ul className="space-y-2.5">
-                  {[
-                    { text: 'Independent RIAs',    href: '/solutions/rias' },
-                    { text: 'Solo Advisors',        href: '/solutions/solo' },
-                    { text: 'Multi-Family Offices', href: '/solutions/mfo' },
-                    { text: 'Client Panic Mode',    href: '/solutions/panic-mode' },
-                    { text: 'Quarterly Reviews',    href: '/solutions/qbr' },
-                  ].map(({ text, href }) => (
-                    <li key={text}>
-                      <Link href={href} className="text-sm text-white/50 hover:text-white transition-colors duration-150">
-                        {text}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="space-y-8">
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-4">
-                    Company
-                  </p>
-                  <ul className="space-y-2.5">
-                    {[
-                      { text: 'Pricing',  href: '/pricing'   },
-                      { text: 'Roadmap',  href: '/roadmap'   },
-                      { text: 'Try Demo', href: '/demo'       },
-                      { text: 'Sign in',  href: '/auth/sign-in' },
-                    ].map(({ text, href }) => (
-                      <li key={text}>
-                        <Link href={href} className="text-sm text-white/50 hover:text-white transition-colors duration-150">
-                          {text}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-white/40 mb-4">
-                    Legal
-                  </p>
-                  <ul className="space-y-2.5">
-                    {[
-                      { text: 'Privacy Policy', href: '#' },
-                      { text: 'Terms of Service', href: '#' },
-                    ].map(({ text, href }) => (
-                      <li key={text}>
-                        <Link href={href} className="text-sm text-white/50 hover:text-white transition-colors duration-150">
-                          {text}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/30">
-            <p>© 2026 Vantage. All rights reserved.</p>
-            <p>Built for independent wealth managers &amp; RIAs.</p>
-          </div>
-        </div>
-      </footer>
 
     </div>
   )
