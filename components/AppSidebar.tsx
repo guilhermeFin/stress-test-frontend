@@ -37,7 +37,7 @@ export default function AppSidebar() {
 
   return (
     <aside
-      className={`${w} flex-shrink-0 bg-white border-r border-slate-200
+      className={`${w} flex-shrink-0 bg-slate-50 border-r border-slate-200
         flex flex-col transition-all duration-200 h-screen sticky top-0 z-40`}
     >
       {/* Logo */}
@@ -58,11 +58,11 @@ export default function AppSidebar() {
               key={href}
               href={href}
               title={collapsed ? label : undefined}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
-                transition-colors duration-150 group
+              className={`flex items-center gap-3 py-2 rounded-md text-sm font-medium
+                transition-colors duration-150 group relative
                 ${active
-                  ? 'bg-[#2563EB]/10 text-[#2563EB]'
-                  : 'text-slate-500 hover:text-[#0B1B2E] hover:bg-slate-100'}`}
+                  ? 'bg-white border border-slate-200 shadow-sm text-[#0B1B2E] border-l-[3px] border-l-[#2563EB] pl-[10px] pr-3'
+                  : 'px-3 text-slate-600 hover:text-[#0B1B2E] hover:bg-white'}`}
             >
               <Icon size={16} className='shrink-0' />
               {!collapsed && <span>{label}</span>}
@@ -82,9 +82,11 @@ export default function AppSidebar() {
         <Link
           href='/settings'
           title={collapsed ? 'Settings' : undefined}
-          className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
-            transition-colors text-slate-500 hover:text-[#0B1B2E] hover:bg-slate-100
-            ${pathname.startsWith('/settings') ? 'bg-[#2563EB]/10 text-[#2563EB]' : ''}`}
+          className={`flex items-center gap-3 py-2 rounded-md text-sm font-medium
+            transition-colors text-slate-600 hover:text-[#0B1B2E] hover:bg-white
+            ${pathname.startsWith('/settings')
+              ? 'bg-white border border-slate-200 shadow-sm text-[#0B1B2E] border-l-[3px] border-l-[#2563EB] pl-[10px] pr-3'
+              : 'px-3'}`}
         >
           <Settings size={16} className='shrink-0' />
           {!collapsed && <span>Settings</span>}

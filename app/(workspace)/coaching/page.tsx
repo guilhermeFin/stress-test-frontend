@@ -71,28 +71,30 @@ function DrawdownSimulator() {
     <div className='space-y-6'>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
         {/* Inputs */}
-        <div className='space-y-4 bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5'>
-          <h3 className='text-sm font-semibold'>Inputs</h3>
+        <div className='space-y-4 bg-white border border-slate-200 rounded-lg p-5'>
+          <h3 className='text-sm font-semibold text-[#0B1B2E]'>Inputs</h3>
           <div>
-            <label className='text-xs text-gray-500 mb-1.5 block'>Portfolio value</label>
+            <label className='text-xs text-slate-600 mb-1.5 block font-medium'>Portfolio value</label>
             <div className='flex items-center gap-2'>
-              <span className='text-gray-500 text-sm'>$</span>
+              <span className='text-slate-400 text-sm'>$</span>
               <input
                 type='number' step={100000} min={10000}
                 value={portfolioValue}
                 onChange={e => setPortfolioValue(Number(e.target.value))}
-                className='flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2
-                  text-sm text-white focus:outline-none focus:border-white/20'
+                className='flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2
+                  text-sm text-[#0B1B2E] focus:outline-none focus:ring-1 focus:ring-[#2563EB]
+                  focus:border-[#2563EB] transition-colors'
               />
             </div>
           </div>
           <div>
-            <label className='text-xs text-gray-500 mb-1.5 block'>Crisis scenario</label>
+            <label className='text-xs text-slate-600 mb-1.5 block font-medium'>Crisis scenario</label>
             <select
               value={scenarioIdx}
               onChange={e => setScenarioIdx(Number(e.target.value))}
-              className='w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2
-                text-sm text-white focus:outline-none focus:border-white/20'
+              className='w-full bg-white border border-slate-200 rounded-lg px-3 py-2
+                text-sm text-[#0B1B2E] focus:outline-none focus:ring-1 focus:ring-[#2563EB]
+                focus:border-[#2563EB] transition-colors'
             >
               {SCENARIOS.map((s, i) => <option key={s.label} value={i}>{s.label}</option>)}
             </select>
@@ -100,8 +102,8 @@ function DrawdownSimulator() {
           {scenario.label === 'Custom' && (
             <div>
               <div className='flex justify-between text-xs mb-1.5'>
-                <span className='text-gray-500'>Drawdown</span>
-                <span className='font-bold text-red-400'>-{customDrawdown}%</span>
+                <span className='text-slate-600'>Drawdown</span>
+                <span className='font-bold text-[#B91C1C]'>-{customDrawdown}%</span>
               </div>
               <input type='range' min={5} max={60} value={customDrawdown}
                 onChange={e => setCustomDrawdown(Number(e.target.value))}
@@ -111,38 +113,37 @@ function DrawdownSimulator() {
         </div>
 
         {/* Impact summary */}
-        <div className='bg-red-950/20 border border-red-700/20 rounded-2xl p-5 space-y-3'>
-          <h3 className='text-sm font-semibold'>Client impact in dollars</h3>
+        <div className='bg-red-50 border border-red-100 rounded-lg p-5 space-y-3'>
+          <h3 className='text-sm font-semibold text-[#0B1B2E]'>Client impact in dollars</h3>
           {[
-            { label: 'Portfolio before crisis',  value: fmt(portfolioValue), color: 'text-white' },
-            { label: 'Value at trough',           value: fmt(trough),         color: 'text-red-400' },
-            { label: 'Dollar loss at bottom',     value: `-${fmt(loss)}`,     color: 'text-red-400' },
-            { label: 'Monthly income before (4%)',value: fmt(income4pct) + '/mo',  color: 'text-white' },
-            { label: 'Monthly income at trough',  value: fmt(troughIncome) + '/mo', color: 'text-amber-400' },
-            { label: 'Income shortfall',          value: `-${fmt(income4pct - troughIncome)}/mo`, color: 'text-red-400' },
+            { label: 'Portfolio before crisis',  value: fmt(portfolioValue), color: 'text-[#0B1B2E]' },
+            { label: 'Value at trough',           value: fmt(trough),         color: 'text-[#B91C1C]' },
+            { label: 'Dollar loss at bottom',     value: `-${fmt(loss)}`,     color: 'text-[#B91C1C]' },
+            { label: 'Monthly income before (4%)',value: fmt(income4pct) + '/mo',  color: 'text-[#0B1B2E]' },
+            { label: 'Monthly income at trough',  value: fmt(troughIncome) + '/mo', color: 'text-amber-600' },
+            { label: 'Income shortfall',          value: `-${fmt(income4pct - troughIncome)}/mo`, color: 'text-[#B91C1C]' },
           ].map(({ label, value, color }) => (
             <div key={label} className='flex justify-between text-sm'>
-              <span className='text-gray-400'>{label}</span>
+              <span className='text-slate-600'>{label}</span>
               <span className={`font-semibold tabular-nums ${color}`}>{value}</span>
             </div>
           ))}
-          <div className='border-t border-white/[0.06] pt-2 text-xs text-gray-500'>
+          <div className='border-t border-red-100 pt-2 text-xs text-slate-500'>
             Recovery: ~{scenario.months_to_recovery} months from trough (historical avg)
           </div>
         </div>
       </div>
 
       {/* Chart */}
-      <div className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4'>
-        <p className='text-xs text-gray-500 mb-3'>Portfolio value over crisis & recovery period</p>
+      <div className='bg-white border border-slate-200 rounded-lg p-4'>
+        <p className='text-xs text-slate-500 mb-3'>Portfolio value over crisis &amp; recovery period</p>
         <svg viewBox={`0 0 ${W} ${H}`} className='w-full'>
           <defs>
             <linearGradient id='ddGrad' x1='0' y1='0' x2='0' y2='1'>
-              <stop offset='0%' stopColor='#3B82F6' stopOpacity='0.2' />
-              <stop offset='100%' stopColor='#3B82F6' stopOpacity='0.01' />
+              <stop offset='0%' stopColor='#3B82F6' stopOpacity='0.15' />
+              <stop offset='100%' stopColor='#3B82F6' stopOpacity='0.02' />
             </linearGradient>
           </defs>
-          {/* Area fill — red in drawdown, blue in recovery */}
           <clipPath id='ddClip'>
             <rect x={PAD.l} y={PAD.t} width={troughX - PAD.l} height={H - PAD.t - PAD.b} />
           </clipPath>
@@ -153,7 +154,7 @@ function DrawdownSimulator() {
           <circle cx={troughX} cy={troughY} r={4} fill='#EF4444' />
           <line x1={troughX} y1={PAD.t} x2={troughX} y2={H - PAD.b}
             stroke='#EF4444' strokeWidth='1' strokeDasharray='3 2' opacity='0.4' />
-          <text x={troughX + 4} y={troughY - 6} fontSize={9} fill='#EF4444'>
+          <text x={troughX + 4} y={troughY - 6} fontSize={9} fill='#B91C1C'>
             {(drawdownPct * 100).toFixed(0)}% loss
           </text>
           {/* Y ticks */}
@@ -162,15 +163,15 @@ function DrawdownSimulator() {
             const y = sy(v)
             return (
               <g key={f}>
-                <text x={PAD.l - 4} y={y + 4} textAnchor='end' fontSize={9} fill='#6b7280'>{fmt(v)}</text>
-                <line x1={PAD.l} x2={W - PAD.r} y1={y} y2={y} stroke='#ffffff06' />
+                <text x={PAD.l - 4} y={y + 4} textAnchor='end' fontSize={9} fill='#94a3b8'>{fmt(v)}</text>
+                <line x1={PAD.l} x2={W - PAD.r} y1={y} y2={y} stroke='#e2e8f0' strokeWidth='1' />
               </g>
             )
           })}
           {/* X labels */}
-          <text x={PAD.l} y={H - 4} textAnchor='middle' fontSize={9} fill='#6b7280'>Start</text>
-          <text x={troughX} y={H - 4} textAnchor='middle' fontSize={9} fill='#6b7280'>Trough</text>
-          <text x={W - PAD.r} y={H - 4} textAnchor='end' fontSize={9} fill='#6b7280'>Recovery</text>
+          <text x={PAD.l} y={H - 4} textAnchor='middle' fontSize={9} fill='#94a3b8'>Start</text>
+          <text x={troughX} y={H - 4} textAnchor='middle' fontSize={9} fill='#94a3b8'>Trough</text>
+          <text x={W - PAD.r} y={H - 4} textAnchor='end' fontSize={9} fill='#94a3b8'>Recovery</text>
         </svg>
       </div>
     </div>
@@ -193,9 +194,9 @@ function MissedBestDays() {
   const base = MISSED_DAYS_DATA[0].value
   return (
     <div className='space-y-4'>
-      <div className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5'>
-        <h3 className='text-sm font-semibold mb-1'>The cost of missing the market&apos;s best days</h3>
-        <p className='text-xs text-gray-500 mb-5'>
+      <div className='bg-white border border-slate-200 rounded-lg p-5'>
+        <h3 className='text-sm font-semibold text-[#0B1B2E] mb-1'>The cost of missing the market&apos;s best days</h3>
+        <p className='text-xs text-slate-500 mb-5'>
           $10,000 invested in the S&amp;P 500 (2003–2023). The majority of the best days occur
           within two weeks of the worst days — which is why staying invested matters.
         </p>
@@ -203,14 +204,14 @@ function MissedBestDays() {
           {MISSED_DAYS_DATA.map(row => (
             <div key={row.missed} className='flex items-center gap-3'>
               <div className='w-36 shrink-0'>
-                <p className='text-xs text-gray-300 font-medium'>
+                <p className='text-xs text-[#0B1B2E] font-medium'>
                   {row.missed === 0 ? 'Fully invested' : `Miss ${row.missed} best days`}
                 </p>
-                <p className={`text-[10px] tabular-nums font-semibold ${row.return >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                <p className={`text-[10px] tabular-nums font-semibold ${row.return >= 0 ? 'text-[#15803D]' : 'text-[#B91C1C]'}`}>
                   {row.return >= 0 ? '+' : ''}{row.return.toFixed(1)}% / yr
                 </p>
               </div>
-              <div className='flex-1 h-6 bg-white/[0.03] rounded-lg overflow-hidden'>
+              <div className='flex-1 h-6 bg-slate-100 rounded-lg overflow-hidden'>
                 <div
                   className='h-full rounded-lg transition-all'
                   style={{
@@ -220,19 +221,19 @@ function MissedBestDays() {
                   }}
                 />
               </div>
-              <p className='text-sm font-bold tabular-nums w-20 text-right'>
+              <p className='text-sm font-bold tabular-nums w-20 text-right text-[#0B1B2E]'>
                 {fmt(row.value)}
               </p>
             </div>
           ))}
         </div>
-        <p className='text-[10px] text-gray-600 mt-4'>
+        <p className='text-[10px] text-slate-400 mt-4'>
           Source: JPMorgan Asset Management. Past performance does not guarantee future results.
           AI-assisted — verify before client delivery.
         </p>
       </div>
 
-      <div className='bg-amber-950/20 border border-amber-700/20 rounded-2xl p-4 text-xs text-amber-200/80 leading-relaxed'>
+      <div className='bg-amber-50 border border-amber-200 rounded-lg p-4 text-xs text-amber-800 leading-relaxed'>
         <strong>Talking point:</strong> &ldquo;The ten best days of the last twenty years — the days your portfolio recovered the most — mostly happened within two weeks of the ten worst days. Missing them means missing the recovery. The risk of being out of the market is just as real as the risk of being in it.&rdquo;
       </div>
     </div>
@@ -304,9 +305,9 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-      className='text-gray-600 hover:text-gray-300 transition-colors shrink-0'
+      className='p-1.5 rounded-md text-slate-400 hover:text-[#0B1B2E] hover:bg-slate-100 transition-colors shrink-0'
     >
-      {copied ? <Check size={12} className='text-emerald-400' /> : <Copy size={12} />}
+      {copied ? <Check size={12} className='text-[#15803D]' /> : <Copy size={12} />}
     </button>
   )
 }
@@ -320,35 +321,37 @@ function AdvisorScripts() {
       <div className='space-y-1'>
         {SCRIPTS.map((s, i) => (
           <button key={s.scenario} onClick={() => setActive(i)}
-            className={`w-full text-left px-3 py-2.5 rounded-xl text-sm transition-colors
-              ${active === i ? 'bg-[#3B82F6]/10 text-[#3B82F6] border border-[#3B82F6]/20' : 'text-gray-400 hover:text-white hover:bg-white/[0.04]'}`}>
+            className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors
+              ${active === i
+                ? 'bg-[#2563EB]/10 text-[#2563EB] border border-[#2563EB]/20 font-medium'
+                : 'text-slate-600 hover:text-[#0B1B2E] hover:bg-slate-50'}`}>
             {s.scenario}
           </button>
         ))}
       </div>
 
       {/* Script content */}
-      <div className='md:col-span-2 bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5'>
+      <div className='md:col-span-2 bg-white border border-slate-200 rounded-lg p-5'>
         <div className='mb-4'>
-          <h3 className='text-sm font-semibold'>{script.scenario}</h3>
-          <p className='text-xs text-gray-500 mt-1 italic'>&ldquo;{script.trigger}&rdquo;</p>
+          <h3 className='text-sm font-semibold text-[#0B1B2E]'>{script.scenario}</h3>
+          <p className='text-xs text-slate-500 mt-1 italic'>&ldquo;{script.trigger}&rdquo;</p>
         </div>
         <div className='space-y-3'>
           {script.points.map((point, i) => (
             <div key={i} className='flex items-start gap-3 group'>
-              <span className='w-5 h-5 rounded-full bg-[#3B82F6]/10 flex items-center justify-center
-                text-[10px] font-bold text-[#3B82F6] shrink-0 mt-0.5'>
+              <span className='w-5 h-5 rounded-full bg-[#2563EB]/10 flex items-center justify-center
+                text-[10px] font-bold text-[#2563EB] shrink-0 mt-0.5'>
                 {i + 1}
               </span>
-              <p className='text-sm text-gray-300 leading-relaxed flex-1'>{point}</p>
+              <p className='text-sm text-slate-700 leading-relaxed flex-1'>{point}</p>
               <CopyButton text={point} />
             </div>
           ))}
         </div>
         <button
           onClick={() => navigator.clipboard.writeText(script.points.join('\n\n'))}
-          className='mt-4 flex items-center gap-1.5 text-xs text-gray-500 hover:text-white
-            border border-white/10 hover:border-white/20 rounded-lg px-3 py-1.5 transition-colors'
+          className='mt-4 flex items-center gap-1.5 text-xs text-slate-500 hover:text-[#0B1B2E]
+            border border-slate-200 hover:border-slate-300 rounded-md px-3 py-1.5 transition-colors bg-white'
         >
           <Copy size={11} /> Copy all talking points
         </button>
@@ -391,21 +394,21 @@ function PreMortem() {
   const [answers, setAnswers] = useState<Record<number, string>>({})
   return (
     <div className='space-y-4'>
-      <div className='bg-amber-950/20 border border-amber-700/20 rounded-xl px-4 py-3 text-xs text-amber-200/80'>
+      <div className='bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-xs text-amber-800'>
         A pre-mortem imagines the plan has already failed and works backward to identify why. Complete this before every annual review — it surfaces risks before they become problems.
       </div>
       {PREMORTEM_SECTIONS.map((s, i) => (
-        <div key={i} className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5'>
-          <h3 className='text-sm font-semibold mb-1'>{s.heading}</h3>
-          <p className='text-xs text-gray-500 mb-3 italic'>{s.prompt}</p>
+        <div key={i} className='bg-white border border-slate-200 rounded-lg p-5 hover:border-slate-300 transition-colors'>
+          <h3 className='text-sm font-semibold text-[#0B1B2E] mb-1'>{s.heading}</h3>
+          <p className='text-xs text-slate-500 mb-3 italic'>{s.prompt}</p>
           <textarea
             value={answers[i] ?? ''}
             onChange={e => setAnswers(a => ({ ...a, [i]: e.target.value }))}
             rows={3}
             placeholder={s.placeholder}
-            className='w-full bg-white/[0.03] border border-white/[0.06] rounded-xl p-3
-              text-sm text-gray-300 placeholder:text-gray-700 resize-none
-              focus:outline-none focus:border-white/12 transition-colors'
+            className='w-full bg-slate-50 border border-slate-200 rounded-lg p-3
+              text-sm text-[#0B1B2E] placeholder:text-slate-400 resize-none
+              focus:outline-none focus:ring-1 focus:ring-[#2563EB] focus:border-[#2563EB] transition-colors'
           />
         </div>
       ))}
@@ -414,8 +417,8 @@ function PreMortem() {
           const text = PREMORTEM_SECTIONS.map((s, i) => `${s.heading}\n\n${answers[i] ?? '(not completed)'}`).join('\n\n---\n\n')
           navigator.clipboard.writeText(text)
         }}
-        className='flex items-center gap-1.5 text-xs text-gray-500 hover:text-white
-          border border-white/10 hover:border-white/20 rounded-lg px-3 py-1.5 transition-colors'
+        className='flex items-center gap-1.5 text-xs text-slate-500 hover:text-[#0B1B2E]
+          border border-slate-200 hover:border-slate-300 rounded-md px-3 py-1.5 transition-colors bg-white'
       >
         <Copy size={11} /> Copy full pre-mortem to clipboard
       </button>
@@ -430,27 +433,34 @@ export default function CoachingPage() {
 
   return (
     <div className='max-w-5xl mx-auto px-6 py-10'>
-      <div className='mb-8'>
-        <h1 className='text-2xl font-bold tracking-tight mb-1'>Behavioral Coaching</h1>
-        <p className='text-sm text-gray-500'>
+
+      {/* Page header */}
+      <div className='border-b border-slate-200 pb-6 mb-6'>
+        <p className='text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-1'>TOOLS</p>
+        <h1 className='text-3xl font-bold text-[#0B1B2E] tracking-tight mb-1'>Behavioral Coaching</h1>
+        <p className='text-base text-slate-600'>
           Tools for advisors to keep clients on plan when emotions run high.
         </p>
       </div>
 
-      {/* Tab bar */}
-      <div className='flex gap-1 bg-white/[0.03] border border-white/[0.06] rounded-xl p-1 mb-6 w-fit flex-wrap'>
-        {TABS.map(({ key, label, icon: Icon }) => (
-          <button
-            key={key}
-            onClick={() => setTab(key)}
-            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-medium
-              transition-colors capitalize
-              ${tab === key ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-gray-300'}`}
-          >
-            <Icon size={13} />
-            {label}
-          </button>
-        ))}
+      {/* Tab bar — underline style */}
+      <div className='border-b border-slate-200 mb-6'>
+        <div className='flex gap-8'>
+          {TABS.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              onClick={() => setTab(key)}
+              className={`flex items-center gap-1.5 pb-3 text-sm font-medium border-b-2 -mb-px
+                transition-colors
+                ${tab === key
+                  ? 'border-[#2563EB] text-[#0B1B2E] font-semibold'
+                  : 'border-transparent text-slate-600 hover:text-[#0B1B2E]'}`}
+            >
+              <Icon size={13} />
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {tab === 'drawdown'  && <DrawdownSimulator />}

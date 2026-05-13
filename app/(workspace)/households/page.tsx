@@ -16,10 +16,10 @@ const RISK_LABEL: Record<RiskProfile, string> = {
 }
 
 const RISK_COLOR: Record<RiskProfile, string> = {
-  conservative: 'text-blue-400 bg-blue-400/10',
-  moderate:     'text-emerald-400 bg-emerald-400/10',
-  growth:       'text-amber-400 bg-amber-400/10',
-  aggressive:   'text-red-400 bg-red-400/10',
+  conservative: 'text-blue-700 bg-blue-100 border border-blue-200',
+  moderate:     'text-emerald-700 bg-emerald-100 border border-emerald-200',
+  growth:       'text-amber-700 bg-amber-100 border border-amber-200',
+  aggressive:   'text-red-700 bg-red-100 border border-red-200',
 }
 
 function fmt(n: number) {
@@ -111,71 +111,75 @@ export default function HouseholdsPage() {
     <div className='max-w-5xl mx-auto px-6 py-10'>
 
       {/* Header */}
-      <div className='flex items-start justify-between mb-8'>
-        <div>
-          <h1 className='text-2xl font-bold tracking-tight mb-1'>Clients</h1>
-          <p className='text-sm text-gray-500'>
-            {households.length} household{households.length !== 1 ? 's' : ''} · {fmt(totalAum)} AUM
-          </p>
+      <div className='border-b border-slate-200 pb-6 mb-8'>
+        <div className='flex items-start justify-between'>
+          <div>
+            <p className='text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-1'>WORKSPACE</p>
+            <h1 className='text-3xl font-bold text-[#0B1B2E] tracking-tight mb-1'>Clients</h1>
+            <p className='text-base text-slate-600'>
+              {households.length} household{households.length !== 1 ? 's' : ''} · {fmt(totalAum)} AUM
+            </p>
+          </div>
+          <button
+            className='flex items-center gap-1.5 text-sm font-semibold text-white
+              bg-[#2563EB] hover:bg-[#1D4ED8] rounded-md px-4 py-2 transition-colors mt-1'
+          >
+            <Plus size={14} />
+            Add household
+          </button>
         </div>
-        <button
-          className='flex items-center gap-1.5 text-sm font-semibold text-white
-            bg-[#3B82F6] hover:bg-[#2563EB] rounded-lg px-4 py-2 transition-colors'
-        >
-          <Plus size={14} />
-          Add household
-        </button>
       </div>
 
       {/* Search */}
       <div className='relative mb-6'>
-        <Search size={14} className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500' />
+        <Search size={14} className='absolute left-3 top-1/2 -translate-y-1/2 text-slate-400' />
         <input
           type='text'
           placeholder='Search by name or member…'
           value={query}
           onChange={e => setQuery(e.target.value)}
-          className='w-full bg-white/[0.03] border border-white/[0.08] rounded-xl
-            pl-9 pr-4 py-2.5 text-sm text-white placeholder:text-gray-600
-            focus:outline-none focus:border-[#3B82F6]/50 transition-colors'
+          className='w-full bg-white border border-slate-200 rounded-lg
+            pl-9 pr-4 py-2.5 text-sm text-[#0B1B2E] placeholder:text-slate-400
+            focus:outline-none focus:ring-1 focus:ring-[#2563EB] focus:border-[#2563EB] transition-colors'
         />
       </div>
 
       {error && (
-        <div className='flex items-center gap-2 bg-red-950/40 border border-red-700/30
-          rounded-xl px-4 py-3 mb-6 text-red-300 text-sm'>
+        <div className='flex items-center gap-2 bg-red-50 border border-red-200
+          rounded-lg px-4 py-3 mb-6 text-red-700 text-sm'>
           <AlertCircle size={14} />
           {error}
         </div>
       )}
 
       {/* List */}
-      <div className='space-y-2'>
+      <div className='space-y-3'>
         {filtered.length === 0 ? (
-          <div className='text-center py-20 border border-dashed border-white/10 rounded-2xl'>
-            <Users size={28} className='text-gray-600 mx-auto mb-3' />
-            <p className='text-gray-500 text-sm'>No households found.</p>
+          <div className='text-center py-20 border border-dashed border-slate-200 rounded-lg bg-slate-50'>
+            <Users size={32} className='text-slate-300 mx-auto mb-3' />
+            <p className='text-slate-700 text-sm font-medium mb-1'>No households found</p>
+            <p className='text-slate-500 text-xs'>Try adjusting your search or add a new household.</p>
           </div>
         ) : (
           filtered.map(h => (
             <Link key={h.id} href={`/households/${h.id}`}
-              className='block bg-white/[0.025] border border-white/[0.06]
-                hover:border-white/12 rounded-2xl px-5 py-4 transition-all group'>
+              className='block bg-white border border-slate-200
+                hover:border-slate-300 hover:shadow-sm rounded-lg px-5 py-4 transition-all group'>
               <div className='flex items-center justify-between'>
 
-                {/* Left: name + members */}
+                {/* Left: avatar + name + members */}
                 <div className='flex items-center gap-4 min-w-0'>
-                  <div className='w-10 h-10 rounded-xl bg-[#3B82F6]/10 flex items-center justify-center shrink-0'>
-                    <Users size={16} className='text-[#3B82F6]' />
+                  <div className='w-10 h-10 rounded-lg bg-[#2563EB]/10 flex items-center justify-center shrink-0'>
+                    <Users size={16} className='text-[#2563EB]' />
                   </div>
                   <div className='min-w-0'>
                     <div className='flex items-center gap-2 mb-0.5'>
-                      <p className='font-semibold text-white group-hover:text-[#3B82F6] transition-colors'>
+                      <p className='font-semibold text-[#0B1B2E] group-hover:text-[#2563EB] transition-colors'>
                         {h.name}
                       </p>
                       {h.alert_count != null && h.alert_count > 0 && (
-                        <span className='flex items-center gap-1 text-[10px] font-bold text-amber-400
-                          bg-amber-400/10 px-1.5 py-0.5 rounded-full'>
+                        <span className='flex items-center gap-1 text-[10px] font-bold text-amber-700
+                          bg-amber-100 border border-amber-200 px-1.5 py-0.5 rounded-full'>
                           <AlertTriangle size={9} /> {h.alert_count}
                         </span>
                       )}
@@ -184,7 +188,7 @@ export default function HouseholdsPage() {
                         {RISK_LABEL[h.risk_profile]}
                       </span>
                     </div>
-                    <p className='text-xs text-gray-500 truncate'>
+                    <p className='text-xs text-slate-500 truncate'>
                       {h.members.map(m => m.name).join(' · ')}
                     </p>
                   </div>
@@ -193,27 +197,27 @@ export default function HouseholdsPage() {
                 {/* Right: AUM + return */}
                 <div className='flex items-center gap-8 shrink-0'>
                   <div className='text-right hidden sm:block'>
-                    <p className='text-sm font-semibold'>{fmt(h.aum ?? 0)}</p>
-                    <p className='text-xs text-gray-500'>{h.portfolio_count} portfolio{h.portfolio_count !== 1 ? 's' : ''}</p>
+                    <p className='text-sm font-semibold text-[#0B1B2E] tabular-nums'>{fmt(h.aum ?? 0)}</p>
+                    <p className='text-xs text-slate-500'>{h.portfolio_count} portfolio{h.portfolio_count !== 1 ? 's' : ''}</p>
                   </div>
                   {h.ytd_return != null && (
                     <div className='flex items-center gap-1 text-sm font-semibold'>
                       {h.ytd_return >= 0
-                        ? <TrendingUp size={13} className='text-emerald-400' />
-                        : <TrendingDown size={13} className='text-red-400' />}
-                      <span className={h.ytd_return >= 0 ? 'text-emerald-400' : 'text-red-400'}>
+                        ? <TrendingUp size={13} className='text-[#15803D]' />
+                        : <TrendingDown size={13} className='text-[#B91C1C]' />}
+                      <span className={h.ytd_return >= 0 ? 'text-[#15803D]' : 'text-[#B91C1C]'}>
                         {h.ytd_return >= 0 ? '+' : ''}{(h.ytd_return * 100).toFixed(1)}%
                       </span>
-                      <span className='text-xs text-gray-600 font-normal ml-0.5'>YTD</span>
+                      <span className='text-xs text-slate-500 font-normal ml-0.5'>YTD</span>
                     </div>
                   )}
                   {h.goals.length > 0 && (
-                    <div className='hidden lg:flex items-center gap-1 text-xs text-gray-500'>
+                    <div className='hidden lg:flex items-center gap-1 text-xs text-slate-500'>
                       <Shield size={11} />
                       {Math.round((h.goals[0].funded_ratio ?? 0) * 100)}% funded
                     </div>
                   )}
-                  <ChevronRight size={16} className='text-gray-600 group-hover:text-gray-400 transition-colors' />
+                  <ChevronRight size={16} className='text-slate-400 group-hover:text-slate-600 transition-colors' />
                 </div>
               </div>
             </Link>

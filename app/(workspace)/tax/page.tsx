@@ -47,30 +47,33 @@ const MODULES = [
 export default function TaxHubPage() {
   return (
     <div className='max-w-5xl mx-auto px-6 py-10'>
-      <div className='mb-10'>
-        <h1 className='text-2xl font-bold tracking-tight mb-2'>Tax Planning</h1>
-        <p className='text-sm text-gray-500 max-w-xl'>
+
+      {/* Page header */}
+      <div className='border-b border-slate-200 pb-6 mb-8'>
+        <p className='text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-1'>WORKSPACE</p>
+        <h1 className='text-3xl font-bold text-[#0B1B2E] tracking-tight mb-1'>Tax Planning</h1>
+        <p className='text-base text-slate-600 max-w-xl'>
           Five tax planning tools covering projection, loss harvesting, Roth conversions,
           asset location, and charitable giving — all client-ready.
         </p>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6'>
         {MODULES.map(({ href, icon: Icon, label, tagline, description, accent }) => (
           <Link key={href} href={href}
-            className='group flex flex-col bg-white/[0.025] border border-white/[0.06]
-              hover:border-white/12 rounded-2xl p-5 transition-all'>
+            className='group flex flex-col bg-white border border-slate-200
+              hover:border-slate-300 hover:shadow-sm rounded-lg p-5 transition-all'>
             <div className='flex items-center gap-3 mb-4'>
-              <div className='w-10 h-10 rounded-xl flex items-center justify-center'
+              <div className='w-10 h-10 rounded-lg flex items-center justify-center'
                 style={{ background: `${accent}18` }}>
                 <Icon size={17} style={{ color: accent }} />
               </div>
               <div>
-                <p className='text-sm font-semibold text-white'>{label}</p>
-                <p className='text-[10px] text-gray-500'>{tagline}</p>
+                <p className='text-sm font-semibold text-[#0B1B2E]'>{label}</p>
+                <p className='text-[10px] text-slate-500'>{tagline}</p>
               </div>
             </div>
-            <p className='text-xs text-gray-400 leading-relaxed flex-1 mb-4'>{description}</p>
+            <p className='text-xs text-slate-600 leading-relaxed flex-1 mb-4'>{description}</p>
             <div className='flex items-center gap-1 text-xs font-medium transition-colors'
               style={{ color: accent }}>
               Open <ChevronRight size={13} className='group-hover:translate-x-0.5 transition-transform' />
@@ -79,9 +82,9 @@ export default function TaxHubPage() {
         ))}
       </div>
 
-      <div className='mt-8 bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5'>
-        <p className='text-xs text-gray-500 leading-relaxed'>
-          <strong className='text-amber-400'>AI-assisted — verify before client delivery.</strong>{' '}
+      <div className='bg-amber-50 border border-amber-200 rounded-lg p-4'>
+        <p className='text-xs text-amber-800 leading-relaxed'>
+          <strong className='font-semibold'>AI-assisted — verify before client delivery.</strong>{' '}
           All projections use 2025 federal tax brackets and rates. State tax estimates use simplified flat rates.
           Consult a CPA for complex situations involving AMT, UBTI, or multi-state filing.
         </p>

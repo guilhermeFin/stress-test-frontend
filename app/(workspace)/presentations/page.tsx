@@ -89,15 +89,16 @@ function SlideRow({ slideId, order, onRemove }: {
   const slide = EDUCATION_SLIDES.find(s => s.id === slideId)
   if (!slide) return null
   return (
-    <div className='flex items-center gap-3 bg-white/[0.02] border border-white/[0.06] rounded-xl px-4 py-3'>
-      <GripVertical size={14} className='text-gray-700 shrink-0 cursor-grab' />
-      <span className='text-xs text-gray-600 tabular-nums w-4 shrink-0'>{order + 1}</span>
+    <div className='flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3'>
+      <GripVertical size={14} className='text-slate-400 shrink-0 cursor-grab' />
+      <span className='text-xs text-slate-500 tabular-nums w-4 shrink-0'>{order + 1}</span>
       <span className='text-lg leading-none'>{slide.icon}</span>
       <div className='flex-1 min-w-0'>
-        <p className='text-sm font-medium text-white truncate'>{slide.title}</p>
-        <p className='text-[10px] text-gray-500'>{slide.subtitle}</p>
+        <p className='text-sm font-medium text-[#0B1B2E] truncate'>{slide.title}</p>
+        <p className='text-[10px] text-slate-500'>{slide.subtitle}</p>
       </div>
-      <button onClick={onRemove} className='text-gray-700 hover:text-red-400 transition-colors'>
+      <button onClick={onRemove}
+        className='p-1.5 rounded-md text-slate-400 hover:text-[#B91C1C] hover:bg-red-50 transition-colors'>
         <Trash2 size={13} />
       </button>
     </div>
@@ -114,51 +115,51 @@ function PresentationCard({ pres, onDelete, onAddDraft, draftCount }: {
   const [slides, setSlides] = useState(pres.slides)
 
   return (
-    <div className='bg-white/[0.025] border border-white/[0.06] rounded-2xl overflow-hidden'>
+    <div className='bg-white border border-slate-200 rounded-lg overflow-hidden hover:border-slate-300 hover:shadow-sm transition-all'>
       <div className='flex items-start justify-between px-5 py-4'>
         <div>
-          <p className='text-sm font-semibold text-white'>{pres.title}</p>
+          <p className='text-base font-semibold text-[#0B1B2E]'>{pres.title}</p>
           {pres.household_name && (
-            <p className='text-xs text-gray-500 mt-0.5'>{pres.household_name}</p>
+            <p className='text-sm text-slate-600 mt-0.5'>{pres.household_name}</p>
           )}
-          <p className='text-[10px] text-gray-600 mt-1'>
+          <p className='text-xs text-slate-500 mt-1'>
             {slides.length} slides · Updated {pres.updated_at}
           </p>
         </div>
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-1'>
           {draftCount > 0 && (
             <button
               onClick={() => onAddDraft(pres.id)}
-              className='flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5
-                rounded-lg border text-emerald-400 border-emerald-400/30 bg-emerald-400/10
-                hover:bg-emerald-400/20 transition-all'>
+              className='flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 mr-1
+                rounded-md border text-emerald-700 border-emerald-200 bg-emerald-100
+                hover:bg-emerald-200 transition-all'>
               <Plus size={11} /> Add {draftCount} slide{draftCount > 1 ? 's' : ''}
             </button>
           )}
           <button title='Export outline'
             onClick={() => exportPresentation(pres)}
-            className='text-gray-600 hover:text-white transition-colors p-1.5 hover:bg-white/5 rounded-lg'>
+            className='p-2 rounded-md text-slate-500 hover:text-[#0B1B2E] hover:bg-slate-100 transition-colors'>
             <Download size={14} />
           </button>
           <button title='Share link'
-            className='text-gray-600 hover:text-[#3B82F6] transition-colors p-1.5 hover:bg-white/5 rounded-lg'>
+            className='p-2 rounded-md text-slate-500 hover:text-[#2563EB] hover:bg-slate-100 transition-colors'>
             <Share2 size={14} />
           </button>
           <button onClick={onDelete}
-            className='text-gray-700 hover:text-red-400 transition-colors p-1.5 hover:bg-white/5 rounded-lg'>
+            className='p-2 rounded-md text-slate-500 hover:text-[#B91C1C] hover:bg-red-50 transition-colors'>
             <Trash2 size={13} />
           </button>
           <button onClick={() => setOpen(v => !v)}
-            className='text-gray-500 hover:text-white transition-colors p-1.5'>
+            className='p-2 rounded-md text-slate-500 hover:text-[#0B1B2E] hover:bg-slate-100 transition-colors'>
             <ChevronRight size={14} className={`transition-transform ${open ? 'rotate-90' : ''}`} />
           </button>
         </div>
       </div>
 
       {open && (
-        <div className='px-5 pb-5 space-y-2 border-t border-white/[0.06] pt-4'>
+        <div className='px-5 pb-5 space-y-2 border-t border-slate-100 pt-4 bg-slate-50'>
           {slides.length === 0 && (
-            <p className='text-xs text-gray-600 py-2'>No slides yet. Add from the library below.</p>
+            <p className='text-xs text-slate-500 py-2'>No slides yet. Add from the library below.</p>
           )}
           {slides.sort((a, b) => a.order - b.order).map(ps => (
             <SlideRow
@@ -169,7 +170,7 @@ function PresentationCard({ pres, onDelete, onAddDraft, draftCount }: {
             />
           ))}
           <Link href='/research/education'
-            className='flex items-center gap-1.5 text-xs text-[#3B82F6] hover:text-blue-400 transition-colors mt-2'>
+            className='flex items-center gap-1.5 text-xs text-[#2563EB] hover:underline transition-colors mt-2'>
             <Plus size={12} /> Add slides from library
           </Link>
         </div>
@@ -185,25 +186,25 @@ function DraftBanner({ draft, onDismiss }: { draft: string[]; onDismiss: () => v
   if (slides.length === 0) return null
 
   return (
-    <div className='bg-[#3B82F6]/10 border border-[#3B82F6]/25 rounded-2xl p-5 mb-6'>
+    <div className='bg-[#2563EB]/5 border border-[#2563EB]/20 rounded-lg p-5 mb-6'>
       <div className='flex items-start justify-between mb-3'>
         <div>
-          <p className='text-sm font-semibold text-white mb-0.5'>
+          <p className='text-sm font-semibold text-[#0B1B2E] mb-0.5'>
             {slides.length} slide{slides.length > 1 ? 's' : ''} ready to add
           </p>
-          <p className='text-xs text-gray-400'>
+          <p className='text-xs text-slate-600'>
             Select a presentation below to add them, or create a new one.
           </p>
         </div>
         <button onClick={onDismiss}
-          className='text-gray-500 hover:text-white transition-colors p-1'>
+          className='p-1 text-slate-400 hover:text-[#0B1B2E] transition-colors'>
           <X size={14} />
         </button>
       </div>
       <div className='flex flex-wrap gap-2'>
         {slides.map(s => s && (
-          <span key={s.id} className='flex items-center gap-1.5 text-xs bg-white/[0.05]
-            border border-white/[0.08] rounded-lg px-2.5 py-1.5 text-gray-300'>
+          <span key={s.id} className='flex items-center gap-1.5 text-xs bg-white
+            border border-slate-200 rounded-md px-2.5 py-1.5 text-slate-700'>
             {s.icon} {s.title}
           </span>
         ))}
@@ -256,22 +257,26 @@ export default function PresentationsPage() {
   return (
     <div className='max-w-4xl mx-auto px-6 py-10'>
 
-      <div className='flex items-start justify-between mb-8'>
-        <div>
-          <h1 className='text-2xl font-bold tracking-tight mb-1'>Presentations</h1>
-          <p className='text-sm text-gray-500'>Build client-meeting decks from your education library.</p>
-        </div>
-        <div className='flex items-center gap-2'>
-          <Link href='/research/education'
-            className='flex items-center gap-1.5 text-sm text-gray-500 hover:text-white
-              border border-white/10 hover:border-white/20 rounded-lg px-3 py-2 transition-colors'>
-            <BookOpen size={14} /> Library
-          </Link>
-          <button onClick={() => setShowNew(v => !v)}
-            className='flex items-center gap-1.5 text-sm font-semibold text-white
-              bg-[#3B82F6] hover:bg-[#2563EB] rounded-lg px-4 py-2 transition-colors'>
-            <Plus size={14} /> New presentation
-          </button>
+      {/* Page header */}
+      <div className='border-b border-slate-200 pb-6 mb-8'>
+        <div className='flex items-start justify-between'>
+          <div>
+            <p className='text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-1'>TOOLS</p>
+            <h1 className='text-3xl font-bold text-[#0B1B2E] tracking-tight mb-1'>Presentations</h1>
+            <p className='text-base text-slate-600'>Build client-meeting decks from your education library.</p>
+          </div>
+          <div className='flex items-center gap-2 mt-1'>
+            <Link href='/research/education'
+              className='flex items-center gap-1.5 text-sm text-slate-600 hover:text-[#0B1B2E]
+                border border-slate-200 hover:border-slate-300 rounded-md px-3 py-2 transition-colors bg-white'>
+              <BookOpen size={14} /> Library
+            </Link>
+            <button onClick={() => setShowNew(v => !v)}
+              className='flex items-center gap-1.5 text-sm font-semibold text-white
+                bg-[#2563EB] hover:bg-[#1D4ED8] rounded-md px-4 py-2 transition-colors'>
+              <Plus size={14} /> New presentation
+            </button>
+          </div>
         </div>
       </div>
 
@@ -281,11 +286,11 @@ export default function PresentationsPage() {
       {/* New presentation form */}
       {showNew && (
         <form onSubmit={createPresentation}
-          className='bg-white/[0.02] border border-[#3B82F6]/20 rounded-2xl p-5 mb-6'>
-          <h3 className='text-sm font-semibold mb-1'>New presentation</h3>
+          className='bg-white border border-[#2563EB]/20 rounded-lg p-5 mb-6 shadow-sm'>
+          <h3 className='text-sm font-semibold text-[#0B1B2E] mb-1'>New presentation</h3>
           {hasDraft && (
-            <p className='text-xs text-gray-500 mb-3 flex items-center gap-1'>
-              <Check size={11} className='text-emerald-400' />
+            <p className='text-xs text-slate-600 mb-3 flex items-center gap-1'>
+              <Check size={11} className='text-emerald-600' />
               {draft.length} slide{draft.length > 1 ? 's' : ''} from library will be included
             </p>
           )}
@@ -296,25 +301,26 @@ export default function PresentationsPage() {
             placeholder='e.g. Q3 Client Review — Davidson Family'
             autoFocus
             required
-            className='w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm
-              text-white placeholder:text-gray-600 focus:outline-none focus:border-white/20 mb-3'
+            className='w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm
+              text-[#0B1B2E] placeholder:text-slate-400 focus:outline-none focus:ring-1
+              focus:ring-[#2563EB] focus:border-[#2563EB] mb-3 transition-colors'
           />
           <div className='flex gap-2'>
             <button type='submit'
-              className='bg-[#3B82F6] hover:bg-[#2563EB] text-white text-sm font-semibold
-                rounded-lg px-4 py-2 transition-colors flex items-center gap-1.5'>
+              className='bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-sm font-semibold
+                rounded-md px-4 py-2 transition-colors flex items-center gap-1.5'>
               Create <ArrowRight size={13} />
             </button>
             <button type='button' onClick={() => setShowNew(false)}
-              className='text-sm text-gray-500 hover:text-white border border-white/10
-                hover:border-white/20 rounded-lg px-4 py-2 transition-colors'>
+              className='text-sm text-slate-600 hover:text-[#0B1B2E] border border-slate-200
+                hover:border-slate-300 rounded-md px-4 py-2 transition-colors bg-white'>
               Cancel
             </button>
           </div>
         </form>
       )}
 
-      <div className='space-y-4'>
+      <div className='space-y-3'>
         {presentations.map(p => (
           <PresentationCard
             key={p.id}
@@ -327,12 +333,12 @@ export default function PresentationsPage() {
       </div>
 
       {presentations.length === 0 && (
-        <div className='text-center py-20 text-gray-600'>
-          <BookOpen size={32} className='mx-auto mb-3 opacity-30' />
-          <p className='text-sm'>No presentations yet.</p>
-          <p className='text-xs mt-1'>
+        <div className='text-center py-20 border border-dashed border-slate-200 rounded-lg bg-slate-50'>
+          <BookOpen size={32} className='mx-auto mb-3 text-slate-300' />
+          <p className='text-slate-700 text-sm font-medium mb-1'>No presentations yet</p>
+          <p className='text-slate-500 text-xs'>
             Start by adding slides from the{' '}
-            <Link href='/research/education' className='text-[#3B82F6] hover:underline'>
+            <Link href='/research/education' className='text-[#2563EB] hover:underline'>
               education library
             </Link>.
           </p>

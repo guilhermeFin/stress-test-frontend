@@ -27,9 +27,9 @@ const DOC_STATUS_ICON = {
   missing:  XCircle,
 }
 const DOC_STATUS_COLOR = {
-  current:  'text-emerald-400',
-  outdated: 'text-amber-400',
-  missing:  'text-red-400',
+  current:  'text-[#15803D]',
+  outdated: 'text-amber-600',
+  missing:  'text-[#B91C1C]',
 }
 
 type Tab = 'overview' | 'family' | 'gifts' | 'documents'
@@ -82,28 +82,34 @@ export default function EstatePage() {
   return (
     <div className='max-w-5xl mx-auto px-6 py-10'>
 
-      <div className='mb-8'>
-        <h1 className='text-2xl font-bold tracking-tight mb-1'>Estate Planning</h1>
-        <p className='text-sm text-gray-500'>
+      {/* Page header */}
+      <div className='border-b border-slate-200 pb-6 mb-6'>
+        <p className='text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-1'>WORKSPACE</p>
+        <h1 className='text-3xl font-bold text-[#0B1B2E] tracking-tight mb-1'>Estate Planning</h1>
+        <p className='text-base text-slate-600'>
           Federal + state estate tax projection, annual gifting tracker, family map, and document audit.
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className='flex gap-1 bg-white/[0.03] border border-white/[0.06] rounded-xl p-1 mb-6 w-fit'>
-        {([
-          { key: 'overview',   label: 'Tax Projection' },
-          { key: 'family',     label: 'Family Map' },
-          { key: 'gifts',      label: 'Gifting Tracker' },
-          { key: 'documents',  label: `Documents ${docIssues > 0 ? `(${docIssues})` : ''}` },
-        ] as { key: Tab; label: string }[]).map(({ key, label }) => (
-          <button key={key} onClick={() => setTab(key)}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors
-              ${tab === key ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-gray-300'}
-              ${key === 'documents' && docIssues > 0 ? 'text-amber-400' : ''}`}>
-            {label}
-          </button>
-        ))}
+      {/* Tabs — underline style */}
+      <div className='border-b border-slate-200 mb-6'>
+        <div className='flex gap-8'>
+          {([
+            { key: 'overview',   label: 'Tax Projection' },
+            { key: 'family',     label: 'Family Map' },
+            { key: 'gifts',      label: 'Gifting Tracker' },
+            { key: 'documents',  label: `Documents${docIssues > 0 ? ` (${docIssues})` : ''}` },
+          ] as { key: Tab; label: string }[]).map(({ key, label }) => (
+            <button key={key} onClick={() => setTab(key)}
+              className={`pb-3 text-sm font-medium border-b-2 -mb-px transition-colors
+                ${tab === key
+                  ? 'border-[#2563EB] text-[#0B1B2E] font-semibold'
+                  : `border-transparent hover:text-[#0B1B2E]
+                    ${key === 'documents' && docIssues > 0 ? 'text-amber-600' : 'text-slate-600'}`}`}>
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ── Overview: Estate Tax Projection ── */}
@@ -111,8 +117,8 @@ export default function EstatePage() {
         <div className='grid grid-cols-1 lg:grid-cols-5 gap-6'>
           {/* Inputs */}
           <div className='lg:col-span-2 space-y-4'>
-            <div className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 space-y-4'>
-              <h2 className='text-sm font-semibold'>Estate inputs</h2>
+            <div className='bg-white border border-slate-200 rounded-lg p-5 space-y-4'>
+              <h2 className='text-sm font-semibold text-[#0B1B2E]'>Estate inputs</h2>
 
               {[
                 { label: 'Gross estate', value: grossEstate, set: setGrossEstate, step: 100_000 },
@@ -122,31 +128,33 @@ export default function EstatePage() {
                 { label: 'Lifetime exemption used', value: lifetimeUsed, set: setLifetimeUsed, step: 100_000 },
               ].map(({ label, value, set: s, step }) => (
                 <div key={label}>
-                  <label className='text-xs text-gray-500 mb-1 block'>{label}</label>
+                  <label className='text-xs text-slate-600 mb-1 block font-medium'>{label}</label>
                   <div className='relative'>
-                    <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm'>$</span>
+                    <span className='absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm'>$</span>
                     <input type='number' step={step} min={0} value={value}
                       onChange={e => s(Number(e.target.value))}
-                      className='w-full bg-white/5 border border-white/10 rounded-lg pl-7 pr-3 py-2
-                        text-sm text-white focus:outline-none focus:border-white/20 tabular-nums' />
+                      className='w-full bg-white border border-slate-200 rounded-lg pl-7 pr-3 py-2
+                        text-sm text-[#0B1B2E] focus:outline-none focus:ring-1 focus:ring-[#2563EB]
+                        focus:border-[#2563EB] tabular-nums transition-colors' />
                   </div>
                 </div>
               ))}
 
               <div className='flex items-center gap-3'>
                 <button onClick={() => setMarried(m => !m)}
-                  className={`w-9 h-5 rounded-full transition-colors ${married ? 'bg-[#3B82F6]' : 'bg-white/10'}`}>
+                  className={`w-9 h-5 rounded-full transition-colors shrink-0 ${married ? 'bg-[#2563EB]' : 'bg-slate-200'}`}>
                   <div className={`w-4 h-4 rounded-full bg-white shadow transition-transform mx-0.5
                     ${married ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
-                <span className='text-xs text-gray-400'>Married (portability applies)</span>
+                <span className='text-xs text-slate-600'>Married (portability applies)</span>
               </div>
 
               <div>
-                <label className='text-xs text-gray-500 mb-1 block'>State of domicile</label>
+                <label className='text-xs text-slate-600 mb-1 block font-medium'>State of domicile</label>
                 <select value={state} onChange={e => setState(e.target.value)}
-                  className='w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2
-                    text-sm text-white focus:outline-none focus:border-white/20'>
+                  className='w-full bg-white border border-slate-200 rounded-lg px-3 py-2
+                    text-sm text-[#0B1B2E] focus:outline-none focus:ring-1 focus:ring-[#2563EB]
+                    focus:border-[#2563EB] transition-colors'>
                   {Object.keys(STATE_ESTATE_TAX).map(s => (
                     <option key={s} value={s}>{s}</option>
                   ))}
@@ -160,29 +168,29 @@ export default function EstatePage() {
             {/* Key metrics */}
             <div className='grid grid-cols-2 gap-3'>
               {[
-                { label: 'Gross estate',       value: fmt(projection.gross_estate),        color: 'text-white' },
-                { label: 'Taxable estate',      value: fmt(projection.taxable_estate),       color: 'text-white' },
-                { label: 'Federal estate tax',  value: fmt(projection.federal_estate_tax),   color: projection.federal_estate_tax > 0 ? 'text-red-400' : 'text-emerald-400' },
-                { label: 'State estate tax',    value: fmt(projection.state_estate_tax),     color: projection.state_estate_tax > 0 ? 'text-red-400' : 'text-emerald-400' },
-                { label: 'Total estate tax',    value: fmt(projection.total_estate_tax),     color: projection.total_estate_tax > 0 ? 'text-red-400' : 'text-emerald-400', accent: true },
-                { label: 'Heirs receive',       value: fmt(projection.heirs_receive),        color: 'text-emerald-400', accent: true },
+                { label: 'Gross estate',       value: fmt(projection.gross_estate),        color: 'text-[#0B1B2E]' },
+                { label: 'Taxable estate',      value: fmt(projection.taxable_estate),       color: 'text-[#0B1B2E]' },
+                { label: 'Federal estate tax',  value: fmt(projection.federal_estate_tax),   color: projection.federal_estate_tax > 0 ? 'text-[#B91C1C]' : 'text-[#15803D]' },
+                { label: 'State estate tax',    value: fmt(projection.state_estate_tax),     color: projection.state_estate_tax > 0 ? 'text-[#B91C1C]' : 'text-[#15803D]' },
+                { label: 'Total estate tax',    value: fmt(projection.total_estate_tax),     color: projection.total_estate_tax > 0 ? 'text-[#B91C1C]' : 'text-[#15803D]', accent: true },
+                { label: 'Heirs receive',       value: fmt(projection.heirs_receive),        color: 'text-[#15803D]', accent: true },
               ].map(({ label, value, color, accent }) => (
                 <div key={label}
-                  className={`rounded-xl p-4 border ${accent ? 'bg-[#3B82F6]/5 border-[#3B82F6]/20' : 'bg-white/[0.02] border-white/[0.06]'}`}>
-                  <p className='text-[10px] text-gray-500 uppercase tracking-wide mb-1'>{label}</p>
+                  className={`rounded-lg p-4 border ${accent ? 'bg-[#2563EB]/5 border-[#2563EB]/20' : 'bg-white border-slate-200'}`}>
+                  <p className='text-[10px] text-slate-500 uppercase tracking-wide mb-1'>{label}</p>
                   <p className={`text-lg font-bold tabular-nums ${color}`}>{value}</p>
                 </div>
               ))}
             </div>
 
             {/* Waterfall */}
-            <div className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5'>
-              <h2 className='text-sm font-semibold mb-4'>Estate waterfall</h2>
+            <div className='bg-white border border-slate-200 rounded-lg p-5'>
+              <h2 className='text-sm font-semibold text-[#0B1B2E] mb-4'>Estate waterfall</h2>
               {[
                 { label: 'Gross estate',           value: projection.gross_estate,          color: '#3B82F6' },
-                { label: '− Debts & expenses',     value: -projection.debts_and_expenses,   color: '#6B7280' },
-                { label: '− Marital deduction',    value: -projection.marital_deduction,    color: '#6B7280' },
-                { label: '− Charitable deduction', value: -projection.charitable_deduction, color: '#6B7280' },
+                { label: '− Debts & expenses',     value: -projection.debts_and_expenses,   color: '#94A3B8' },
+                { label: '− Marital deduction',    value: -projection.marital_deduction,    color: '#94A3B8' },
+                { label: '− Charitable deduction', value: -projection.charitable_deduction, color: '#94A3B8' },
                 { label: '= Taxable estate',       value: projection.taxable_estate,        color: '#F59E08' },
                 { label: '− Federal exemption',    value: -Math.min(projection.taxable_estate, projection.exemption_remaining), color: '#10B981' },
                 { label: '− Federal estate tax',   value: -projection.federal_estate_tax,   color: '#EF4444' },
@@ -190,12 +198,12 @@ export default function EstatePage() {
                 { label: '= Heirs receive',        value: projection.heirs_receive,         color: '#10B981' },
               ].filter(r => r.value !== 0).map(({ label, value, color }) => (
                 <div key={label} className='flex items-center gap-3 mb-2'>
-                  <span className='text-xs text-gray-400 w-44 shrink-0'>{label}</span>
-                  <div className='flex-1 h-4 bg-white/[0.03] rounded overflow-hidden'>
+                  <span className='text-xs text-slate-600 w-44 shrink-0'>{label}</span>
+                  <div className='flex-1 h-4 bg-slate-100 rounded overflow-hidden'>
                     <div className='h-full rounded transition-all'
                       style={{
                         width: `${(Math.abs(value) / projection.gross_estate) * 100}%`,
-                        background: color, opacity: 0.75,
+                        background: color, opacity: 0.8,
                       }} />
                   </div>
                   <span className='text-xs font-semibold tabular-nums w-24 text-right'
@@ -207,25 +215,25 @@ export default function EstatePage() {
             </div>
 
             {/* Exemption status */}
-            <div className='bg-white/[0.02] border border-white/[0.06] rounded-xl p-4'>
+            <div className='bg-white border border-slate-200 rounded-lg p-4'>
               <div className='flex justify-between text-xs mb-2'>
-                <span className='text-gray-400'>Federal exemption remaining</span>
-                <span className='font-bold'>
+                <span className='text-slate-600'>Federal exemption remaining</span>
+                <span className='font-bold text-[#0B1B2E] tabular-nums'>
                   {fmt(projection.exemption_remaining)} / {fmt(FEDERAL_EXEMPTION_PER_PERSON * (married ? 2 : 1))}
                 </span>
               </div>
-              <div className='h-2 bg-white/5 rounded-full overflow-hidden'>
+              <div className='h-2 bg-slate-100 rounded-full overflow-hidden'>
                 <div className='h-full bg-emerald-500 rounded-full transition-all'
                   style={{ width: `${(projection.exemption_remaining / (FEDERAL_EXEMPTION_PER_PERSON * (married ? 2 : 1))) * 100}%` }} />
               </div>
-              <p className='text-[10px] text-gray-600 mt-2'>
+              <p className='text-[10px] text-slate-500 mt-2'>
                 2025 federal exemption: {fmt(FEDERAL_EXEMPTION_PER_PERSON)} per person
                 {married ? ` · ${fmt(FEDERAL_EXEMPTION_PER_PERSON * 2)} total with portability` : ''}
               </p>
             </div>
 
-            <div className='flex items-start gap-2 bg-amber-950/20 border border-amber-700/20
-              rounded-xl px-3 py-2.5 text-[10px] text-amber-300/80 leading-relaxed'>
+            <div className='flex items-start gap-2 bg-amber-50 border border-amber-200
+              rounded-lg px-3 py-2.5 text-[10px] text-amber-800 leading-relaxed'>
               <Info size={11} className='shrink-0 mt-0.5' />
               AI-assisted estimate. Federal exemption sunsets after 2025 to ~$7M without legislation. State estate taxes vary. Verify with estate planning attorney.
             </div>
@@ -238,23 +246,23 @@ export default function EstatePage() {
         <div className='space-y-3'>
           {family.map(m => (
             <div key={m.id}
-              className='flex items-center gap-4 bg-white/[0.02] border border-white/[0.06]
-                rounded-xl px-5 py-4'>
-              <div className='w-10 h-10 rounded-full bg-[#3B82F6]/10 flex items-center justify-center
-                text-sm font-bold text-[#3B82F6] shrink-0'>
+              className='flex items-center gap-4 bg-white border border-slate-200
+                rounded-lg px-5 py-4'>
+              <div className='w-10 h-10 rounded-full bg-[#2563EB]/10 flex items-center justify-center
+                text-sm font-bold text-[#2563EB] shrink-0'>
                 {m.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
               </div>
               <div className='flex-1'>
-                <p className='text-sm font-semibold'>{m.name}</p>
-                <p className='text-xs text-gray-500'>
+                <p className='text-sm font-semibold text-[#0B1B2E]'>{m.name}</p>
+                <p className='text-xs text-slate-500'>
                   {ROLE_LABEL[m.role]}
                   {m.dob && ` · Born ${new Date(m.dob).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`}
                 </p>
               </div>
               {m.is_beneficiary && (
                 <div className='text-right'>
-                  <span className='text-xs font-semibold text-emerald-400 bg-emerald-400/10
-                    px-2.5 py-1 rounded-full'>
+                  <span className='text-xs font-semibold text-emerald-700 bg-emerald-100
+                    border border-emerald-200 px-2.5 py-1 rounded-full'>
                     Beneficiary {m.beneficiary_pct != null ? `${m.beneficiary_pct}%` : ''}
                   </span>
                 </div>
@@ -270,44 +278,44 @@ export default function EstatePage() {
           {/* Annual capacity card */}
           <div className='grid grid-cols-3 gap-3'>
             {[
-              { label: '2025 exclusion / recipient', value: fmt(ANNUAL_GIFT_EXCLUSION), color: 'text-white' },
-              { label: '2025 capacity (all recipients)', value: fmt(giftCapacity), color: 'text-white' },
-              { label: 'Remaining this year', value: fmt(Math.max(0, giftRemaining)), color: giftRemaining > 0 ? 'text-emerald-400' : 'text-amber-400' },
+              { label: '2025 exclusion / recipient', value: fmt(ANNUAL_GIFT_EXCLUSION), color: 'text-[#0B1B2E]' },
+              { label: '2025 capacity (all recipients)', value: fmt(giftCapacity), color: 'text-[#0B1B2E]' },
+              { label: 'Remaining this year', value: fmt(Math.max(0, giftRemaining)), color: giftRemaining > 0 ? 'text-[#15803D]' : 'text-amber-600' },
             ].map(({ label, value, color }) => (
-              <div key={label} className='bg-white/[0.02] border border-white/[0.06] rounded-xl p-4'>
-                <p className='text-[10px] text-gray-500 uppercase tracking-wide mb-1'>{label}</p>
+              <div key={label} className='bg-white border border-slate-200 rounded-lg p-4'>
+                <p className='text-[10px] text-slate-500 uppercase tracking-wide mb-1'>{label}</p>
                 <p className={`text-lg font-bold tabular-nums ${color}`}>{value}</p>
               </div>
             ))}
           </div>
 
           {/* Gift log */}
-          <div className='bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden'>
-            <div className='flex items-center justify-between px-5 py-3 border-b border-white/[0.04]'>
-              <h2 className='text-sm font-semibold'>Gift log</h2>
+          <div className='bg-white border border-slate-200 rounded-lg overflow-hidden'>
+            <div className='flex items-center justify-between px-5 py-3 border-b border-slate-100'>
+              <h2 className='text-sm font-semibold text-[#0B1B2E]'>Gift log</h2>
               <button onClick={addGift}
                 className='flex items-center gap-1.5 text-xs font-semibold text-white
-                  bg-[#3B82F6] hover:bg-[#2563EB] rounded-lg px-3 py-1.5 transition-colors'>
+                  bg-[#2563EB] hover:bg-[#1D4ED8] rounded-md px-3 py-1.5 transition-colors'>
                 <Plus size={11} /> Add gift
               </button>
             </div>
-            <div className='divide-y divide-white/[0.04]'>
+            <div className='divide-y divide-slate-100'>
               {gifts.map(g => (
-                <div key={g.id} className='flex items-center gap-4 px-5 py-3'>
+                <div key={g.id} className='flex items-center gap-4 px-5 py-3 hover:bg-slate-50 transition-colors'>
                   <div className='flex-1 min-w-0'>
-                    <p className='text-sm'>
+                    <p className='text-sm text-[#0B1B2E]'>
                       <span className='font-medium'>{memberName(g.from_member_id)}</span>
-                      <span className='text-gray-500'> → </span>
+                      <span className='text-slate-400'> → </span>
                       <span className='font-medium'>{memberName(g.to_member_id)}</span>
                     </p>
-                    <p className='text-xs text-gray-500 mt-0.5 capitalize'>
+                    <p className='text-xs text-slate-500 mt-0.5 capitalize'>
                       {g.gift_type.replace(/_/g, ' ')} · {g.date}
                       {g.description && ` · ${g.description}`}
                     </p>
                   </div>
-                  <p className='text-sm font-bold tabular-nums'>{fmt(g.amount)}</p>
+                  <p className='text-sm font-bold tabular-nums text-[#0B1B2E]'>{fmt(g.amount)}</p>
                   <button onClick={() => removeGift(g.id)}
-                    className='text-gray-600 hover:text-red-400 transition-colors ml-2'>
+                    className='p-1.5 rounded-md text-slate-400 hover:text-[#B91C1C] hover:bg-red-50 transition-colors ml-1'>
                     <Trash2 size={13} />
                   </button>
                 </div>
@@ -325,32 +333,32 @@ export default function EstatePage() {
             const color = DOC_STATUS_COLOR[doc.status]
             return (
               <div key={doc.type}
-                className='flex items-start gap-4 bg-white/[0.02] border border-white/[0.06]
-                  rounded-xl px-5 py-4'>
+                className='flex items-start gap-4 bg-white border border-slate-200
+                  rounded-lg px-5 py-4 hover:border-slate-300 transition-colors'>
                 <Icon size={16} className={`${color} shrink-0 mt-0.5`} />
                 <div className='flex-1'>
-                  <p className='text-sm font-medium'>{doc.type}</p>
+                  <p className='text-sm font-medium text-[#0B1B2E]'>{doc.type}</p>
                   {doc.status === 'current' && doc.last_updated && (
-                    <p className='text-xs text-gray-500'>Last updated {doc.last_updated}</p>
+                    <p className='text-xs text-slate-500'>Last updated {doc.last_updated}</p>
                   )}
                   {doc.status === 'outdated' && (
-                    <p className='text-xs text-amber-400'>{doc.notes ?? 'Needs review'}</p>
+                    <p className='text-xs text-amber-600'>{doc.notes ?? 'Needs review'}</p>
                   )}
                   {doc.status === 'missing' && (
-                    <p className='text-xs text-red-400'>Missing — recommend obtaining</p>
+                    <p className='text-xs text-[#B91C1C]'>Missing — recommend obtaining</p>
                   )}
                 </div>
-                <span className={`text-[10px] font-semibold capitalize px-2 py-0.5 rounded-full
-                  ${doc.status === 'current' ? 'bg-emerald-400/10 text-emerald-400' :
-                    doc.status === 'outdated' ? 'bg-amber-400/10 text-amber-400' :
-                    'bg-red-400/10 text-red-400'}`}>
+                <span className={`text-[10px] font-semibold capitalize px-2 py-0.5 rounded-full border
+                  ${doc.status === 'current'  ? 'bg-emerald-100 text-emerald-700 border-emerald-200' :
+                    doc.status === 'outdated' ? 'bg-amber-100 text-amber-700 border-amber-200' :
+                    'bg-red-100 text-red-700 border-red-200'}`}>
                   {doc.status}
                 </span>
               </div>
             )
           })}
-          <p className='text-[10px] text-gray-600 px-1'>
-            AI-assisted review — verify document status with the client's estate planning attorney.
+          <p className='text-[10px] text-slate-500 px-1'>
+            AI-assisted review — verify document status with the client&apos;s estate planning attorney.
           </p>
         </div>
       )}
