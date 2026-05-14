@@ -63,34 +63,28 @@ function MonteCarloChart({ result, target }: { result: MonteCarloResult; target:
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className='w-full'>
-      {/* Y grid + labels */}
       {ticks.map(({ v, y }) => (
         <g key={v}>
-          <line x1={PAD.left} x2={W - PAD.right} y1={y} y2={y} stroke='#ffffff08' />
-          <text x={PAD.left - 6} y={y + 4} textAnchor='end' fontSize={9} fill='#6b7280'>{fmt(v)}</text>
+          <line x1={PAD.left} x2={W - PAD.right} y1={y} y2={y} stroke='#e2e8f0' />
+          <text x={PAD.left - 6} y={y + 4} textAnchor='end' fontSize={9} fill='#64748b'>{fmt(v)}</text>
         </g>
       ))}
 
-      {/* X labels */}
       {bands.filter((_, i) => i % 2 === 0).map(b => (
-        <text key={b.year} x={scaleX(b.year)} y={H - 6} textAnchor='middle' fontSize={9} fill='#6b7280'>
+        <text key={b.year} x={scaleX(b.year)} y={H - 6} textAnchor='middle' fontSize={9} fill='#64748b'>
           Yr {b.year}
         </text>
       ))}
 
-      {/* P10–P90 band */}
       <path d={area(b => b.p90, b => b.p10)} fill='#3B82F6' opacity='0.08' />
-      {/* P25–P75 band */}
       <path d={area(b => b.p75, b => b.p25)} fill='#3B82F6' opacity='0.14' />
-      {/* Median */}
       <path d={path(b => b.p50)} stroke='#3B82F6' strokeWidth='1.5' fill='none' />
 
-      {/* Target line */}
       {targetY > PAD.top && targetY < H - PAD.bottom && (
         <>
           <line x1={PAD.left} x2={W - PAD.right} y1={targetY} y2={targetY}
-            stroke='#F59E08' strokeWidth='1' strokeDasharray='4 3' />
-          <text x={W - PAD.right + 4} y={targetY + 4} fontSize={9} fill='#F59E08'>Target</text>
+            stroke='#D97706' strokeWidth='1' strokeDasharray='4 3' />
+          <text x={W - PAD.right + 4} y={targetY + 4} fontSize={9} fill='#D97706'>Target</text>
         </>
       )}
     </svg>
@@ -136,8 +130,8 @@ function GoalForm({ onAdd }: { onAdd: (g: Goal) => void }) {
       <button
         onClick={() => setOpen(true)}
         className='w-full flex items-center justify-center gap-2 border border-dashed
-          border-white/10 hover:border-white/20 rounded-2xl py-4 text-sm text-gray-500
-          hover:text-gray-300 transition-colors'
+          border-slate-300 hover:border-[#2563EB] rounded-xl py-4 text-sm text-slate-500
+          hover:text-[#2563EB] transition-colors bg-white'
       >
         <Plus size={14} /> Add goal
       </button>
@@ -146,15 +140,15 @@ function GoalForm({ onAdd }: { onAdd: (g: Goal) => void }) {
 
   return (
     <form onSubmit={submit}
-      className='bg-white/[0.02] border border-[#3B82F6]/20 rounded-2xl p-5'>
-      <h3 className='text-sm font-semibold mb-4'>New goal</h3>
-      <div className='grid grid-cols-2 gap-3 mb-3'>
+      className='bg-white border border-slate-200 rounded-xl p-6 shadow-sm'>
+      <h3 className='text-base font-bold text-[#0B1B2E] border-b border-slate-200 pb-3 mb-5'>New goal</h3>
+      <div className='grid grid-cols-2 gap-4 mb-5'>
 
         <div className='col-span-2'>
-          <label className='text-xs text-gray-500 mb-1 block'>Goal type</label>
+          <label className='text-sm font-semibold text-[#0B1B2E] mb-2 block'>Goal type</label>
           <select value={form.type} onChange={set('type')}
-            className='w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2
-              text-sm text-white focus:outline-none focus:border-white/20'>
+            className='w-full bg-slate-50 border border-slate-300 rounded-md px-3 py-2.5
+              text-sm text-[#0B1B2E] focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:bg-white transition-colors'>
             {GOAL_TYPES.map(t => (
               <option key={t} value={t}>{GOAL_TYPE_LABELS[t]}</option>
             ))}
@@ -162,48 +156,48 @@ function GoalForm({ onAdd }: { onAdd: (g: Goal) => void }) {
         </div>
 
         <div className='col-span-2'>
-          <label className='text-xs text-gray-500 mb-1 block'>Label</label>
+          <label className='text-sm font-semibold text-[#0B1B2E] mb-2 block'>Label</label>
           <input value={form.label} onChange={set('label')} placeholder='e.g. Retire at 65'
             required
-            className='w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2
-              text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-white/20' />
+            className='w-full bg-slate-50 border border-slate-300 rounded-md px-3 py-2.5
+              text-sm text-[#0B1B2E] placeholder:text-slate-400 focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:bg-white transition-colors' />
         </div>
 
         {[
-          { key: 'target_amount',        label: 'Target amount ($)',         step: 10000  },
-          { key: 'current_savings',      label: 'Current savings ($)',       step: 1000   },
-          { key: 'monthly_contribution', label: 'Monthly contribution ($)',  step: 100    },
-          { key: 'expected_return',      label: 'Expected return (e.g. 0.07)', step: 0.005 },
+          { key: 'target_amount',        label: 'Target amount ($)',           step: 10000  },
+          { key: 'current_savings',      label: 'Current savings ($)',         step: 1000   },
+          { key: 'monthly_contribution', label: 'Monthly contribution ($/mo)', step: 100    },
+          { key: 'expected_return',      label: 'Expected return (e.g. 0.07)', step: 0.005  },
         ].map(({ key, label, step }) => (
           <div key={key}>
-            <label className='text-xs text-gray-500 mb-1 block'>{label}</label>
+            <label className='text-sm font-semibold text-[#0B1B2E] mb-2 block'>{label}</label>
             <input
               type='number' step={step} min={0}
               value={(form as Record<string, number | string>)[key] as number}
               onChange={set(key as keyof typeof form)}
-              className='w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2
-                text-sm text-white focus:outline-none focus:border-white/20'
+              className='w-full bg-slate-50 border border-slate-300 rounded-md px-3 py-2.5
+                text-sm font-mono text-[#0B1B2E] focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:bg-white transition-colors'
             />
           </div>
         ))}
 
         <div>
-          <label className='text-xs text-gray-500 mb-1 block'>Target date</label>
+          <label className='text-sm font-semibold text-[#0B1B2E] mb-2 block'>Target date</label>
           <input type='date' value={form.target_date} onChange={set('target_date')}
-            className='w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2
-              text-sm text-white focus:outline-none focus:border-white/20' />
+            className='w-full bg-slate-50 border border-slate-300 rounded-md px-3 py-2.5
+              text-sm text-[#0B1B2E] focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:bg-white transition-colors' />
         </div>
       </div>
 
       <div className='flex gap-2'>
         <button type='submit'
-          className='flex-1 bg-[#3B82F6] hover:bg-[#2563EB] text-white text-sm font-semibold
-            rounded-lg py-2 transition-colors'>
+          className='flex-1 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-sm font-semibold
+            rounded-md py-2.5 transition-colors'>
           Add goal
         </button>
         <button type='button' onClick={() => setOpen(false)}
-          className='px-4 text-sm text-gray-500 hover:text-white border border-white/10
-            hover:border-white/20 rounded-lg transition-colors'>
+          className='px-5 text-sm font-medium text-[#0B1B2E] border border-slate-300
+            hover:bg-slate-50 rounded-md transition-colors'>
           Cancel
         </button>
       </div>
@@ -229,36 +223,36 @@ function GoalCard({ goal, onDelete }: { goal: Goal; onDelete: () => void }) {
   const yrs   = yearsTo(goal.target_date)
 
   return (
-    <div className='bg-white/[0.025] border border-white/[0.06] rounded-2xl overflow-hidden'>
+    <div className='bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm'>
       {/* Card header */}
-      <div className='px-5 py-4 border-b border-white/[0.04] flex items-center justify-between'>
+      <div className='px-5 py-4 border-b border-slate-200 flex items-center justify-between'>
         <div className='flex items-center gap-3'>
-          <div className='w-9 h-9 rounded-xl flex items-center justify-center'
+          <div className='w-9 h-9 rounded-lg flex items-center justify-center'
             style={{ background: `${color}18` }}>
             <Target size={15} style={{ color }} />
           </div>
           <div>
-            <p className='text-sm font-semibold'>{goal.label || GOAL_TYPE_LABELS[goal.type]}</p>
-            <p className='text-[10px] text-gray-500 mt-0.5'>
+            <p className='text-sm font-bold text-[#0B1B2E]'>{goal.label || GOAL_TYPE_LABELS[goal.type]}</p>
+            <p className='text-xs text-slate-500 mt-0.5'>
               {GOAL_TYPE_LABELS[goal.type]} · {yrs.toFixed(1)} yrs to target
             </p>
           </div>
         </div>
-        <button onClick={onDelete} className='text-gray-600 hover:text-red-400 transition-colors'>
+        <button onClick={onDelete} className='text-slate-400 hover:text-red-500 transition-colors'>
           <Trash2 size={13} />
         </button>
       </div>
 
       {/* Stats row */}
-      <div className='grid grid-cols-3 divide-x divide-white/[0.04] border-b border-white/[0.04]'>
+      <div className='grid grid-cols-3 divide-x divide-slate-200 border-b border-slate-200'>
         {[
-          { label: 'Target', value: fmt(goal.target_amount), icon: TrendingUp },
-          { label: 'Current', value: fmt(goal.current_savings), icon: Shield },
-          { label: 'Monthly', value: fmt(goal.monthly_contribution) + '/mo', icon: Clock },
-        ].map(({ label, value, icon: Icon }) => (
+          { label: 'Target',  value: fmt(goal.target_amount),                   icon: TrendingUp },
+          { label: 'Current', value: fmt(goal.current_savings),                  icon: Shield     },
+          { label: 'Monthly', value: fmt(goal.monthly_contribution) + '/mo',     icon: Clock      },
+        ].map(({ label, value }) => (
           <div key={label} className='px-4 py-3'>
-            <p className='text-[10px] text-gray-600 mb-0.5'>{label}</p>
-            <p className='text-sm font-semibold tabular-nums'>{value}</p>
+            <p className='text-xs font-semibold uppercase tracking-wide text-slate-500 mb-0.5'>{label}</p>
+            <p className='text-sm font-bold font-mono tabular-nums text-[#0B1B2E]'>{value}</p>
           </div>
         ))}
       </div>
@@ -270,52 +264,67 @@ function GoalCard({ goal, onDelete }: { goal: Goal; onDelete: () => void }) {
             onClick={run}
             disabled={running}
             className='w-full flex items-center justify-center gap-2 border border-dashed
-              border-white/10 hover:border-[#3B82F6]/40 rounded-xl py-3 text-sm
-              text-gray-500 hover:text-[#3B82F6] transition-colors'
+              border-slate-300 hover:border-[#2563EB] rounded-xl py-3 text-sm
+              text-slate-500 hover:text-[#2563EB] transition-colors'
           >
             {running
-              ? <><span className='w-3.5 h-3.5 border border-white/20 border-t-[#3B82F6] rounded-full animate-spin' /> Running 1,000 paths…</>
+              ? <><span className='w-3.5 h-3.5 border border-slate-300 border-t-[#2563EB] rounded-full animate-spin' /> Running 1,000 paths…</>
               : <><Play size={13} /> Run Monte Carlo (1,000 paths)</>}
           </button>
         ) : (
           <div>
-            {/* Result cards */}
+            {/* Result tiles */}
             <div className='grid grid-cols-3 gap-2 mb-4'>
               {[
                 {
                   label: 'Success rate',
                   value: fmtPct(result.success_rate),
-                  color: result.success_rate >= 0.85 ? 'text-emerald-400' : result.success_rate >= 0.7 ? 'text-amber-400' : 'text-red-400',
+                  tileClass: result.success_rate >= 0.85
+                    ? 'border-emerald-200 bg-emerald-50'
+                    : result.success_rate >= 0.7
+                      ? 'border-amber-200 bg-amber-50'
+                      : 'border-red-200 bg-red-50',
+                  textClass: result.success_rate >= 0.85
+                    ? 'text-emerald-700'
+                    : result.success_rate >= 0.7
+                      ? 'text-amber-700'
+                      : 'text-red-700',
                 },
                 {
                   label: 'Median outcome',
                   value: fmt(result.median_outcome),
-                  color: 'text-white',
+                  tileClass: 'border-slate-200 bg-white',
+                  textClass: 'text-[#0B1B2E]',
                 },
                 {
                   label: 'Funded ratio',
                   value: fmtPct(result.funded_ratio),
-                  color: result.funded_ratio >= 1 ? 'text-emerald-400' : 'text-amber-400',
+                  tileClass: result.funded_ratio >= 1
+                    ? 'border-emerald-200 bg-emerald-50'
+                    : 'border-amber-200 bg-amber-50',
+                  textClass: result.funded_ratio >= 1
+                    ? 'text-emerald-700'
+                    : 'text-amber-700',
                 },
-              ].map(({ label, value, color: c }) => (
-                <div key={label} className='bg-white/[0.03] rounded-xl p-3 text-center'>
-                  <p className='text-[10px] text-gray-500 mb-1'>{label}</p>
-                  <p className={`text-sm font-bold tabular-nums ${c}`}>{value}</p>
+              ].map(({ label, value, tileClass, textClass }) => (
+                <div key={label} className={`border rounded-lg p-3 text-center ${tileClass}`}>
+                  <p className='text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1'>{label}</p>
+                  <p className={`text-xl font-bold font-mono tabular-nums ${textClass}`}>{value}</p>
                 </div>
               ))}
             </div>
 
             {/* Chart */}
-            <div className='bg-white/[0.02] rounded-xl px-3 pt-3 pb-1 mb-3'>
+            <div className='bg-slate-50 border border-slate-200 rounded-xl px-3 pt-3 pb-1 mb-3'>
               <MonteCarloChart result={result} target={goal.target_amount} />
             </div>
 
             <div className='flex items-center justify-between'>
-              <p className='text-[10px] text-gray-600'>
+              <p className='text-xs text-slate-500'>
                 P10 {fmt(result.p10_outcome)} · Median {fmt(result.median_outcome)} · P90 {fmt(result.p90_outcome)}
               </p>
               <button onClick={run}
-                className='text-[10px] text-[#3B82F6] hover:underline flex items-center gap-1'>
+                className='text-xs text-[#2563EB] hover:underline flex items-center gap-1'>
                 <Play size={9} /> Re-run
               </button>
             </div>
@@ -324,10 +333,10 @@ function GoalCard({ goal, onDelete }: { goal: Goal; onDelete: () => void }) {
       </div>
 
       {/* AI badge */}
-      <div className='px-5 pb-3'>
-        <div className='flex items-center gap-1.5 text-[10px] text-amber-300/70'>
-          <AlertCircle size={10} />
-          AI-assisted — verify before client delivery.
+      <div className='px-5 pb-4'>
+        <div className='flex items-center gap-2 bg-amber-50 border border-amber-300 rounded-lg p-3'>
+          <AlertCircle size={13} className='text-amber-600 shrink-0' />
+          <span className='text-sm text-amber-800'>AI-assisted — verify before client delivery.</span>
         </div>
       </div>
     </div>
@@ -373,19 +382,18 @@ export default function GoalPlanningPage() {
     <div className='max-w-4xl mx-auto px-6 py-10'>
 
       <Link href='/planning'
-        className='flex items-center gap-1.5 text-sm text-gray-500 hover:text-white
+        className='flex items-center gap-2 text-sm text-slate-600 hover:text-[#0B1B2E]
           transition-colors mb-6'>
         <ArrowLeft size={14} /> Planning
       </Link>
 
-      <div className='flex items-start justify-between mb-8'>
-        <div>
-          <h1 className='text-2xl font-bold tracking-tight mb-1'>Goal Planning</h1>
-          <p className='text-sm text-gray-500'>
-            Model financial goals and run 1,000-path Monte Carlo projections to show
-            funded ratio and ruin probability.
-          </p>
-        </div>
+      <div className='border-b border-slate-200 pb-6 mb-8'>
+        <p className='text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-2'>PLANNING</p>
+        <h1 className='text-3xl font-bold text-[#0B1B2E] mb-1'>Goal Planning</h1>
+        <p className='text-base text-slate-600'>
+          Model financial goals and run 1,000-path Monte Carlo projections to show
+          funded ratio and ruin probability.
+        </p>
       </div>
 
       <div className='space-y-4'>

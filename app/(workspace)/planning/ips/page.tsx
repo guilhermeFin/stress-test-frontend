@@ -33,22 +33,20 @@ function AllocationSlider({
   ac, value, onChange, color,
 }: { ac: AssetClass; value: number; onChange: (v: number) => void; color: string }) {
   return (
-    <div className='group'>
-      <div className='flex items-center justify-between mb-1.5'>
-        <label className='text-sm font-medium text-gray-300'>{ASSET_CLASS_LABELS[ac]}</label>
+    <div className='bg-white border border-slate-200 rounded-lg p-3'>
+      <div className='flex items-center justify-between mb-2'>
+        <label className='text-sm font-semibold text-[#0B1B2E]'>{ASSET_CLASS_LABELS[ac]}</label>
         <div className='flex items-center gap-2'>
           <input
-            type='number'
-            min={0} max={100}
-            value={value}
+            type='number' min={0} max={100} value={value}
             onChange={e => onChange(Math.max(0, Math.min(100, Number(e.target.value))))}
-            className='w-14 text-right text-sm font-bold bg-white/5 border border-white/10
-              rounded-lg px-2 py-0.5 text-white focus:outline-none focus:border-white/20'
+            className='w-14 text-right text-sm font-bold font-mono bg-slate-50 border border-slate-300
+              rounded-md px-2 py-0.5 text-[#0B1B2E] focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/20 transition-colors'
           />
-          <span className='text-sm text-gray-500'>%</span>
+          <span className='text-sm text-slate-500'>%</span>
         </div>
       </div>
-      <div className='relative h-1.5 bg-white/5 rounded-full'>
+      <div className='relative h-2 bg-slate-200 rounded-full'>
         <div
           className='absolute h-full rounded-full transition-all'
           style={{ width: `${value}%`, background: color }}
@@ -141,7 +139,6 @@ export default function IPSBuilderPage() {
       setSaved(true)
       setTimeout(() => setSaved(false), 2500)
     } catch {
-      // backend not wired — optimistic save
       setSaved(true)
       setTimeout(() => setSaved(false), 2500)
     } finally {
@@ -152,35 +149,37 @@ export default function IPSBuilderPage() {
   return (
     <div className='max-w-4xl mx-auto px-6 py-10'>
 
-      {/* Header */}
+      {/* Back link */}
       <Link href='/planning'
-        className='flex items-center gap-1.5 text-sm text-gray-500 hover:text-white
+        className='flex items-center gap-2 text-sm text-slate-600 hover:text-[#0B1B2E]
           transition-colors mb-6'>
         <ArrowLeft size={14} /> Planning
       </Link>
 
-      <div className='flex items-start justify-between mb-8'>
+      {/* Page header */}
+      <div className='border-b border-slate-200 pb-6 mb-8 flex items-start justify-between gap-4'>
         <div>
-          <h1 className='text-2xl font-bold tracking-tight mb-1'>IPS Builder</h1>
-          <p className='text-sm text-gray-500'>
+          <p className='text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-2'>PLANNING</p>
+          <h1 className='text-3xl font-bold text-[#0B1B2E] mb-1'>IPS Builder</h1>
+          <p className='text-base text-slate-600'>
             Define target allocation, drift bands, and rebalance rules.
             Each save creates a new version for audit purposes.
           </p>
         </div>
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-2 shrink-0 mt-1'>
           <button
             onClick={reset}
-            className='flex items-center gap-1.5 text-xs text-gray-500 hover:text-white
-              border border-white/10 hover:border-white/20 rounded-lg px-3 py-1.5 transition-colors'
+            className='flex items-center gap-1.5 text-sm text-slate-600 hover:text-[#0B1B2E]
+              border border-slate-300 hover:border-slate-400 rounded-md px-3 py-2 transition-colors'
           >
-            <RotateCcw size={12} /> Reset
+            <RotateCcw size={13} /> Reset
           </button>
           <button
             onClick={handleSave}
             disabled={saving || over || under}
             className='flex items-center gap-1.5 text-sm font-semibold text-white
-              bg-[#3B82F6] hover:bg-[#2563EB] disabled:opacity-40 disabled:cursor-not-allowed
-              rounded-lg px-4 py-1.5 transition-colors'
+              bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-40 disabled:cursor-not-allowed
+              rounded-md px-5 py-2 transition-colors'
           >
             <Save size={13} />
             {saving ? 'Saving…' : saved ? 'Saved ✓' : 'Save IPS'}
@@ -194,16 +193,18 @@ export default function IPSBuilderPage() {
         <div className='lg:col-span-2 space-y-6'>
 
           {/* Allocation */}
-          <section className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6'>
-            <div className='flex items-center justify-between mb-5'>
-              <h2 className='text-sm font-semibold'>Target allocation</h2>
-              <span className={`text-sm font-bold tabular-nums ${
-                over ? 'text-red-400' : under ? 'text-amber-400' : 'text-emerald-400'
+          <section className='bg-white border border-slate-200 rounded-xl p-6 shadow-sm'>
+            <div className='flex items-center justify-between border-b border-slate-200 pb-3 mb-5'>
+              <h2 className='text-base font-bold text-[#0B1B2E]'>Target allocation</h2>
+              <div className={`text-sm font-bold font-mono tabular-nums px-3 py-1 rounded-md border ${
+                over   ? 'text-red-700 bg-red-50 border-red-200'
+                : under ? 'text-amber-700 bg-amber-50 border-amber-200'
+                        : 'text-emerald-700 bg-emerald-50 border-emerald-200'
               }`}>
-                {total}% {over ? '— reduce by ' + (total - 100) + '%' : under ? '— add ' + (100 - total) + '%' : '✓'}
-              </span>
+                {total}%{over ? ` — reduce by ${total - 100}%` : under ? ` — add ${100 - total}%` : ' ✓'}
+              </div>
             </div>
-            <div className='space-y-5'>
+            <div className='space-y-3'>
               {ASSET_CLASSES.map(ac => (
                 <AllocationSlider
                   key={ac}
@@ -217,55 +218,53 @@ export default function IPSBuilderPage() {
           </section>
 
           {/* Drift bands (collapsible) */}
-          <section className='bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden'>
+          <section className='bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm'>
             <button
               onClick={() => setShowDrift(v => !v)}
-              className='w-full flex items-center justify-between px-6 py-4 text-sm font-semibold
-                hover:bg-white/[0.02] transition-colors'
+              className='w-full flex items-center justify-between px-6 py-4 text-base font-bold text-[#0B1B2E]
+                hover:bg-slate-50 transition-colors'
             >
               <span>Drift bands</span>
-              <div className='flex items-center gap-2 text-gray-500'>
+              <div className='flex items-center gap-2 text-slate-500'>
                 <Info size={13} />
                 <span className='text-xs font-normal'>Rebalance triggers per asset class</span>
                 {showDrift ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
               </div>
             </button>
             {showDrift && (
-              <div className='px-6 pb-5 border-t border-white/[0.04]'>
-                <div className='mt-4 space-y-3'>
+              <div className='px-6 pb-5 border-t border-slate-200'>
+                <div className='mt-4 space-y-2'>
                   {ASSET_CLASSES.map(ac => {
                     const band = driftBands.find(b => b.asset_class === ac)
                     if (!band) return null
                     return (
-                      <div key={ac} className='grid grid-cols-3 gap-3 items-center'>
-                        <span className='text-xs text-gray-400'>{ASSET_CLASS_LABELS[ac]}</span>
+                      <div key={ac} className='bg-white border border-slate-200 rounded-lg p-3 grid grid-cols-3 gap-3 items-center'>
+                        <span className='text-sm font-semibold text-[#0B1B2E]'>{ASSET_CLASS_LABELS[ac]}</span>
                         <div className='flex items-center gap-1.5'>
-                          <span className='text-[10px] text-gray-600'>Min</span>
+                          <span className='text-xs text-slate-500 shrink-0'>Min</span>
                           <input
-                            type='number' min={0} max={100}
-                            value={band.lower}
+                            type='number' min={0} max={100} value={band.lower}
                             onChange={e => setBand(ac, 'lower', Number(e.target.value))}
-                            className='w-14 text-xs text-center bg-white/5 border border-white/10
-                              rounded-lg py-1 text-white focus:outline-none focus:border-white/20'
+                            className='w-16 text-sm text-center font-mono bg-slate-50 border border-slate-300
+                              rounded-md py-1 text-[#0B1B2E] focus:outline-none focus:border-[#2563EB] transition-colors'
                           />
-                          <span className='text-[10px] text-gray-600'>%</span>
+                          <span className='text-xs text-slate-500'>%</span>
                         </div>
                         <div className='flex items-center gap-1.5'>
-                          <span className='text-[10px] text-gray-600'>Max</span>
+                          <span className='text-xs text-slate-500 shrink-0'>Max</span>
                           <input
-                            type='number' min={0} max={100}
-                            value={band.upper}
+                            type='number' min={0} max={100} value={band.upper}
                             onChange={e => setBand(ac, 'upper', Number(e.target.value))}
-                            className='w-14 text-xs text-center bg-white/5 border border-white/10
-                              rounded-lg py-1 text-white focus:outline-none focus:border-white/20'
+                            className='w-16 text-sm text-center font-mono bg-slate-50 border border-slate-300
+                              rounded-md py-1 text-[#0B1B2E] focus:outline-none focus:border-[#2563EB] transition-colors'
                           />
-                          <span className='text-[10px] text-gray-600'>%</span>
+                          <span className='text-xs text-slate-500'>%</span>
                         </div>
                       </div>
                     )
                   })}
                 </div>
-                <p className='text-[10px] text-gray-600 mt-3'>
+                <p className='text-xs text-slate-500 mt-3'>
                   Rebalance is triggered when actual weight falls outside the min–max band.
                 </p>
               </div>
@@ -273,38 +272,38 @@ export default function IPSBuilderPage() {
           </section>
 
           {/* Rebalance trigger */}
-          <section className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6'>
-            <h2 className='text-sm font-semibold mb-4'>Rebalance trigger</h2>
+          <section className='bg-white border border-slate-200 rounded-xl p-6 shadow-sm'>
+            <h2 className='text-base font-bold text-[#0B1B2E] border-b border-slate-200 pb-3 mb-4'>Rebalance trigger</h2>
             <div className='grid grid-cols-2 gap-2'>
               {REBALANCE_OPTIONS.map(opt => (
                 <button
                   key={opt.value}
                   onClick={() => setTrigger(opt.value)}
-                  className={`text-left p-3 rounded-xl border transition-all
+                  className={`text-left p-3 rounded-lg border transition-all
                     ${trigger === opt.value
-                      ? 'border-[#3B82F6]/50 bg-[#3B82F6]/10'
-                      : 'border-white/[0.06] hover:border-white/10'}`}
+                      ? 'border-[#2563EB] bg-[#2563EB]/5'
+                      : 'border-slate-200 hover:border-slate-300 bg-white'}`}
                 >
-                  <p className={`text-sm font-medium ${trigger === opt.value ? 'text-[#3B82F6]' : 'text-gray-300'}`}>
+                  <p className={`text-sm font-semibold mb-0.5 ${trigger === opt.value ? 'text-[#2563EB]' : 'text-[#0B1B2E]'}`}>
                     {opt.label}
                   </p>
-                  <p className='text-[10px] text-gray-500 mt-0.5 leading-relaxed'>{opt.desc}</p>
+                  <p className='text-xs text-slate-500 leading-relaxed'>{opt.desc}</p>
                 </button>
               ))}
             </div>
           </section>
 
           {/* Notes */}
-          <section className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6'>
-            <h2 className='text-sm font-semibold mb-3'>IPS notes</h2>
+          <section className='bg-white border border-slate-200 rounded-xl p-6 shadow-sm'>
+            <h2 className='text-base font-bold text-[#0B1B2E] border-b border-slate-200 pb-3 mb-4'>IPS notes</h2>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
               rows={4}
               placeholder='Document any client-specific constraints, ESG preferences, concentration limits, or other policy notes…'
-              className='w-full bg-white/[0.03] border border-white/[0.06] rounded-xl p-3
-                text-sm text-gray-300 placeholder:text-gray-600 resize-none
-                focus:outline-none focus:border-white/12 transition-colors'
+              className='w-full bg-slate-50 border border-slate-300 rounded-md px-3 py-2.5
+                text-sm text-[#0B1B2E] placeholder:text-slate-400 resize-none
+                focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:bg-white transition-colors'
             />
           </section>
         </div>
@@ -313,65 +312,65 @@ export default function IPSBuilderPage() {
         <div className='space-y-4'>
 
           {/* Donut */}
-          <section className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5'>
-            <h2 className='text-sm font-semibold mb-4'>Allocation preview</h2>
+          <section className='bg-white border border-slate-200 rounded-xl p-5 shadow-sm'>
+            <h2 className='text-base font-bold text-[#0B1B2E] border-b border-slate-200 pb-3 mb-4'>Allocation preview</h2>
             <div className='flex justify-center mb-4'>
               <AllocationDonut allocation={allocation} />
             </div>
             <div className='space-y-2'>
               {ASSET_CLASSES.map(ac => (
-                <div key={ac} className='flex items-center justify-between text-xs'>
+                <div key={ac} className='flex items-center justify-between text-sm'>
                   <div className='flex items-center gap-2'>
                     <span className='w-2.5 h-2.5 rounded-full shrink-0'
                       style={{ background: ASSET_CLASS_COLORS[ac] }} />
-                    <span className='text-gray-400'>{ASSET_CLASS_LABELS[ac]}</span>
+                    <span className='text-slate-600'>{ASSET_CLASS_LABELS[ac]}</span>
                   </div>
-                  <span className='font-semibold tabular-nums'>{allocation[ac] ?? 0}%</span>
+                  <span className='font-semibold font-mono tabular-nums text-[#0B1B2E]'>{allocation[ac] ?? 0}%</span>
                 </div>
               ))}
             </div>
           </section>
 
           {/* Risk & horizon */}
-          <section className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 space-y-4'>
-            <h2 className='text-sm font-semibold'>Client parameters</h2>
+          <section className='bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-5'>
+            <h2 className='text-base font-bold text-[#0B1B2E] border-b border-slate-200 pb-3'>Client parameters</h2>
 
             <div>
-              <div className='flex justify-between text-xs mb-2'>
-                <span className='text-gray-400'>Risk tolerance</span>
-                <span className='font-bold text-white'>{riskTol}/10</span>
+              <div className='flex justify-between text-sm mb-2'>
+                <span className='font-semibold text-[#0B1B2E]'>Risk tolerance</span>
+                <span className='font-bold font-mono text-[#0B1B2E]'>{riskTol}/10</span>
               </div>
               <input
                 type='range' min={1} max={10} value={riskTol}
                 onChange={e => setRiskTol(Number(e.target.value))}
-                className='w-full accent-[#3B82F6]'
+                className='w-full accent-[#2563EB]'
               />
-              <div className='flex justify-between text-[10px] text-gray-600 mt-1'>
+              <div className='flex justify-between text-xs text-slate-500 mt-1'>
                 <span>Conservative</span><span>Aggressive</span>
               </div>
             </div>
 
             <div>
-              <div className='flex justify-between text-xs mb-2'>
-                <span className='text-gray-400'>Investment horizon</span>
-                <span className='font-bold text-white'>{horizon} yrs</span>
+              <div className='flex justify-between text-sm mb-2'>
+                <span className='font-semibold text-[#0B1B2E]'>Investment horizon</span>
+                <span className='font-bold font-mono text-[#0B1B2E]'>{horizon} yrs</span>
               </div>
               <input
                 type='range' min={1} max={40} value={horizon}
                 onChange={e => setHorizon(Number(e.target.value))}
-                className='w-full accent-[#3B82F6]'
+                className='w-full accent-[#2563EB]'
               />
-              <div className='flex justify-between text-[10px] text-gray-600 mt-1'>
+              <div className='flex justify-between text-xs text-slate-500 mt-1'>
                 <span>1 yr</span><span>40 yrs</span>
               </div>
             </div>
           </section>
 
           {/* AI badge */}
-          <div className='flex items-start gap-2 bg-amber-950/20 border border-amber-700/20
-            rounded-xl px-3 py-2.5 text-[10px] text-amber-300/80 leading-relaxed'>
-            <Info size={11} className='shrink-0 mt-0.5' />
-            AI-assisted — verify allocation suitability before client delivery.
+          <div className='flex items-start gap-3 bg-amber-50 border border-amber-300
+            rounded-lg p-4'>
+            <Info size={14} className='text-amber-600 shrink-0 mt-0.5' />
+            <span className='text-sm text-amber-800'>AI-assisted — verify allocation suitability before client delivery.</span>
           </div>
         </div>
       </div>
