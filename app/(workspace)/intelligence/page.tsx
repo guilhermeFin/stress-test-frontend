@@ -188,13 +188,13 @@ export default function IntelligencePage() {
 
           {/* Presets */}
           <div>
-            <p className='text-xs text-slate-500 font-medium mb-3'>Quick presets</p>
+            <p className='text-sm font-semibold text-[#0B1B2E] mb-3'>Quick presets</p>
             <div className='flex gap-2 flex-wrap'>
               {PRESETS.map(p => (
                 <button key={p.label} onClick={() => applyPreset(p)}
-                  className='px-3 py-1.5 rounded-full text-xs text-slate-600
-                    border border-slate-200 hover:border-slate-300 hover:text-[#0B1B2E]
-                    bg-white transition-colors'>
+                  className='px-3 py-1.5 rounded-full text-sm font-medium text-slate-700
+                    border border-slate-300 bg-white hover:border-[#2563EB] hover:bg-[#2563EB]/5
+                    hover:text-[#2563EB] transition-colors'>
                   {p.label}
                 </button>
               ))}
@@ -203,18 +203,19 @@ export default function IntelligencePage() {
 
           {/* AUM */}
           <div>
-            <label className='text-xs text-slate-500 font-medium mb-2 block'>
+            <label className='text-sm font-semibold text-[#0B1B2E] mb-2 block'>
               Total Portfolio Value (AUM)
             </label>
             <div className='relative w-48'>
-              <span className='absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm'>$</span>
+              <span className='absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-medium'>$</span>
               <input
                 type='number'
                 value={totalAum}
                 onChange={e => setTotalAum(e.target.value)}
-                className='w-full bg-slate-50 border border-slate-200 rounded-lg
-                  pl-7 pr-4 py-2.5 text-[#0B1B2E] text-sm focus:outline-none
-                  focus:border-[#2563EB] transition-all tabular-nums'
+                className='w-full bg-slate-50 border border-slate-300 rounded-md
+                  pl-7 pr-4 py-3 text-[#0B1B2E] text-sm focus:outline-none
+                  focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:bg-white
+                  transition-all tabular-nums text-right'
               />
             </div>
           </div>
@@ -222,7 +223,7 @@ export default function IntelligencePage() {
           {/* Ticker table */}
           <div>
             <div className='flex items-center justify-between mb-3'>
-              <label className='text-xs text-slate-500 font-medium'>
+              <label className='text-sm font-semibold text-[#0B1B2E]'>
                 Portfolio positions
               </label>
               <div className='flex items-center gap-2'>
@@ -233,8 +234,8 @@ export default function IntelligencePage() {
                   {totalWeight.toFixed(1)}% / 100%
                 </span>
                 <button onClick={equalizeWeights}
-                  className='text-xs text-[#2563EB] hover:text-[#1D4ED8] border border-[#2563EB]/30
-                    hover:border-[#2563EB]/50 px-2 py-1 rounded-full transition-colors'>
+                  className='text-xs font-medium text-[#2563EB] hover:text-[#1D4ED8] border border-[#2563EB]
+                    hover:bg-[#2563EB]/5 px-3 py-1 rounded-full transition-colors'>
                   Equal weights
                 </button>
               </div>
@@ -242,21 +243,22 @@ export default function IntelligencePage() {
 
             <div className='space-y-2'>
               <div className='grid grid-cols-12 gap-2 px-2'>
-                <div className='col-span-5 text-xs text-slate-400'>Ticker</div>
-                <div className='col-span-5 text-xs text-slate-400'>Weight %</div>
+                <div className='col-span-5 text-xs font-semibold text-slate-500 uppercase tracking-wide'>Ticker</div>
+                <div className='col-span-5 text-xs font-semibold text-slate-500 uppercase tracking-wide'>Weight %</div>
                 <div className='col-span-2' />
               </div>
 
               {tickers.map((row, i) => (
-                <div key={i} className='grid grid-cols-12 gap-2 items-center'>
+                <div key={i} className='grid grid-cols-12 gap-2 items-center bg-slate-50 rounded-md p-2'>
                   <input
                     value={row.ticker}
                     onChange={e => updateRow(i, 'ticker', e.target.value)}
                     placeholder='AAPL'
-                    className='col-span-5 bg-slate-50 border border-slate-200
-                      rounded-lg px-3 py-2.5 text-[#0B1B2E] text-sm
-                      placeholder-slate-300 focus:outline-none
-                      focus:border-[#2563EB] transition-all uppercase'
+                    className='col-span-5 bg-white border border-slate-300
+                      rounded-md px-3 py-2.5 text-[#0B1B2E] text-sm font-medium
+                      placeholder-slate-400 focus:outline-none
+                      focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20
+                      transition-all uppercase'
                   />
                   <div className='col-span-5 relative'>
                     <input
@@ -264,16 +266,17 @@ export default function IntelligencePage() {
                       value={row.weight}
                       onChange={e => updateRow(i, 'weight', e.target.value)}
                       placeholder='10'
-                      className='w-full bg-slate-50 border border-slate-200
-                        rounded-lg px-3 py-2.5 text-[#0B1B2E] text-sm
-                        placeholder-slate-300 focus:outline-none
-                        focus:border-[#2563EB] transition-all pr-7 tabular-nums'
+                      className='w-full bg-white border border-slate-300
+                        rounded-md px-3 py-2.5 text-[#0B1B2E] text-sm
+                        placeholder-slate-400 focus:outline-none
+                        focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20
+                        transition-all pr-7 tabular-nums'
                     />
-                    <span className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm'>%</span>
+                    <span className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-medium'>%</span>
                   </div>
                   <button onClick={() => removeRow(i)}
                     className='col-span-2 flex items-center justify-center
-                      text-slate-300 hover:text-[#B91C1C] transition-colors'>
+                      text-slate-400 hover:text-[#B91C1C] transition-colors'>
                     <X size={14} />
                   </button>
                 </div>
@@ -291,11 +294,11 @@ export default function IntelligencePage() {
           {/* Scenario */}
           <div>
             <div className='flex items-center justify-between mb-2'>
-              <label className='text-xs text-slate-500 font-medium'>
+              <label className='text-sm font-semibold text-[#0B1B2E]'>
                 Stress scenario
               </label>
               {activeScenario && (
-                <span className='text-xs text-[#2563EB]'>{activeScenario} loaded</span>
+                <span className='text-xs font-medium text-[#2563EB]'>{activeScenario} loaded</span>
               )}
             </div>
             <textarea
@@ -306,10 +309,10 @@ export default function IntelligencePage() {
               }}
               rows={2}
               placeholder='e.g. Market crashes 30%, rates rise 2%, tech drops 50%'
-              className='w-full bg-slate-50 border border-slate-200 rounded-lg
-                p-4 text-[#0B1B2E] placeholder-slate-400 resize-none
-                focus:outline-none focus:border-[#2563EB] text-sm
-                transition-all mb-3'
+              className='w-full bg-slate-50 border border-slate-300 rounded-md
+                px-4 py-3 text-[#0B1B2E] placeholder-slate-400 resize-none
+                focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20
+                focus:bg-white text-sm transition-all mb-3'
             />
             <div className='flex flex-wrap gap-2'>
               {HISTORICAL_SCENARIOS.map(s => (
@@ -318,10 +321,10 @@ export default function IntelligencePage() {
                     setScenario(s.text)
                     setActiveScenario(s.label)
                   }}
-                  className={`text-xs px-3 py-1.5 rounded-full transition-all border
+                  className={`text-sm font-medium px-3 py-1.5 rounded-full transition-all border
                     ${activeScenario === s.label
-                      ? 'border-[#2563EB]/40 bg-[#2563EB]/8 text-[#2563EB]'
-                      : 'border-slate-200 text-slate-500 hover:text-[#0B1B2E] hover:border-slate-300 bg-white'
+                      ? 'border-[#2563EB] bg-[#2563EB] text-white'
+                      : 'border-slate-300 text-slate-700 hover:text-[#2563EB] hover:border-[#2563EB] hover:bg-[#2563EB]/5 bg-white'
                     }`}>
                   {s.label}
                 </button>
@@ -340,8 +343,8 @@ export default function IntelligencePage() {
           <button
             onClick={handleRun}
             disabled={loading}
-            className='w-full py-3.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white
-              font-semibold text-sm transition-colors active:scale-[0.98] disabled:opacity-50
+            className='w-full py-4 rounded-md bg-[#2563EB] hover:bg-[#1D4ED8] text-white
+              font-bold text-base shadow-md transition-colors active:scale-[0.98] disabled:opacity-50
               disabled:cursor-not-allowed flex items-center justify-center gap-2'>
             {loading ? (
               <>

@@ -37,18 +37,19 @@ function DropZone({ label, file, onDrop }: {
       {...getRootProps()}
       className={`border-2 border-dashed rounded-xl p-6 text-center
         cursor-pointer transition-all
-        ${isDragActive ? 'border-[#2563EB] bg-[#2563EB]/5'
-          : file ? 'border-[#15803D]/50 bg-[#15803D]/5'
-          : 'border-slate-300 hover:border-[#2563EB] hover:bg-[#2563EB]/3'}`}>
+        ${isDragActive ? 'border-[#2563EB] bg-[#2563EB]/10'
+          : file ? 'border-[#15803D]/60 bg-[#15803D]/5'
+          : 'border-slate-300 bg-slate-50 hover:border-[#2563EB] hover:bg-[#2563EB]/5'}`}>
       <input {...getInputProps()} />
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center
-        mx-auto mb-2 ${file ? 'bg-[#15803D]/10' : 'bg-slate-100'}`}>
-        <Upload size={18} className={file ? 'text-[#15803D]' : 'text-slate-400'} />
+        mx-auto mb-2 border shadow-sm
+        ${file ? 'bg-[#15803D]/10 border-[#15803D]/20' : 'bg-white border-slate-200'}`}>
+        <Upload size={18} className={file ? 'text-[#15803D]' : 'text-slate-500'} />
       </div>
-      <p className='text-xs text-slate-500 font-medium mb-1'>{label}</p>
+      <p className='text-base font-semibold text-[#0B1B2E] mb-1'>{label}</p>
       {file
-        ? <p className='text-[#15803D] text-xs font-medium'>{file.name}</p>
-        : <p className='text-slate-400 text-xs'>Drop .xlsx here</p>
+        ? <p className='text-[#15803D] text-xs font-semibold'>{file.name}</p>
+        : <p className='text-slate-500 text-sm'>Drop .xlsx here</p>
       }
     </div>
   )
@@ -245,15 +246,16 @@ export default function ComparePage() {
           </div>
 
           <div className='mb-4'>
-            <label className='block text-xs text-slate-500 font-medium mb-2'>
+            <label className='block text-sm font-semibold text-[#0B1B2E] mb-2'>
               Stress scenario (same for both)
             </label>
             <textarea
               value={scenario}
               onChange={e => setScenario(e.target.value)}
-              className='w-full bg-slate-50 border border-slate-200 rounded-lg p-4
+              className='w-full bg-slate-50 border border-slate-300 rounded-md px-4 py-3
                 text-[#0B1B2E] placeholder-slate-400 resize-none focus:outline-none
-                focus:border-[#2563EB] text-sm transition-all'
+                focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:bg-white
+                text-sm transition-all'
               rows={2}
               placeholder='e.g. Market crashes 30%, rates rise 2%, tech sector drops 50%'
             />
@@ -262,8 +264,8 @@ export default function ComparePage() {
           <div className='flex flex-wrap gap-2 mb-5'>
             {SAMPLE_SCENARIOS.map(s => (
               <button key={s} onClick={() => setScenario(s)}
-                className='text-xs text-slate-500 hover:text-[#0B1B2E] px-3 py-1.5 rounded-full
-                  border border-slate-200 hover:border-slate-300 bg-white transition-colors'>
+                className='text-sm font-medium text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-full
+                  border border-slate-300 bg-white hover:border-[#2563EB] hover:bg-[#2563EB]/5 transition-colors'>
                 {s.split(':')[0].split(',')[0]}
               </button>
             ))}
@@ -280,8 +282,8 @@ export default function ComparePage() {
           <button
             onClick={handleCompare}
             disabled={loading}
-            className='w-full py-3.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white
-              font-semibold text-sm transition-colors active:scale-[0.98] disabled:opacity-50
+            className='w-full py-4 rounded-md bg-[#2563EB] hover:bg-[#1D4ED8] text-white
+              font-bold text-base shadow-md transition-colors active:scale-[0.98] disabled:opacity-50
               disabled:cursor-not-allowed flex items-center justify-center gap-2'>
             {loading ? (
               <>

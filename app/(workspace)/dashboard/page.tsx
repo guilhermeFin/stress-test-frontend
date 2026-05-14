@@ -43,7 +43,7 @@ function StatCard({
 }: { label: string; value: string; sub?: string; icon: React.ElementType; accent?: boolean }) {
   return (
     <div className={`bg-white border rounded-lg p-5 shadow-sm
-      ${accent ? 'border-[#2563EB]/25' : 'border-slate-200'}`}>
+      ${accent ? 'border-[#2563EB]/40' : 'border-slate-200 hover:border-slate-300'}`}>
       <div className='flex items-center justify-between mb-3'>
         <p className='text-xs text-slate-500 font-medium uppercase tracking-wide'>{label}</p>
         <div className={`w-8 h-8 rounded-lg flex items-center justify-center
@@ -125,8 +125,8 @@ export default function DashboardPage() {
           <button
             onClick={load}
             disabled={loading}
-            className='flex items-center gap-1.5 text-xs text-slate-500 hover:text-[#0B1B2E]
-              border border-slate-200 hover:border-slate-300 rounded-md px-3 py-1.5 transition-colors'
+            className='flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-[#0B1B2E]
+              border border-slate-300 hover:border-slate-400 rounded-md px-3 py-1.5 bg-white transition-colors'
           >
             <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
             Refresh
@@ -175,8 +175,8 @@ export default function DashboardPage() {
                   className={`flex items-center justify-between px-4 py-3
                     ${i < data.top_movers.length - 1 ? 'border-b border-slate-100' : ''}`}>
                   <div className='flex items-center gap-3'>
-                    <div className='w-8 h-8 rounded-md bg-slate-100 flex items-center justify-center
-                      text-[10px] font-bold text-slate-600'>
+                    <div className='w-8 h-8 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center
+                      text-[10px] font-bold text-slate-700'>
                       {m.ticker.slice(0, 2)}
                     </div>
                     <div>
@@ -273,9 +273,9 @@ export default function DashboardPage() {
                 { href: '/inbox',      label: 'Review inbox',            icon: AlertTriangle },
               ].map(({ href, label, icon: Icon }) => (
                 <Link key={href} href={href}
-                  className='flex items-center gap-2 text-sm text-slate-600 hover:text-[#0B1B2E]
-                    border border-slate-200 hover:border-slate-300 rounded-lg px-3 py-2.5
-                    transition-colors group bg-white'>
+                  className='flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-[#0B1B2E]
+                    border border-slate-300 hover:border-[#2563EB] hover:bg-[#2563EB]/5 rounded-lg px-3 py-2.5
+                    transition-colors group bg-white shadow-sm'>
                   <Icon size={14} className='text-slate-400 group-hover:text-[#2563EB] transition-colors shrink-0' />
                   {label}
                 </Link>

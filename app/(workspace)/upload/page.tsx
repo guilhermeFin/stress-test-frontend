@@ -217,10 +217,10 @@ export default function UploadPage() {
 
           <button
             onClick={handleDownloadTemplate}
-            className='w-full mb-5 flex items-center justify-center gap-2 py-2.5 rounded-lg
-              border border-slate-200 text-slate-500 hover:text-[#0B1B2E] hover:border-slate-300
-              text-sm transition-colors bg-white'>
-            <Download size={15} />
+            className='w-full mb-5 flex items-center justify-center gap-2 px-4 py-3 rounded-md
+              border border-slate-300 text-[#0B1B2E] hover:bg-slate-50 hover:border-slate-400
+              text-sm font-medium transition-colors bg-white shadow-sm'>
+            <Download size={16} className='text-[#2563EB]' />
             Download Portfolio Template (.xlsx)
           </button>
 
@@ -229,25 +229,26 @@ export default function UploadPage() {
             className={`border-2 border-dashed rounded-xl py-12 px-8 text-center
               cursor-pointer transition-all duration-150 mb-5
               ${isDragActive
-                ? 'border-[#2563EB] bg-[#2563EB]/5'
+                ? 'border-[#2563EB] bg-[#2563EB]/10'
                 : file
-                ? 'border-[#15803D]/50 bg-[#15803D]/5'
-                : 'border-slate-300 hover:border-[#2563EB] hover:bg-[#2563EB]/3'
+                ? 'border-[#15803D]/60 bg-[#15803D]/5'
+                : 'border-slate-300 bg-slate-50 hover:border-[#2563EB] hover:bg-[#2563EB]/5'
               }`}>
             <input {...getInputProps()} />
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center
-              mx-auto mb-3 ${file ? 'bg-[#15803D]/10' : 'bg-slate-100'}`}>
-              <Upload size={22} className={file ? 'text-[#15803D]' : 'text-slate-400'} />
+              mx-auto mb-3 border shadow-sm
+              ${file ? 'bg-[#15803D]/10 border-[#15803D]/20' : 'bg-white border-slate-200'}`}>
+              <Upload size={22} className={file ? 'text-[#15803D]' : 'text-slate-500'} />
             </div>
             {file ? (
               <div>
-                <p className='text-[#15803D] font-medium text-sm'>{file.name}</p>
+                <p className='text-[#15803D] font-semibold text-sm'>{file.name}</p>
                 <p className='text-slate-500 text-xs mt-1'>Ready to analyze</p>
               </div>
             ) : (
               <div>
-                <p className='text-[#0B1B2E] text-sm font-medium'>Drop your portfolio here</p>
-                <p className='text-slate-400 text-xs mt-1'>.xlsx file · up to any size</p>
+                <p className='text-[#0B1B2E] text-base font-semibold'>Drop your portfolio here</p>
+                <p className='text-slate-500 text-sm mt-1'>.xlsx file · up to any size</p>
               </div>
             )}
           </div>
@@ -256,7 +257,7 @@ export default function UploadPage() {
             <>
               <div className='mb-3'>
                 <div className='flex items-center justify-between mb-2'>
-                  <label className='text-xs text-slate-500 font-medium'>
+                  <label className='text-sm font-semibold text-[#0B1B2E]'>
                     Describe the stress scenario
                   </label>
                   {activeHistorical && (
@@ -269,9 +270,10 @@ export default function UploadPage() {
                 <textarea
                   value={scenario}
                   onChange={(e) => { setScenario(e.target.value); setActiveHistorical(null) }}
-                  className='w-full bg-slate-50 border border-slate-200 rounded-lg p-4
+                  className='w-full bg-slate-50 border border-slate-300 rounded-md px-4 py-3
                     text-[#0B1B2E] placeholder-slate-400 resize-none focus:outline-none
-                    focus:border-[#2563EB] text-sm leading-relaxed transition-all'
+                    focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:bg-white
+                    text-sm leading-relaxed transition-all'
                   rows={3}
                   placeholder='e.g. Market crashes 30%, rates rise 2%, tech sector drops 50%'
                 />
@@ -280,8 +282,8 @@ export default function UploadPage() {
               <div className='flex flex-wrap gap-2 mb-4'>
                 {SAMPLE_SCENARIOS.map((s) => (
                   <button key={s} onClick={() => { setScenario(s); setActiveHistorical(null) }}
-                    className='text-xs text-slate-500 hover:text-[#0B1B2E] px-3 py-1.5 rounded-full
-                      border border-slate-200 hover:border-slate-300 bg-white transition-colors'>
+                    className='text-sm font-medium text-slate-700 hover:text-[#2563EB] px-3 py-1.5 rounded-full
+                      border border-slate-300 bg-white hover:border-[#2563EB] hover:bg-[#2563EB]/5 transition-colors'>
                     {s.split(':')[0].split(',')[0]}
                   </button>
                 ))}
@@ -325,8 +327,8 @@ export default function UploadPage() {
                       ${activeHistorical === s.label
                         ? 'border-slate-300 shadow-[0_0_0_1px_rgba(37,99,235,0.15)] ring-1 ring-[#2563EB]/20'
                         : 'border-slate-200 hover:border-slate-300'}`}>
-                    <div className='text-xs font-medium text-[#0B1B2E] mb-0.5'>{s.label}</div>
-                    <div className='text-xs text-slate-400 mb-1.5'>{s.year}</div>
+                    <div className='text-sm font-semibold text-[#0B1B2E] mb-0.5'>{s.label}</div>
+                    <div className='text-xs uppercase tracking-wide font-semibold text-slate-500 mb-1.5'>{s.year}</div>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${s.badge}`}>
                       {s.severity}
                     </span>
@@ -380,8 +382,9 @@ export default function UploadPage() {
                     step='0.01'
                     value={brlUsdRate}
                     onChange={(e) => setBrlUsdRate(parseFloat(e.target.value) || 5.20)}
-                    className='w-24 text-xs text-right bg-slate-50 border border-slate-200
-                      rounded-lg px-3 py-1.5 text-[#0B1B2E] focus:outline-none focus:border-[#2563EB]'
+                    className='w-24 text-sm text-right bg-slate-50 border border-slate-300
+                      rounded-md px-3 py-1.5 text-[#0B1B2E] focus:outline-none focus:border-[#2563EB]
+                      focus:ring-2 focus:ring-[#2563EB]/20 focus:bg-white tabular-nums'
                   />
                   <span className='text-xs text-slate-400'>Results show USD and BRL impact</span>
                 </div>

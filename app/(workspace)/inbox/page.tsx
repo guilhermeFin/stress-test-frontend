@@ -8,19 +8,19 @@ import {
 } from 'lucide-react'
 import { listInbox, patchInboxItem, type InboxItem, type AlertType } from '@/lib/households'
 
-const TYPE_META: Record<AlertType, { label: string; icon: React.ElementType; color: string }> = {
-  drift:         { label: 'Drift Alert',    icon: BarChart3,     color: 'text-amber-400 bg-amber-400/10' },
-  plan_checkin:  { label: 'Plan Check-in',  icon: Calendar,      color: 'text-blue-400 bg-blue-400/10' },
-  rmd:           { label: 'RMD Due',        icon: Bell,          color: 'text-orange-400 bg-orange-400/10' },
-  market:        { label: 'Market Alert',   icon: Newspaper,     color: 'text-purple-400 bg-purple-400/10' },
-  life_event:    { label: 'Life Event',     icon: Heart,         color: 'text-pink-400 bg-pink-400/10' },
-  run_complete:  { label: 'Run Complete',   icon: BarChart3,     color: 'text-emerald-400 bg-emerald-400/10' },
+const TYPE_META: Record<AlertType, { label: string; icon: React.ElementType; iconBg: string; iconColor: string }> = {
+  drift:        { label: 'Drift Alert',   icon: BarChart3,  iconBg: 'bg-amber-50 border border-amber-200',   iconColor: 'text-amber-600' },
+  plan_checkin: { label: 'Plan Check-in', icon: Calendar,   iconBg: 'bg-blue-50 border border-blue-200',     iconColor: 'text-[#2563EB]' },
+  rmd:          { label: 'RMD Due',       icon: Bell,       iconBg: 'bg-orange-50 border border-orange-200', iconColor: 'text-orange-600' },
+  market:       { label: 'Market Alert',  icon: Newspaper,  iconBg: 'bg-purple-50 border border-purple-200', iconColor: 'text-purple-600' },
+  life_event:   { label: 'Life Event',    icon: Heart,      iconBg: 'bg-pink-50 border border-pink-200',     iconColor: 'text-pink-600' },
+  run_complete: { label: 'Run Complete',  icon: BarChart3,  iconBg: 'bg-emerald-50 border border-emerald-200', iconColor: 'text-emerald-600' },
 }
 
 const SEVERITY_BADGE: Record<string, string> = {
-  critical: 'bg-red-500/10 text-red-400 border border-red-500/20',
-  warning:  'bg-amber-500/10 text-amber-400 border border-amber-500/20',
-  info:     'bg-white/5 text-gray-400 border border-white/10',
+  critical: 'bg-red-100 text-red-800 border border-red-300',
+  warning:  'bg-amber-100 text-amber-800 border border-amber-300',
+  info:     'bg-blue-100 text-blue-800 border border-blue-300',
 }
 
 function timeAgo(iso: string) {
@@ -78,11 +78,11 @@ const MOCK: InboxItem[] = [
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
-type Filter = 'all' | 'unread' | AlertType
+type FilterType = 'all' | 'unread' | AlertType
 
 export default function InboxPage() {
   const [items, setItems] = useState<InboxItem[]>(MOCK)
-  const [filter, setFilter] = useState<Filter>('all')
+  const [filter, setFilter] = useState<FilterType>('all')
   const [acting, setActing] = useState<string | null>(null)
 
   const load = useCallback(async () => {
@@ -128,23 +128,24 @@ export default function InboxPage() {
       {/* Header */}
       <div className='flex items-start justify-between mb-6'>
         <div>
-          <h1 className='text-2xl font-bold tracking-tight flex items-center gap-2'>
+          <h1 className='text-2xl font-bold tracking-tight text-[#0B1B2E] flex items-center gap-2'>
             Inbox
             {unreadCount > 0 && (
-              <span className='bg-[#3B82F6] text-white text-xs font-bold px-2 py-0.5 rounded-full'>
+              <span className='bg-[#2563EB] text-white text-xs font-bold px-2 py-0.5 rounded-full'>
                 {unreadCount}
               </span>
             )}
           </h1>
-          <p className='text-sm text-gray-500 mt-1'>
+          <p className='text-sm text-slate-600 mt-1'>
             All alerts and notifications across your clients.
           </p>
         </div>
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
-            className='flex items-center gap-1.5 text-xs text-gray-500 hover:text-white
-              border border-white/10 hover:border-white/20 rounded-lg px-3 py-1.5 transition-colors'
+            className='flex items-center gap-1.5 text-xs font-medium text-slate-600
+              hover:text-[#0B1B2E] border border-slate-300 hover:border-slate-400
+              rounded-md px-3 py-1.5 bg-white transition-colors'
           >
             <CheckCircle size={12} /> Mark all read
           </button>
@@ -152,8 +153,8 @@ export default function InboxPage() {
       </div>
 
       {/* Filter bar */}
-      <div className='flex items-center gap-1.5 mb-6 flex-wrap'>
-        <Filter size={12} className='text-gray-600 shrink-0' />
+      <div className='flex items-center gap-1 mb-6 flex-wrap border-b border-slate-200 pb-3'>
+        <Filter size={13} className='text-slate-600 shrink-0 mr-1' />
         {([
           { key: 'all',          label: 'All' },
           { key: 'unread',       label: 'Unread' },
@@ -162,14 +163,14 @@ export default function InboxPage() {
           { key: 'plan_checkin', label: 'Check-ins' },
           { key: 'market',       label: 'Market' },
           { key: 'life_event',   label: 'Life events' },
-        ] as { key: Filter; label: string }[]).map(({ key, label }) => (
+        ] as { key: FilterType; label: string }[]).map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setFilter(key)}
-            className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors
+            className={`text-sm font-medium px-3 py-1.5 rounded-md transition-colors
               ${filter === key
-                ? 'bg-[#3B82F6]/10 text-[#3B82F6] border border-[#3B82F6]/20'
-                : 'text-gray-500 border border-white/[0.06] hover:text-white hover:border-white/10'
+                ? 'bg-[#2563EB] text-white'
+                : 'text-slate-700 hover:text-[#0B1B2E] hover:bg-slate-100'
               }`}
           >
             {label}
@@ -179,72 +180,75 @@ export default function InboxPage() {
 
       {/* Items */}
       {visible.length === 0 ? (
-        <div className='text-center py-20 border border-dashed border-white/10 rounded-2xl'>
-          <Inbox size={28} className='text-gray-600 mx-auto mb-3' />
-          <p className='text-gray-500 text-sm'>All clear — nothing here.</p>
+        <div className='text-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50'>
+          <Inbox size={28} className='text-slate-400 mx-auto mb-3' />
+          <p className='text-slate-500 text-sm font-medium'>All clear — nothing here.</p>
         </div>
       ) : (
-        <div className='space-y-2'>
+        <div className='space-y-3'>
           {visible.map(item => {
-            const meta = TYPE_META[item.type] ?? { label: item.type, icon: Bell, color: 'text-gray-400 bg-white/5' }
+            const meta = TYPE_META[item.type] ?? { label: item.type, icon: Bell, iconBg: 'bg-slate-50 border border-slate-200', iconColor: 'text-slate-500' }
             const Icon = meta.icon
             const isUnread = item.status === 'unread'
 
             return (
               <div
                 key={item.id}
-                className={`relative bg-white/[0.02] border rounded-2xl p-4 transition-all
-                  ${isUnread ? 'border-white/10' : 'border-white/[0.05] opacity-70'}`}
+                className={`relative bg-white border rounded-lg p-4 transition-all
+                  ${isUnread
+                    ? 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
+                    : 'border-slate-200 opacity-75 hover:opacity-100'
+                  }`}
               >
                 {/* Unread dot */}
                 {isUnread && (
-                  <span className='absolute left-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#3B82F6]' />
+                  <span className='absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#2563EB]' />
                 )}
 
-                <div className={`flex gap-4 ${isUnread ? 'pl-4' : ''}`}>
+                <div className={`flex gap-4 ${isUnread ? 'pl-3' : ''}`}>
                   {/* Icon */}
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${meta.color}`}>
-                    <Icon size={15} />
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${meta.iconBg}`}>
+                    <Icon size={16} className={meta.iconColor} />
                   </div>
 
                   {/* Content */}
                   <div className='flex-1 min-w-0'>
                     <div className='flex items-start justify-between gap-2 mb-1'>
                       <div className='flex items-center gap-2 flex-wrap'>
-                        <p className={`text-sm font-semibold ${isUnread ? 'text-white' : 'text-gray-300'}`}>
+                        <p className='text-base font-semibold text-[#0B1B2E]'>
                           {item.title}
                         </p>
-                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${SEVERITY_BADGE[item.severity]}`}>
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded ${SEVERITY_BADGE[item.severity]}`}>
                           {item.severity}
                         </span>
                       </div>
-                      <p className='text-[10px] text-gray-600 shrink-0 flex items-center gap-1'>
+                      <p className='text-xs text-slate-500 shrink-0 flex items-center gap-1'>
                         <Clock size={9} /> {timeAgo(item.created_at)}
                       </p>
                     </div>
 
                     {item.household_name && (
-                      <p className='text-xs text-[#3B82F6] mb-1'>{item.household_name}</p>
+                      <p className='text-xs font-medium text-[#2563EB] mb-1'>{item.household_name}</p>
                     )}
 
-                    <p className='text-xs text-gray-400 leading-relaxed mb-3'>{item.body}</p>
+                    <p className='text-sm text-slate-700 leading-relaxed mb-3'>{item.body}</p>
 
                     {/* Actions */}
-                    <div className='flex items-center gap-2'>
+                    <div className='flex items-center gap-3'>
                       {item.action_url && (
                         <Link
                           href={item.action_url}
                           onClick={() => act(item.id, 'read')}
-                          className='flex items-center gap-1 text-xs text-[#3B82F6] hover:underline'
+                          className='flex items-center gap-1 text-sm font-semibold text-[#2563EB] hover:text-[#1D4ED8]'
                         >
-                          Review <ChevronRight size={11} />
+                          Review <ChevronRight size={12} />
                         </Link>
                       )}
                       {isUnread && (
                         <button
                           onClick={() => act(item.id, 'read')}
                           disabled={acting === item.id}
-                          className='text-xs text-gray-600 hover:text-gray-300 transition-colors'
+                          className='text-sm text-slate-600 hover:text-[#0B1B2E] transition-colors'
                         >
                           Mark read
                         </button>
@@ -252,14 +256,14 @@ export default function InboxPage() {
                       <button
                         onClick={() => act(item.id, 'snooze')}
                         disabled={acting === item.id}
-                        className='text-xs text-gray-600 hover:text-gray-300 transition-colors'
+                        className='text-sm text-slate-600 hover:text-[#0B1B2E] transition-colors'
                       >
                         Snooze
                       </button>
                       <button
                         onClick={() => act(item.id, 'dismiss')}
                         disabled={acting === item.id}
-                        className='text-xs text-gray-600 hover:text-red-400 transition-colors ml-auto'
+                        className='text-sm text-slate-500 hover:text-red-600 transition-colors ml-auto'
                       >
                         Dismiss
                       </button>
