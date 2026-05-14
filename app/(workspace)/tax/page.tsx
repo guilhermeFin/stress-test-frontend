@@ -82,7 +82,7 @@ export default function TaxHubPage() {
         ))}
       </div>
 
-      <div className='bg-amber-50 border border-amber-200 rounded-lg p-4'>
+      <div className='bg-amber-50 border border-amber-300 rounded-lg p-4'>
         <p className='text-xs text-amber-800 leading-relaxed'>
           <strong className='font-semibold'>AI-assisted — verify before client delivery.</strong>{' '}
           All projections use 2025 federal tax brackets and rates. State tax estimates use simplified flat rates.

@@ -21,13 +21,13 @@ function SliderRow({ label, value, min, max, step, onChange, fmt: fmtFn }: {
 }) {
   return (
     <div>
-      <div className='flex justify-between text-xs mb-1.5'>
-        <span className='text-gray-400'>{label}</span>
-        <span className='font-bold text-white'>{fmtFn(value)}</span>
+      <div className='flex justify-between mb-2'>
+        <span className='text-sm font-semibold text-[#0B1B2E]'>{label}</span>
+        <span className='text-sm font-mono font-bold text-[#2563EB] tabular-nums'>{fmtFn(value)}</span>
       </div>
       <input type='range' min={min} max={max} step={step} value={value}
         onChange={e => onChange(Number(e.target.value))}
-        className='w-full accent-[#3B82F6]' />
+        className='w-full accent-[#2563EB]' />
     </div>
   )
 }
@@ -54,14 +54,14 @@ export default function RothConversionPage() {
     <div className='max-w-4xl mx-auto px-6 py-10'>
 
       <Link href='/tax'
-        className='flex items-center gap-1.5 text-sm text-gray-500 hover:text-white
-          transition-colors mb-6'>
+        className='flex items-center gap-2 text-sm text-slate-600 hover:text-[#0B1B2E] transition-colors mb-6'>
         <ArrowLeft size={14} /> Tax Planning
       </Link>
 
-      <div className='mb-8'>
-        <h1 className='text-2xl font-bold tracking-tight mb-1'>Roth Conversion Ladder</h1>
-        <p className='text-sm text-gray-500'>
+      <div className='border-b border-slate-200 pb-6 mb-8'>
+        <p className='text-xs font-semibold uppercase tracking-[0.06em] text-[#2563EB] mb-2'>TAX PLANNING</p>
+        <h1 className='text-3xl font-bold text-[#0B1B2E] tracking-tight mb-1'>Roth Conversion Ladder</h1>
+        <p className='text-base text-slate-600'>
           Model multi-year conversions to fill lower tax brackets now and reduce future RMD exposure.
         </p>
       </div>
@@ -69,8 +69,8 @@ export default function RothConversionPage() {
       <div className='grid grid-cols-1 lg:grid-cols-5 gap-6'>
 
         {/* Inputs */}
-        <div className='lg:col-span-2 bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 space-y-5'>
-          <h2 className='text-sm font-semibold'>Parameters</h2>
+        <div className='lg:col-span-2 bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-5'>
+          <h2 className='text-base font-bold text-[#0B1B2E] border-b border-slate-200 pb-3 mb-2'>Parameters</h2>
 
           <SliderRow label='Traditional IRA balance' value={inputs.ira_balance}
             min={100_000} max={5_000_000} step={50_000}
@@ -81,14 +81,14 @@ export default function RothConversionPage() {
             onChange={set('annual_conversion')} fmt={fmt} />
 
           <div>
-            <label className='text-xs text-gray-400 mb-1.5 block'>Current marginal rate</label>
+            <label className='text-sm font-semibold text-[#0B1B2E] mb-2 block'>Current marginal rate</label>
             <div className='flex flex-wrap gap-1.5'>
               {RATES.map(r => (
                 <button key={r} onClick={() => set('current_marginal_rate')(r)}
-                  className={`text-xs px-2.5 py-1 rounded-lg border transition-colors
+                  className={`text-xs px-3 py-1.5 rounded-md font-medium border transition-colors
                     ${inputs.current_marginal_rate === r
-                      ? 'border-[#3B82F6]/50 bg-[#3B82F6]/10 text-[#3B82F6]'
-                      : 'border-white/[0.06] text-gray-400 hover:border-white/10'}`}>
+                      ? 'bg-[#2563EB] text-white border-[#2563EB]'
+                      : 'border-slate-300 text-slate-600 hover:bg-slate-50 hover:text-[#0B1B2E]'}`}>
                   {fmtPct(r)}
                 </button>
               ))}
@@ -96,14 +96,14 @@ export default function RothConversionPage() {
           </div>
 
           <div>
-            <label className='text-xs text-gray-400 mb-1.5 block'>Projected retirement rate</label>
+            <label className='text-sm font-semibold text-[#0B1B2E] mb-2 block'>Projected retirement rate</label>
             <div className='flex flex-wrap gap-1.5'>
               {RATES.map(r => (
                 <button key={r} onClick={() => set('future_marginal_rate')(r)}
-                  className={`text-xs px-2.5 py-1 rounded-lg border transition-colors
+                  className={`text-xs px-3 py-1.5 rounded-md font-medium border transition-colors
                     ${inputs.future_marginal_rate === r
-                      ? 'border-[#8B5CF6]/50 bg-[#8B5CF6]/10 text-[#8B5CF6]'
-                      : 'border-white/[0.06] text-gray-400 hover:border-white/10'}`}>
+                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      : 'border-slate-300 text-slate-600 hover:bg-slate-50 hover:text-[#0B1B2E]'}`}>
                   {fmtPct(r)}
                 </button>
               ))}
@@ -126,48 +126,50 @@ export default function RothConversionPage() {
         {/* Results */}
         <div className='lg:col-span-3 space-y-4'>
 
-          {/* Summary */}
+          {/* Summary cards */}
           <div className='grid grid-cols-2 gap-3'>
             {[
-              { label: 'Total tax cost',         value: fmt(result.total_tax_cost),          color: 'text-red-400' },
-              { label: 'Projected savings',       value: fmt(result.projected_tax_savings),   color: 'text-emerald-400' },
-              { label: 'Break-even',             value: `${result.break_even_years} yrs`,    color: 'text-white' },
-              { label: 'Rate arbitrage',
+              { label: 'Total tax cost',   value: fmt(result.total_tax_cost),        color: 'text-red-600',    border: 'border-red-200' },
+              { label: 'Projected savings', value: fmt(result.projected_tax_savings), color: 'text-emerald-700', border: 'border-emerald-200' },
+              { label: 'Break-even',       value: `${result.break_even_years} yrs`,  color: 'text-[#0B1B2E]', border: 'border-slate-200' },
+              {
+                label: 'Rate arbitrage',
                 value: inputs.future_marginal_rate > inputs.current_marginal_rate
                   ? `+${fmtPct(inputs.future_marginal_rate - inputs.current_marginal_rate)} advantage`
                   : inputs.future_marginal_rate === inputs.current_marginal_rate ? 'Neutral' : 'Convert less',
-                color: inputs.future_marginal_rate > inputs.current_marginal_rate ? 'text-emerald-400' : 'text-amber-400'
+                color: inputs.future_marginal_rate > inputs.current_marginal_rate ? 'text-emerald-700' : 'text-amber-700',
+                border: 'border-slate-200',
               },
-            ].map(({ label, value, color }) => (
-              <div key={label} className='bg-white/[0.02] border border-white/[0.06] rounded-xl p-4'>
-                <p className='text-[10px] text-gray-500 uppercase tracking-wide mb-1'>{label}</p>
-                <p className={`text-lg font-bold tabular-nums ${color}`}>{value}</p>
+            ].map(({ label, value, color, border }) => (
+              <div key={label} className={`bg-white border ${border} rounded-xl p-4 shadow-sm`}>
+                <p className='text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2'>{label}</p>
+                <p className={`text-xl font-bold tabular-nums font-mono ${color}`}>{value}</p>
               </div>
             ))}
           </div>
 
           {/* Year-by-year table */}
-          <div className='bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden'>
-            <div className='px-5 py-3 border-b border-white/[0.04]'>
-              <h2 className='text-sm font-semibold'>Year-by-year projection</h2>
+          <div className='bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm'>
+            <div className='px-6 py-4 border-b border-slate-200'>
+              <h2 className='text-base font-bold text-[#0B1B2E]'>Year-by-year projection</h2>
             </div>
             <div className='overflow-x-auto'>
-              <table className='w-full text-xs'>
+              <table className='w-full text-sm'>
                 <thead>
-                  <tr className='text-gray-500 text-left border-b border-white/[0.04]'>
+                  <tr className='border-b border-slate-200'>
                     {['Year', 'Conversion', 'Tax cost', 'tIRA balance', 'Roth balance'].map(h => (
-                      <th key={h} className='px-4 py-2 font-medium'>{h}</th>
+                      <th key={h} className='px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500'>{h}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className='divide-y divide-white/[0.03]'>
+                <tbody>
                   {result.years.map(y => (
-                    <tr key={y.year} className='hover:bg-white/[0.02]'>
-                      <td className='px-4 py-2.5 font-medium'>{y.year}</td>
-                      <td className='px-4 py-2.5 tabular-nums'>{fmt(y.conversion_amount)}</td>
-                      <td className='px-4 py-2.5 tabular-nums text-red-400'>{fmt(y.tax_cost)}</td>
-                      <td className='px-4 py-2.5 tabular-nums'>{fmt(y.ira_balance_after)}</td>
-                      <td className='px-4 py-2.5 tabular-nums text-emerald-400'>{fmt(y.roth_balance_after)}</td>
+                    <tr key={y.year} className='border-b border-slate-100 last:border-0 hover:bg-slate-50'>
+                      <td className='px-4 py-3 font-medium text-[#0B1B2E]'>{y.year}</td>
+                      <td className='px-4 py-3 tabular-nums font-mono text-slate-700'>{fmt(y.conversion_amount)}</td>
+                      <td className='px-4 py-3 tabular-nums font-mono text-red-600'>{fmt(y.tax_cost)}</td>
+                      <td className='px-4 py-3 tabular-nums font-mono text-slate-700'>{fmt(y.ira_balance_after)}</td>
+                      <td className='px-4 py-3 tabular-nums font-mono text-emerald-700'>{fmt(y.roth_balance_after)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -176,15 +178,17 @@ export default function RothConversionPage() {
           </div>
 
           {/* Balance chart */}
-          <div className='bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5'>
-            <h2 className='text-sm font-semibold mb-4'>tIRA vs Roth balance over conversion period</h2>
+          <div className='bg-white border border-slate-200 rounded-xl p-6 shadow-sm'>
+            <h2 className='text-base font-bold text-[#0B1B2E] border-b border-slate-200 pb-3 mb-4'>
+              tIRA vs Roth balance over conversion period
+            </h2>
             <div className='space-y-2'>
               {result.years.map(y => (
                 <div key={y.year} className='flex items-center gap-2'>
-                  <span className='text-[10px] text-gray-500 w-8 shrink-0'>Yr {y.year}</span>
-                  <div className='flex-1 flex h-4 gap-0.5 rounded overflow-hidden'>
+                  <span className='text-xs font-semibold text-slate-500 w-8 shrink-0'>Yr {y.year}</span>
+                  <div className='flex-1 flex h-5 gap-0.5 rounded overflow-hidden bg-slate-100'>
                     <div
-                      className='bg-[#6B7280] transition-all rounded-l'
+                      className='bg-slate-400 transition-all rounded-l'
                       style={{ width: `${(y.ira_balance_after / maxBarValue) * 50}%` }}
                     />
                     <div
@@ -192,26 +196,31 @@ export default function RothConversionPage() {
                       style={{ width: `${(y.roth_balance_after / maxBarValue) * 50}%` }}
                     />
                   </div>
-                  <span className='text-[10px] text-gray-500 w-20 text-right shrink-0'>
+                  <span className='text-xs text-slate-600 w-20 text-right shrink-0 font-mono tabular-nums'>
                     {fmt(y.ira_balance_after + y.roth_balance_after)}
                   </span>
                 </div>
               ))}
             </div>
             <div className='flex gap-4 mt-3'>
-              <div className='flex items-center gap-1.5 text-[10px] text-gray-500'>
-                <span className='w-3 h-3 rounded-sm bg-[#6B7280]' /> tIRA
+              <div className='flex items-center gap-1.5 text-xs text-slate-600'>
+                <span className='w-3 h-3 rounded-sm bg-slate-400' /> tIRA
               </div>
-              <div className='flex items-center gap-1.5 text-[10px] text-gray-500'>
+              <div className='flex items-center gap-1.5 text-xs text-slate-600'>
                 <span className='w-3 h-3 rounded-sm bg-emerald-500' /> Roth
               </div>
             </div>
           </div>
 
-          <div className='flex items-start gap-2 bg-amber-950/20 border border-amber-700/20
-            rounded-xl px-3 py-2.5 text-[10px] text-amber-300/80 leading-relaxed'>
-            <Info size={11} className='shrink-0 mt-0.5' />
-            Roth conversions increase ordinary income for the year. Verify IRMAA thresholds, ACA subsidy cliffs, and state tax implications. AI-assisted — verify with CPA.
+          <div className='bg-amber-50 border border-amber-300 rounded-lg p-4'>
+            <div className='flex items-start gap-3'>
+              <Info size={15} className='shrink-0 mt-0.5 text-amber-600' />
+              <p className='text-sm text-amber-800 leading-relaxed'>
+                Roth conversions increase ordinary income for the year. Verify IRMAA thresholds,
+                ACA subsidy cliffs, and state tax implications.{' '}
+                <strong className='font-semibold'>AI-assisted — verify with CPA.</strong>
+              </p>
+            </div>
           </div>
         </div>
       </div>
